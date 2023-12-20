@@ -86,7 +86,9 @@ Xujian Wang |   <Hsuchein0126@outlook.com>
 
 Haodong Liu |   <haodonliu@foxmail.com>
 
-The TKM-1.0 version repository:
+Wanlu Li    |   <wa1019@ucsd.edu>
+
+The TKM-1.0 version repository(Older version, not maintained currently):
 <https://github.com/Hsuchein/TinkerModellor>
 
 ## License
