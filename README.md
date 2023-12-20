@@ -86,6 +86,9 @@ Xujian Wang |   <Hsuchein0126@outlook.com>
 
 Haodong Liu |   <haodonliu@foxmail.com>
 
+The TKM-1.0 version repository:
+<https://github.com/Hsuchein/TinkerModellor>
+
 ## License
 
 **it under the terms of the BSD 3-Clause License** Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -105,7 +108,8 @@ see more information in the license file.
 ## Citation
 
 Please site the website if you use this software in your research:
-<https://github.com/Hsuchein/TinkerModellor>
+<https://github.com/WanluLigroupUCSD/TinkerModellor>
+
 
 ## Reference
 
