@@ -1,119 +1,91 @@
 ---
-title: 'Gala: A Python package for galactic dynamics'
+title: 'TinkerModellor: An Efficient Tool for Building Biological Systems in Tinker Simulations'
 tags:
   - Python
-  - astronomy
-  - dynamics
-  - galactic dynamics
-  - milky way
+  - Molecular Dynamics
+  - Computational Chemistry
+  - Tinker Simulations
+  - Computational Biology
 authors:
-  - name: Adrian M. Price-Whelan
-    orcid: 0000-0000-0000-0000
-    equal-contrib: true
-    affiliation: "1, 2" # (Multiple affiliations must be quoted)
-  - name: Author Without ORCID
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
+  - name: Xujian Wang
+    orcid: 0009-0004-0146-9991
+    equal-contrib: false
+    affiliation: 2 
+  - name: Haodong Liu
+    equal-contrib: false 
     affiliation: 2
-  - name: Author with no affiliation
-    corresponding: true # (This is how to denote the corresponding author)
-    affiliation: 3
-  - given-names: Ludwig
-    dropping-particle: van
-    surname: Beethoven
-    affiliation: 3
+  - name: Wanlu Li
+    corresponding: true 
+    affiliation: 1
 affiliations:
- - name: Lyman Spitzer, Jr. Fellow, Princeton University, USA
+ - name: University of California at San Diego, USA
    index: 1
- - name: Institution Name, Country
+ - name: School of Biopharmacy, China Pharmaceutical University, China
    index: 2
- - name: Independent Researcher, Country
-   index: 3
-date: 13 August 2017
+date: 20 December 2023
 bibliography: paper.bib
 
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
 
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
+TinkerModellor (TKM) serves as a versatile biological system construction tool designed to create intricate virtual biological systems for molecular dynamics within the Tinker Simulation Program. Its primary function involves the input generation of complex systems compatible with molecular simulation software. TKM possesses the capability to convert various specific formats, such as crd/top in Amber, gro/top in GROMACS, and crd/psf in CHARMM, into the Tinker format (Tinker XYZ). Moreover, TKM offers a user-friendly and concise approach, functioning as an independent script for convenient usability. Additionally, it provides users with several distinct modules to construct personalized workflows, ensuring flexibility and ease of use. Essentially, TKM empowers users to model or simulate within one software and seamlessly transition to Tinker for analysis or further simulation, effectively harnessing separate functionalities concurrently.
 
 # Statement of need
 
-`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
+Molecular dynamic simulation technology employs advanced computational algorithms to replicate the dynamic behavior of biomolecules or materials at the atomic and molecular scale. This virtual laboratory enables researchers to observe and analyze the intricate interactions and movements of individual atoms, shedding light on phenomena such as protein folding, chemical reactions, and molecular motion in different environments. Particularly, this technology finds extensive application in computer-aided drug design (CADD) [@Welborn:2022], enzyme rational design[@Zheng:2022], and ab initio antibody design[@Chowdhury:2018]. Notably, vibrational Stark effect spectroscopy experiments[@Fried:2017] have demonstrated the existence of electric fields (EF) that potentially play a crucial role in drug and enzyme design[@Bhowmick:2017;@Chaturvedi:2023;@Li:2021;@Welborn:2023]. However, investigating EF necessitates a high-precision polarization force field to accurately model the dynamic response of electrons to external forces and capture the nuanced effects on molecular structures and interactions. According to the best of our knowledge, AMOEBA/AMEOBAPro[@Bim:2021;@Ren:2011;@Shi:2013] stands as a pioneering force field in this domain, effectively integrated into the Tinker simulation program. Furthermore, a post-analysis tool for EF has been proposed[@Nash:2020], enabling seamless analysis of trajectory files generated by Tinker. Consequently, utilizing Tinker for EF research emerges as a promising method.
 
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
+Despite its utility, Tinker has limitations in modeling and simulation processes. It faces challenges in building systems with over 10,000 residues and struggles with accurate topology structure identification. Imperfect parallel computing and the inability to harness GPU acceleration technology act as bottlenecks for Tinker-8. Conversely, GROMACS, Amber, and CHARMM boast robust modules for constructing intricate systems. Additionally, all three support GPU acceleration, potentially enhancing simulation tasks. Aligning the formats of these software with the Tinker format can assist users in creating customized files seamlessly. Furthermore, it integrates Tinker's specialized EF analysis capabilities into these traditional software, potentially expediting drug and enzyme design processes and related endeavors.
 
-# Mathematics
+# Workflow
 
-Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
+TinkerModellor primarily comprises two distinct parts: the GMXMolecule Module, the TinkerModellorSystem Module. Notably, TinkerModellor primarily operates based on the GROMACS format input file. While this might present some limitations, we've mitigated this challenge by leveraging ParmEd, a powerful tool capable of converting between GROMACS, Amber, and CHARMM format files seamlessly. Consequently, users of Amber and CHARMM can also utilize TinkerModellor, as we've successfully integrated ParmEd into its functionalities
 
-Double dollars make self-standing equations:
+![Workflow.\label{fig:example}](workflow.png){ width=100% }
+Figure 1. Schematic diagram of TinkerModellor workflow.
 
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
+The GMXMolecule class is specifically crafted to retain topological details for each molecule type, encompassing bonding relationships and atom types in GROMACS format, among other specifics. Throughout subsequent processes, if a molecule appears multiple times, its topology information will be utilized accordingly, significantly reducing memory usage during system construction. Moreover, the TinkerModellorSystem is devised to encompass the entirety of information requested by Tinker for the system. Essentially, it functions as a data storage class, housing atom types and bonding relationships. However, it also encompasses distinct elements, such as atom indices and coordinates for each atom. These unique details, absent in GMXMolecule, require extraction from coordinate files and subsequent integration with topology information.
 
-You can also use plain \LaTeX for equations
-\begin{equation}\label{eq:fourier}
-\hat f(\omega) = \int_{-\infty}^{\infty} f(x) e^{i\omega x} dx
-\end{equation}
-and refer to \autoref{eq:fourier} from text.
+The TinkerModellor module necessitates input of both a coordination file and a topology file. It proceeds by invoking functions to read and partition the topology file into distinct molecule types, creating a GMXMolecule object for each type. For instance, a system comprising a protein, a ligand, water, and ions would prompt TinkerModellor to generate GMXMolecule objects for each corresponding molecule type: protein, ligand, water, and ions. Moreover, the end of the topology file denotes the number of appearance time for each molecule type. TinkerModellor utilizes this information to amalgamate the coordinate file with topology relationships within the GMXMolecule. Subsequently, the topological relationship between coordinates and GMXMolecule is amalgamated and stored in the TinkerModellorSystem object. It's worth noting that within this model, atom types from the topology file within GMXMolecule undergo automatic transformation into the AMOEBABIO18 force field for simulating polarizable force field systems. Ultimately, TinkerModellor compiles the information from the TinkerModellorSystem object into an output file.
 
-# Citations
+# Usage
 
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
+## Command Line Usage
 
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
+The general usage of the command is as follows:
 
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
+python tkm.py -c coordination_file -p topology_file -out output_file [options]
 
-# Figures
+Here is an example of how to use the command:
 
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
+python tkm.py -c my_coordination_file.gro -p my_topology_file.top -o my_output_file.xyz -f G -a True
 
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
+This command will run the TinkerModellor with a GROMACS coordination file my_coordination_file.gro and topology file my_topology_file.top, and it will output the result to my_output_file.xyz. The input file format is set to GROMACS, and the aggressive atomtype matching mode is enabled
+
+## Packge Usage
+
+import tinkermodellor as tkm
+new= tkm()
+new('gromacs.gro',gromacs.top')
+new.write_tkmsystem('gromacs.xyz')
+
+![Protein in water.](protein.jpg){ width=100% }
+Figure 2. Protein (PDBID:1AG2) in water box. The system is constructed by GROMACS[@Abraham:2015] and transformed into Tinker format by TinkerModellor. Mapping by visualization software VMD[@Humphrey:1996].
+
+# Future Plan
+
+Enhanced Force Field Support: Expand the available force field options to include AMOEBA9[@Ren:2011] for protein-ligand simulations, AMOEBANUC17[@Zhang:2018] for protein-DNA/RNA simulations, and AMOEBAPRO13[@Shi:2013] for more precise biological system simulations. This extension of force field selections will cater to diverse simulation needs across various biological contexts.
+
+Trajectory Transformation: Implementing trajectory adaptation from GROMACS, Amber, and CHARMM to convert their trajectories into Tinker's format will enable simulations across different software platforms. This adaptation allows leveraging the computational efficiency of established biomechanical simulation software like GROMACS, while harnessing Tinker's unique analytical functionalities. This approach promotes the synergy between multiple software, enabling each to capitalize on its specific strengths in simulations and analyses.
+
+# Availability
+TinkerModellor is freely available under the BSD 3-Clause License on GitHub. For installation instructions, module testing , Python API and tutorial please visit the [GitHub website](https://github.com/WanluLigroupUCSD/TinkerModellor).
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+We acknowledge startup funding from the Jacob school of Engineering, UCSD. This work used the computational resources from the Expanse supercomputer at the San Diego Super Computing Center (SDSC), through allocation CHM230035 and CHE230113.
+
+# Conflict of Interest Statement
+The authors declare the absence of any conflicts of interest: No author has any financial, personal, professional, or other relationship that affect our objectivity toward this work.
 
 # References
