@@ -10,18 +10,23 @@ authors:
   - name: Xujian Wang
     orcid: 0009-0004-0146-9991
     equal-contrib: false
-    affiliation: 2 
+    affiliation: "1, 2, 3" 
   - name: Haodong Liu
     equal-contrib: false 
-    affiliation: 2
+    affiliation: 3
+  - name: Jiahuang Li
+    corresponding: true 
+    affiliation: 3    
   - name: Wanlu Li
     corresponding: true 
-    affiliation: 1
+    affiliation: "1, 2"
 affiliations:
- - name: University of California at San Diego, USA
+ - name: Department of NanoEngineering, University of California San Diego, CA 92093
    index: 1
- - name: School of Biopharmacy, China Pharmaceutical University, China
+ - name: Program of Materials Science and Engineering, University of California San Diego, CA 92093
    index: 2
+ - name: School of Biopharmacy, China Pharmaceutical University, China
+   index: 3
 date: 20 December 2023
 bibliography: paper.bib
 
@@ -83,7 +88,7 @@ TinkerModellor is freely available under the BSD 3-Clause License on GitHub. For
 
 # Acknowledgements
 
-We acknowledge startup funding from the Jacob school of Engineering, UCSD. This work used the computational resources from the Expanse supercomputer at the San Diego Super Computing Center (SDSC), through allocation CHM230035 and CHE230113.
+We acknowledge startup funding from the Jacob school of Engineering, UCSD. This work used the computational resources from the Expanse supercomputer at the San Diego Super Computing Center (SDSC), through allocation CHM230035 and CHE230113. We are also grateful for the financial supports of China National Innovation and Entrepreneurship Training Program for Undergraduate (No.202310316093Y)
 
 # Conflict of Interest Statement
 The authors declare the absence of any conflicts of interest: No author has any financial, personal, professional, or other relationship that affect our objectivity toward this work.
