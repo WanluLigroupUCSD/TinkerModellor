@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doi_batch xmlns="http://www.crossref.org/schema/5.3.1"
+           xmlns:ai="http://www.crossref.org/AccessIndicators.xsd"
+           xmlns:rel="http://www.crossref.org/relations.xsd"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           version="5.3.1"
+           xsi:schemaLocation="http://www.crossref.org/schema/5.3.1 http://www.crossref.org/schemas/crossref5.3.1.xsd">
+  <head>
+    <doi_batch_id>20231221T093207-41895ef3da77c901325b6cabd56f3577d6700b57</doi_batch_id>
+    <timestamp>20231221093207</timestamp>
+    <depositor>
+      <depositor_name>JOSS Admin</depositor_name>
+      <email_address>admin@theoj.org</email_address>
+    </depositor>
+    <registrant>The Open Journal</registrant>
+  </head>
+  <body>
+    <journal>
+      <journal_metadata>
+        <full_title>Journal of Open Source Software</full_title>
+        <abbrev_title>JOSS</abbrev_title>
+        <issn media_type="electronic">2475-9066</issn>
+        <doi_data>
+          <doi>10.21105/joss</doi>
+          <resource>https://joss.theoj.org</resource>
+        </doi_data>
+      </journal_metadata>
+      <journal_issue>
+        <publication_date media_type="online">
+          <month>01</month>
+          <year>1970</year>
+        </publication_date>
+        <journal_volume>
+          <volume>¿VOL?</volume>
+        </journal_volume>
+        <issue>¿ISSUE?</issue>
+      </journal_issue>
+      <journal_article publication_type="full_text">
+        <titles>
+          <title>TinkerModellor: An Efficient Tool for Building
+Biological Systems in Tinker Simulations</title>
+        </titles>
+        <contributors>
+          <person_name sequence="first" contributor_role="author">
+            <given_name>Xujian</given_name>
+            <surname>Wang</surname>
+            <ORCID>https://orcid.org/0009-0004-0146-9991</ORCID>
+          </person_name>
+          <person_name sequence="additional"
+                       contributor_role="author">
+            <given_name>Haodong</given_name>
+            <surname>Liu</surname>
+          </person_name>
+          <person_name sequence="additional"
+                       contributor_role="author">
+            <given_name>Jiahuang</given_name>
+            <surname>Li</surname>
+          </person_name>
+          <person_name sequence="additional"
+                       contributor_role="author">
+            <given_name>Wanlu</given_name>
+            <surname>Li</surname>
+          </person_name>
+        </contributors>
+        <publication_date>
+          <month>01</month>
+          <day>01</day>
+          <year>1970</year>
+        </publication_date>
+        <pages>
+          <first_page>¿PAGE?</first_page>
+        </pages>
+        <publisher_item>
+          <identifier id_type="doi">N/A</identifier>
+        </publisher_item>
+        <ai:program name="AccessIndicators">
+          <ai:license_ref applies_to="vor">http://creativecommons.org/licenses/by/4.0/</ai:license_ref>
+          <ai:license_ref applies_to="am">http://creativecommons.org/licenses/by/4.0/</ai:license_ref>
+          <ai:license_ref applies_to="tdm">http://creativecommons.org/licenses/by/4.0/</ai:license_ref>
+        </ai:program>
+        <rel:program>
+          <rel:related_item>
+            <rel:description>Software archive</rel:description>
+            <rel:inter_work_relation relationship-type="references" identifier-type="doi">10.5281</rel:inter_work_relation>
+          </rel:related_item>
+          <rel:related_item>
+            <rel:description>GitHub review issue</rel:description>
+            <rel:inter_work_relation relationship-type="hasReview" identifier-type="uri">https://github.com/openjournals</rel:inter_work_relation>
+          </rel:related_item>
+        </rel:program>
+        <doi_data>
+          <doi>N/A</doi>
+          <resource>https://joss.theoj.org/papers/N/A</resource>
+          <collection property="text-mining">
+            <item>
+              <resource mime_type="application/pdf">https://joss.theoj.org/papers/N/A.pdf</resource>
+            </item>
+          </collection>
+        </doi_data>
+        <citation_list>
+          <citation key="Abraham:2015">
+            <article_title>GROMACS: High performance molecular
+simulations through multi-level parallelism from laptops to
+supercomputers</article_title>
+            <author>Abraham</author>
+            <journal_title>SoftwareX</journal_title>
+            <volume>1-2</volume>
+            <cYear>2015</cYear>
+            <unstructured_citation>Abraham, M. J., Murtola, T., Schulz,
+R., Páll, S., Smith, J. C., Hess, B., &amp; Lindahl, E. (2015). GROMACS:
+High performance molecular simulations through multi-level parallelism
+from laptops to supercomputers. SoftwareX, 1-2, 19–25.
+https://doi.org/10.1016/j.softx.2015.06.001</unstructured_citation>
+          </citation>
+          <citation key="Bhowmick:2017">
+            <article_title>The importance of the scaffold for de novo
+enzymes: A case study with kemp eliminase</article_title>
+            <author>Bhowmick</author>
+            <journal_title>J Am Chem Soc</journal_title>
+            <issue>16</issue>
+            <volume>139</volume>
+            <cYear>2017</cYear>
+            <unstructured_citation>Bhowmick, A., Sharma, S. C., &amp;
+Head-Gordon, T. (2017). The importance of the scaffold for de novo
+enzymes: A case study with kemp eliminase. J Am Chem Soc, 139(16),
+5793–5800. https://doi.org/10.1021/jacs.6b12265</unstructured_citation>
+          </citation>
+          <citation key="Bim:2021">
+            <article_title>Local electric fields as a natural switch of
+heme-iron protein reactivity</article_title>
+            <author>Bim</author>
+            <journal_title>ACS Catal</journal_title>
+            <issue>11</issue>
+            <volume>11</volume>
+            <cYear>2021</cYear>
+            <unstructured_citation>Bim, D., &amp; Alexandrova, A. N.
+(2021). Local electric fields as a natural switch of heme-iron protein
+reactivity. ACS Catal, 11(11), 6534–6546.
+https://doi.org/10.1021/acscatal.1c00687</unstructured_citation>
+          </citation>
+          <citation key="Chaturvedi:2023">
+            <article_title>From random to rational: Improving enzyme
+design through electric fields, second coordination sphere interactions,
+and conformational dynamics</article_title>
+            <author>Chaturvedi</author>
+            <journal_title>Chem Sci</journal_title>
+            <issue>40</issue>
+            <volume>14</volume>
+            <cYear>2023</cYear>
+            <unstructured_citation>Chaturvedi, S. S., Bim, D., Christov,
+C. Z., &amp; Alexandrova, A. N. (2023). From random to rational:
+Improving enzyme design through electric fields, second coordination
+sphere interactions, and conformational dynamics. Chem Sci, 14(40),
+10997–11011. https://doi.org/10.1039/d3sc02982d</unstructured_citation>
+          </citation>
+          <citation key="Chowdhury:2018">
+            <article_title>OptMAVEn-2.0: De novo design of variable
+antibody regions against targeted antigen epitopes</article_title>
+            <author>Chowdhury</author>
+            <journal_title>Antibodies (Basel)</journal_title>
+            <issue>3</issue>
+            <volume>7</volume>
+            <cYear>2018</cYear>
+            <unstructured_citation>Chowdhury, R., Allan, M. F., &amp;
+Maranas, C. D. (2018). OptMAVEn-2.0: De novo design of variable antibody
+regions against targeted antigen epitopes. Antibodies (Basel), 7(3).
+https://doi.org/10.3390/antib7030023</unstructured_citation>
+          </citation>
+          <citation key="Fried:2017">
+            <article_title>Electric fields and enzyme
+catalysis</article_title>
+            <author>Fried</author>
+            <journal_title>Annu Rev Biochem</journal_title>
+            <volume>86</volume>
+            <cYear>2017</cYear>
+            <unstructured_citation>Fried, S. D., &amp; Boxer, S. G.
+(2017). Electric fields and enzyme catalysis. Annu Rev Biochem, 86,
+387–415.
+https://doi.org/10.1146/annurev-biochem-061516-044432</unstructured_citation>
+          </citation>
+          <citation key="Li:2021">
+            <article_title>Catalytic principles from natural enzymes and
+translational design strategies for synthetic catalysts</article_title>
+            <author>Li</author>
+            <journal_title>ACS Cent Sci</journal_title>
+            <issue>1</issue>
+            <volume>7</volume>
+            <cYear>2021</cYear>
+            <unstructured_citation>Li, W. L., &amp; Head-Gordon, T.
+(2021). Catalytic principles from natural enzymes and translational
+design strategies for synthetic catalysts. ACS Cent Sci, 7(1), 72–80.
+https://doi.org/10.1021/acscentsci.0c01556</unstructured_citation>
+          </citation>
+          <citation key="Nash:2020">
+            <article_title>ELECTRIC: Electric fields leveraged from
+multipole expansion calculations in tinker rapid interface
+code</article_title>
+            <author>Nash</author>
+            <journal_title>Journal of Open Source
+Software</journal_title>
+            <issue>54</issue>
+            <volume>5</volume>
+            <cYear>2020</cYear>
+            <unstructured_citation>Nash, J., Barnes, T., &amp; Welborn,
+V. (2020). ELECTRIC: Electric fields leveraged from multipole expansion
+calculations in tinker rapid interface code. Journal of Open Source
+Software, 5(54).
+https://doi.org/10.21105/joss.02576</unstructured_citation>
+          </citation>
+          <citation key="Ren:2011">
+            <article_title>Polarizable atomic multipole-based molecular
+mechanics for organic molecules</article_title>
+            <author>Ren</author>
+            <journal_title>J Chem Theory Comput</journal_title>
+            <issue>10</issue>
+            <volume>7</volume>
+            <cYear>2011</cYear>
+            <unstructured_citation>Ren, P., Wu, C., &amp; Ponder, J. W.
+(2011). Polarizable atomic multipole-based molecular mechanics for
+organic molecules. J Chem Theory Comput, 7(10), 3143–3161.
+https://doi.org/10.1021/ct200304d</unstructured_citation>
+          </citation>
+          <citation key="Shi:2013">
+            <article_title>The polarizable atomic multipole-based AMOEBA
+force field for proteins</article_title>
+            <author>Shi</author>
+            <journal_title>J Chem Theory Comput</journal_title>
+            <issue>9</issue>
+            <volume>9</volume>
+            <cYear>2013</cYear>
+            <unstructured_citation>Shi, Y., Xia, Z., Zhang, J., Best,
+R., Wu, C., Ponder, J. W., &amp; Ren, P. (2013). The polarizable atomic
+multipole-based AMOEBA force field for proteins. J Chem Theory Comput,
+9(9), 4046–4063.
+https://doi.org/10.1021/ct4003702</unstructured_citation>
+          </citation>
+          <citation key="Welborn:2023">
+            <article_title>Characterizing ion-polymer interactions in
+aqueous environment with electric fields</article_title>
+            <author>Vaissier Welborn</author>
+            <journal_title>J Chem Inf Model</journal_title>
+            <issue>7</issue>
+            <volume>63</volume>
+            <cYear>2023</cYear>
+            <unstructured_citation>Vaissier Welborn, V., Archer, W. R.,
+&amp; Schulz, M. D. (2023). Characterizing ion-polymer interactions in
+aqueous environment with electric fields. J Chem Inf Model, 63(7),
+2030–2036.
+https://doi.org/10.1021/acs.jcim.2c01048</unstructured_citation>
+          </citation>
+          <citation key="Welborn:2022">
+            <article_title>Beyond structural analysis of molecular
+enzyme-inhibitor interactions</article_title>
+            <author>Welborn</author>
+            <journal_title>Electronic Structure</journal_title>
+            <issue>1</issue>
+            <volume>4</volume>
+            <cYear>2022</cYear>
+            <unstructured_citation>Welborn, V. V. (2022). Beyond
+structural analysis of molecular enzyme-inhibitor interactions.
+Electronic Structure, 4(1).
+https://doi.org/10.1088/2516-1075/ac509f</unstructured_citation>
+          </citation>
+          <citation key="Zhang:2018">
+            <article_title>AMOEBA polarizable atomic multipole force
+field for nucleic acids</article_title>
+            <author>Zhang</author>
+            <journal_title>J Chem Theory Comput</journal_title>
+            <issue>4</issue>
+            <volume>14</volume>
+            <cYear>2018</cYear>
+            <unstructured_citation>Zhang, C., Lu, C., Jing, Z., Wu, C.,
+Piquemal, J. P., Ponder, J. W., &amp; Ren, P. (2018). AMOEBA polarizable
+atomic multipole force field for nucleic acids. J Chem Theory Comput,
+14(4), 2084–2108.
+https://doi.org/10.1021/acs.jctc.7b01169</unstructured_citation>
+          </citation>
+          <citation key="Zheng:2022">
+            <article_title>Tuning the catalytic activity of synthetic
+enzyme KE15 with DNA</article_title>
+            <author>Zheng</author>
+            <journal_title>J Phys Chem B</journal_title>
+            <issue>18</issue>
+            <volume>126</volume>
+            <cYear>2022</cYear>
+            <unstructured_citation>Zheng, Y., &amp; Vaissier Welborn, V.
+(2022). Tuning the catalytic activity of synthetic enzyme KE15 with DNA.
+J Phys Chem B, 126(18), 3407–3413.
+https://doi.org/10.1021/acs.jpcb.2c00765</unstructured_citation>
+          </citation>
+          <citation key="Humphrey:1996">
+            <article_title>VMD: Visual molecular
+dynamics</article_title>
+            <author>Humphrey</author>
+            <journal_title>Journal of Molecular Graphics</journal_title>
+            <volume>14</volume>
+            <cYear>1996</cYear>
+            <unstructured_citation>Humphrey, W., Dalke, A., &amp;
+Schulten, K. (1996). VMD: Visual molecular dynamics. Journal of
+Molecular Graphics, 14, 33–38.
+https://doi.org/10.1088/2516-1075/ac509f</unstructured_citation>
+          </citation>
+        </citation_list>
+      </journal_article>
+    </journal>
+  </body>
+</doi_batch>
