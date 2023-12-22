@@ -10,7 +10,7 @@ authors:
   - name: Xujian Wang
     orcid: 0009-0004-0146-9991
     equal-contrib: false
-    affiliation: "1, 2, 3" 
+    affiliation: "1, 3" 
   - name: Haodong Liu
     equal-contrib: false 
     affiliation: 3
@@ -18,6 +18,7 @@ authors:
     corresponding: true 
     affiliation: 3    
   - name: Wanlu Li
+  - orcid: 0000-0003-0098-0670
     corresponding: true 
     affiliation: "1, 2"
 affiliations:
