@@ -18,7 +18,7 @@ authors:
     corresponding: true 
     affiliation: 3    
   - name: Wanlu Li
-  - orcid: 0000-0003-0098-0670
+    orcid: 0000-0003-0098-0670
     corresponding: true 
     affiliation: "1, 2"
 affiliations:
