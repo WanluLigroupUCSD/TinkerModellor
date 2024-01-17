@@ -1,0 +1,10 @@
+Stage 1
+
+Problems:
+1.It is a little bit messy of _tkm.py
+
+Target:
+1.Fully understand the entire project
+2.Move func _read_top_file and _read_gro_file into _tkm_system.py. Refine the build_tkmsystem func
+3.When func build_tkmsystem is called, a tkmsystem object should be returned
+
