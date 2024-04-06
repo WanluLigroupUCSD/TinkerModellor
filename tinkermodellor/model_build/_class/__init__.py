@@ -1,1 +1,0 @@
-from ._gmxsystem import GMXSystem

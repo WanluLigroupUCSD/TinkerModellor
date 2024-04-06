@@ -1,1 +1,2 @@
 from ._gmxsystem_reminder import GMXSystemReminder
+from ._tinkersystem_reminder import TinkerSystemReminder
