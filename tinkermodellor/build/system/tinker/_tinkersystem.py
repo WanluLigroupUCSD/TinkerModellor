@@ -11,6 +11,7 @@ from tinkermodellor.messager import TinkerSystemReminder
     #Usage: 
     #tinker_system = TinkerSystem()
     #tinker_system.read_from_tinker(tinker_xyz='path/to/your/tinker.xyz')
+    #tinker_system.write('path/to/your/output.xyz')
 
     # Information can be accessed as follows:
     #   tinker_system.AtomTypesStr     # List of atom types in string format for the molecule. Provides a clear understanding of the chemical nature of each atom.
@@ -24,9 +25,6 @@ from tinkermodellor.messager import TinkerSystemReminder
     #                                  # vital for simulations employing periodic boundary conditions.
     #   tinker_system.BoxAngle         # Angles of the simulation box (defaulted to [90.0, 90.0, 90.0]),
     #                                  # necessary for accurately defining the simulation space.
-
-
-
 
 @dataclass
 class TinkerSystem() :

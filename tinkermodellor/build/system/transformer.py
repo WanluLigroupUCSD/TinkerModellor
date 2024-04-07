@@ -9,6 +9,19 @@ import numpy as np
     #   Now we only support two transformate into AMOEBABIO18 force field in Tinker format.
     #   We recommand to use Amber14sb force field and TIP3P water model which is tested successfully to build the Gromacs format files.
 
+    #   Usage:
+    #   gmx_system = GMXSystem()
+    #   gmx_system.read_gmx_file('path/to/your/gromacs.gro','path/to/your/gromacs.top')
+    #   transformer = Transformer()
+    #   tinker_system = transformer(gmx_system)
+    #   tinker_system.write('path/to/your/output.xyz')
+
+    #   Information can be accessed as follows:
+    #   tinker_system.AtomTypesStr     # List of atom types in string format for the molecule. Provides a clear understanding of the chemical nature of each atom.
+    #   tinker_system.AtomTypesNum     # Numeric representations of atom types, facilitating computational analyses and comparisons.
+    #   etc.
+    #   For more information, please refer to the TinkerSystem class in tinkermodellor/build/system/tinker/_tinkersystem.py
+
 class Transformer():
 
     def __init__(self) -> None:
