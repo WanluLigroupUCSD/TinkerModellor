@@ -2,6 +2,7 @@ from .. import GMXSystem
 from .. import TinkerSystem
 from ..dataset import AmberGAFFTrans
 from .. import GMXMolecule
+from ...messager import TransformerReminder
 
 import numpy as np
 
@@ -27,9 +28,12 @@ class Transformer():
     def __init__(self) -> None:
         self.transformer_function = AmberGAFFTrans()
 
+    @TransformerReminder
     def __call__(self,gmx_input:GMXSystem) -> TinkerSystem:
         tinker = TinkerSystem()
         self._build_tinker_system(gmx_input,tinker)
+        self._check(gmx_input,tinker)
+        tinker.check()
         return tinker
 
     def _build_tinker_system(self,gmx:GMXSystem,tinker:TinkerSystem):
@@ -98,11 +102,12 @@ class Transformer():
         
         return index + molecule_type.AtomNums
 
-    def _check_and_trans_atomtype(self) -> None :
+    @staticmethod
+    def _check(gmx:GMXSystem, tinker:TinkerSystem) -> None :
 
-        #DEBUG##print(len(self.AtomTypes),len(self.AtomCrds),len(self.Bonds),self.AtomTypes[-1])
-        assert len(self.Bonds) == len(self.AtomTypes) == len(self.AtomCrds), f'The length of Bonds{len(self.Bonds)}, AtomTypes({len(self.AtomTypes)}) and AtomCrds({len(self.AtomCrds)}) must be equal !'
+        #Two system atom numbers must be equal
+        assert gmx.system_atom_nums == tinker.AtomNums  == len(tinker.AtomTypesNum)  == len(tinker.AtomCrds), f'TinkerSystem data length is not equal to AtomNums,\
+            AtomNums = {tinker.AtomNums}, AtomTypesNum = {len(tinker.AtomTypesNum)}, AtomCrds = {len(tinker.AtomCrds)}'
 
-        #The first item of AtomTypes is None, so minus 1
-        self.AtomNums = len(self.AtomTypes)-1
+
 

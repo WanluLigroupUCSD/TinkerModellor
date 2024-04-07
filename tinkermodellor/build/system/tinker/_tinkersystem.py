@@ -12,6 +12,7 @@ from tinkermodellor.messager import TinkerSystemReminder
     #tinker_system = TinkerSystem()
     #tinker_system.read_from_tinker(tinker_xyz='path/to/your/tinker.xyz')
     #tinker_system.write('path/to/your/output.xyz')
+    #tinker_system.check()             # Check the data of TinkerSystem, We recommand to use this function to check the data before you write it.
 
     # Information can be accessed as follows:
     #   tinker_system.AtomTypesStr     # List of atom types in string format for the molecule. Provides a clear understanding of the chemical nature of each atom.
@@ -30,7 +31,10 @@ from tinkermodellor.messager import TinkerSystemReminder
 class TinkerSystem() :
         
     def __init__(self, system_name:str = None) -> None :
-        
+
+        #Used for store the molecule Numbers
+        self.AtomNums: int = 0        
+
         if system_name == None:
             self.SystemName = 'TinkerModellor Default Name'
         else:
@@ -38,19 +42,17 @@ class TinkerSystem() :
                 self.SystemName = system_name
             else:
                 raise TypeError('MoleculeName must be a string')
-
+            
+        #Used for store the atom index
+        self.AtomIndex: np.array = []
         #Used for store the atom type in string
         self.AtomTypesStr: list[str] = []
+        #Used for store the molecule coordinates
+        self.AtomCrds: np.array  # Angstrom
         #Used for store the atom type in number
         self.AtomTypesNum: np.array = []
         #Used for store the molecular bond
         self.Bonds: Union[List[List[int]],List[List[str]]] = []
-        #Used for store the molecule Numbers
-        self.AtomNums: int = 0
-        #Used for store the molecule coordinates
-        self.AtomCrds: np.array  # Angstrom
-        #Used for store the atom index
-        self.AtomIndex: np.array = []
         #Used for store the box size and angle
         self.BoxSize: np.array = np.array([0.0, 0.0, 0.0])
         self.BoxAngle: np.array = np.array([90.0,90.0,90.0])
@@ -189,3 +191,12 @@ class TinkerSystem() :
     def write(self, file_path):
         with open(file_path, 'w') as f:
             f.write(self.__str__())
+    
+    def check(self):
+        #   TinkerSystem specific check
+        assert len(self.AtomTypesNum) == len(self.AtomTypesStr) == len(self.Bonds) == len(self.AtomCrds)\
+            == len(self.AtomIndex)+1 == self.AtomNums, f'TinkerSystem data length is not equal to AtomNums,\
+            AtomNums = {self.AtomNums}, AtomTypesNum = {len(self.AtomTypesNum)}, AtomTypesStr = {len(self.AtomTypesStr)},\
+            Bonds = {len(self.Bonds)}, AtomCrds = {len(self.AtomCrds)}, AtomIndex = {len(self.AtomIndex)+1}' #AtomIndex is from 1 to AtomNums
+        if 'None' in self.AtomTypesStr:
+            print('WARNING!!! Atomtype "None" is found in the system, please check the force field')
