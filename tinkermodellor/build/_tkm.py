@@ -2,33 +2,7 @@ from ._class._gmxmolecule import GMXMolecule
 from ._class._tkm_system import TinkerModellorSystem
 import re
 
-
-#This is the regular expression for specific part in topology file
-
-#this is the regular expression for capturing the charge part in protein top file
-#but protein top file has two different patterns for charge part
-#(ions&water)              1                  Na+                           1                 Na+                Na+                1            1.00000000        22.990000                        ; qtot 1.000000
-#(ligand)                  1                  ca                            1                 MOL                C                  1            0.00000000        12.010736
-#(protein)                33                  C                           248                 GLU                C                 33            0.5366            12.01
-#(protein)                34                  O                           248                 GLU                O                 34           -0.5819            16                               ; qtot 0
-#                      <----------------------------------grp 1----------------------> <----- grp 2 -----> <--- grp 3 ---><-------------------------------- grp 4 ----------------------------------->
-#
-SYSTEM_ATOMTYPE_PATTERN = r"(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\*?)(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\s*)([0-9]+\s*-?[0-9]+\.[0-9]+\s*[0-9]+\.*[0-9]*\n?)(\s*;\s*[a-z]*\s*-?[0-9]*.[0-9]*\s*\n)?"
-LIGAND_ATOMTYPE_PATTERN = r'(\s*[0-9]+\s*)([0-9a-z]*)(\s*[0-9]+)(\s*[a-zA-Z][0-9a-zA-Z]*)(\s*[0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?)(\s*[0-9]+\s*-?[0-9]+\.[0-9]+\s*[0-9]+\.*[0-9]*)(\s*;\s*[a-z]*\s*-?[0-9]*.[0-9]*\s*\n)?'
-
-#[ bonds ]
-#;                    ai          aj     funct         c0         c1         c2         c3
-#                     17          20     1            0.14650 272713.120000
-#                 <-- grp 1 --><grp 2 ><---------------grp 3--------------->
-BOND_PATTERN = r"\s*([0-9]+)\s*([0-9]+)(\s*1)(\s*[0-9].[0-9]*\s*[0-9]*.[0-9]*\n?)?(\s*[0-9].[0-9]*\s*[0-9]*.[0-9]*\n)?"
-
-#[ molecules ]
-#;                     Compound               mols
-#                      system1                1
-#                      Na+                    10
-#                      WAT                    9971
-#                 <-------- grp 1 ---------><grp 2 >
-MOLECULES_PATTERN = r"(Protein_chain_[A-Z]|[A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
+from ._class import GMXSystem
 
 class TinkerModellor:
 
@@ -194,7 +168,7 @@ class TinkerModellor:
         self.system.write(xyz_path)
 
 if __name__ == '__main__':
-    
+
+
     new= TinkerModellor()
     new(r'/home/wayne/quanmol/TinkerModelling/tinkermodellor/gromacs.gro',r'/home/wayne/quanmol/TinkerModelling/tinkermodellor/gromacs.top')
-

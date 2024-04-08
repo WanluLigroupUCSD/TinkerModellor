@@ -1,6 +1,13 @@
 from typing import  List, Union
+from dataclasses import dataclass
 
+
+@dataclass
 class GMXMolecule() :
+    #This module is designed to store the key information from Gromacs Format file(including .gro .top file)
+    #But this is designed to store a single molecular type (like protein, water, ligand)
+    #As for entire system information, it is build in the GMXSystem
+    #GMX format: https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html
     
     n_terminal_atomtype = ['N','NH']
     c_terminal_atomtype = ['C']
@@ -13,24 +20,29 @@ class GMXMolecule() :
         "LEU", "LYS", "MET", "PHE", "PRO",
         "SER", "THR", "TRP", "TYR", "VAL","HIS"]
     
-    def __init__(self) -> None :
+    def __init__(self, molecule_name:str = None) -> None :
         #Used for store the molecule information
 
         #Used for store the molecular name
-        self.MoleculeName = None
+        if molecule_name is None:
+            self.MoleculeName = 'TinkerModellorMolecule'
+        else:
+            self.MoleculeName = molecule_name
+            
         #Used for store the molecular type
         self.AtomTypes: list[str] = []
-        #Used for store the molecular bond
-        self.Bonds: Union[List[int,int], List[str,str]] = []
         #Used for store the molecule Numbers
         self.AtomNums: int = 0
         #Used for store the molecule residue name
         self.AtomResidue: list[str] = []
+        #Used for store the molecular bond
+        self.Bonds: Union[List[int,int], List[str,str]] = []
 
-    def __call__(self, name: str, 
-                atomtypes: List[str],
-                atomeresiudes: List[str],
-                bonds: Union[List[int], List[str]]) -> None :
+    def __call__(self, 
+                 name: str, 
+                 atomtypes: List[str],
+                 atomeresiudes: List[str],
+                 bonds: Union[List[int], List[str]]) -> None :
         """
         Construct the molecule
 
@@ -93,21 +105,21 @@ class GMXMolecule() :
         if self.AtomResidue[0] != self.AtomResidue[-1] or len(self.AtomResidue) > 100:
 
             #To determine whether it is a protein with normal residue name
-            if self.AtomResidue[0].strip() in GMXMolecule.residue_list:
+            if self.AtomResidue[0].strip().upper() in GMXMolecule.residue_list:
                 n_terminal = self.AtomResidue[0]
             else:
                 print("The first residue name is "+ self.AtomResidue[0])
-                print(f"{self.MoleculeName} is not a protein with normal residue name, TinkerModellor wont do residue terminal check! \n")
+                print(f"{self.MoleculeName} is not a protein with regular residue name, TinkerModellor wont do residue terminal check! \n")
                 return 
             
-            if self.AtomResidue[-1].strip() in GMXMolecule.residue_list:
+            if self.AtomResidue[-1].strip().upper() in GMXMolecule.residue_list:
                 c_terminal = self.AtomResidue[-1]
             else:
                 print("The last residue name is "+ self.AtomResidue[-1])
-                print(f"{self.MoleculeName} is not a protein with normal residue name, TinkerModellor wont do residue terminal check!\n")
+                print(f"{self.MoleculeName} is not a protein with regular residue name, TinkerModellor wont do residue terminal check!\n")
                 return
             
-            print(f"{self.MoleculeName} is a protein with normal residue name, TinkerModellor will do residue terminal check!\n")
+            print(f"{self.MoleculeName} is a protein with regular residue name, TinkerModellor will do residue terminal check!\n")
 
             #N terminal check and atomtype replace
             if n_terminal:
@@ -137,16 +149,8 @@ class GMXMolecule() :
 
                     terminal_count -= 1
 
-                
-
-
-
-
-
     def _check(self) -> None :
         assert len(self.Bonds) == len(self.AtomTypes)+1, f'The length of Bonds({len(self.Bonds)}), AtomTypes({len(self.AtomTypes)+1}) and AtomCrds must be equal !'
         self.AtomNums = len(self.AtomTypes)
 
 
-
-        
