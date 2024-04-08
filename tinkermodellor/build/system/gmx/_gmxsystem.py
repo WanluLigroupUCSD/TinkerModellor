@@ -59,32 +59,39 @@ class GMXSystem():
             self.SystemName = 'TinkerModellorSystem'
         else:
             self.SystemName = system_name
-
-        #These variables are used to record the topology info
-        #Used for store the different molecules，the first one is empty
-        self.moleculetype = [GMXMolecule()]        
-        #To record each moleculetype's number in entire system
-        self.moleculetype_num: int = []
-
+        
+        #Used for store the atom index
+        self.AtomIndex: np.array = []
+        #These variables are used to record the box information
+        self.BoxSize:np.array = [0,0,0]
+        self.BoxAngles:np.array = [90,90,90]
         #These variables are used to record the coordination info
         #To record the entire system's coordinates
-        self.coordinates:np.array = [] # Nanometer
-        self.system_atom_nums:int = 0
+        self.Coordinates: np.array = [] # Nanometer
+        #These variables are used to record the topology info
+        #Used for store the different molecules，the first one is empty
+        self.MoleculeType: list[GMXMolecule] = [GMXMolecule()]        
+        #To record each moleculetype's number in entire system
+        self.MoleculeTypeNum: list[int] = []
+        #Used for store the entire system's atom numbers
+        self.SystemAtomNums:int = 0
 
-        #These variables are used to record the box information
-        self.box_size:np.array = [0,0,0]
-        self.box_angle:np.array = [90,90,90]
+        
 
-        self.atom_index: np.array = []
+        
     
     @GMXSystemReminder
-    def read_gmx_file(self,gro_file:str ,top_file:str):
+    def read_gmx_file(
+        self,
+        gro_file: str,
+        top_file: str
+    ) -> None:
 
         gro_file = os.path.abspath(gro_file)
         top_file = os.path.abspath(top_file)
 
         self._read_top_file(top_file)
-        assert len(self.moleculetype)-1 == len(self.moleculetype_num), f'Number of Moleculetypes({len(self.moleculetype)-1}) in [ molecules ] Must Be Equal To Number({len(self.moleculetype_num)}) of [ moleculetype ]'
+        assert len(self.MoleculeType)-1 == len(self.MoleculeTypeNum), f'Number of Moleculetypes({len(self.MoleculeType)-1}) in [ molecules ] Must Be Equal To Number({len(self.MoleculeTypeNum)}) of [ moleculetype ]'
         self._read_gro_file(gro_file)
 
 
@@ -133,11 +140,11 @@ class GMXSystem():
                     #print(molecule_type_count)
                     #print(bond_read)
                     #print(molecule_type_count,molecule_name_list[molecule_type_count])
-                    self.moleculetype[molecule_type_count](f'{molecule_name_list[molecule_type_count]}',atomtype_read, atomresidue_read, bond_read)
+                    self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}',atomtype_read, atomresidue_read, bond_read)
       
                 #Build a new GMXMolecule class to store a new moleculetype
                 molecule_type_count += 1
-                self.moleculetype.append(GMXMolecule())    
+                self.MoleculeType.append(GMXMolecule())    
                 atomtype_read = []
                 bond_read = []
                 atomresidue_read = []
@@ -188,13 +195,13 @@ class GMXSystem():
             
             
             if '[ molecules ]' in line:
-                self.moleculetype[molecule_type_count](f'{molecule_name_list[molecule_type_count]}',atomtype_read, atomresidue_read, bond_read)
+                self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}',atomtype_read, atomresidue_read, bond_read)
                 molecules_flag =True
             
             
             if molecules_flag and re.fullmatch(MOLECULES_PATTERN,line):
-                self.moleculetype_num.append(line.strip().split(' ')[-1])
-                print(f"Detect a new molecule, and it has {self.moleculetype_num[-1]} molecules, its name is {self.moleculetype[molecules_count].MoleculeName} and it consists of {self.moleculetype[molecules_count].AtomNums} atoms.\n")
+                self.MoleculeTypeNum.append(line.strip().split(' ')[-1])
+                print(f"Detect a new molecule, and it has {self.MoleculeTypeNum[-1]} molecules, its name is {self.MoleculeType[molecules_count].MoleculeName} and it consists of {self.MoleculeType[molecules_count].AtomNums} atoms.\n")
                 molecules_count += 1
 
     def _read_gro_file(self,gro_path):
@@ -202,15 +209,15 @@ class GMXSystem():
         with open(gro_path,'rt') as f:#read gro file
             lines = f.readlines()
             #To record the entire system's atom numbers
-            self.system_atom_nums = int(lines[1])
+            self.SystemAtomNums = int(lines[1])
 
         for line in lines[2:-1]:
             line = line.strip().split('  ')#split into 5-6 items
 
             #To record the entire system's coordinates
-            self.coordinates.append(np.array([float(i)*10 for i in line[-3:]]))
-        self.atom_index = np.arange(1, len(self.coordinates))
-        self.coordinates = np.array(self.coordinates)
+            self.Coordinates.append(np.array([float(i)*10 for i in line[-3:]]))
+        self.AtomIndex = np.arange(1, len(self.Coordinates))
+        self.Coordinates = np.array(self.Coordinates)
 
         #read box size
         box_flag=True
@@ -221,7 +228,7 @@ class GMXSystem():
             else:
                 numbers = map(float, lines[j].split())
                 rounded_numbers = [round(num, 5) for num in numbers]
-                self.box_size = rounded_numbers
+                self.BoxSize = rounded_numbers
                 box_flag = False
 
             j -=1

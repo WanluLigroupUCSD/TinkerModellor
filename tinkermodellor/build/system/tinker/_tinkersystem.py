@@ -30,7 +30,7 @@ from tinkermodellor.messager import TinkerSystemReminder
 @dataclass
 class TinkerSystem() :
         
-    def __init__(self, system_name:str = None) -> None :
+    def __init__(self, system_name: str = None) -> None :
 
         #Used for store the molecule Numbers
         self.AtomNums: int = 0        

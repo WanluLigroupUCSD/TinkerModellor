@@ -31,17 +31,18 @@ class GMXMolecule() :
             
         #Used for store the molecular type
         self.AtomTypes: list[str] = []
-        #Used for store the molecular bond
-        self.Bonds: Union[List[int,int], List[str,str]] = []
         #Used for store the molecule Numbers
         self.AtomNums: int = 0
         #Used for store the molecule residue name
         self.AtomResidue: list[str] = []
+        #Used for store the molecular bond
+        self.Bonds: Union[List[int,int], List[str,str]] = []
 
-    def __call__(self, name: str, 
-                atomtypes: List[str],
-                atomeresiudes: List[str],
-                bonds: Union[List[int], List[str]]) -> None :
+    def __call__(self, 
+                 name: str, 
+                 atomtypes: List[str],
+                 atomeresiudes: List[str],
+                 bonds: Union[List[int], List[str]]) -> None :
         """
         Construct the molecule
 

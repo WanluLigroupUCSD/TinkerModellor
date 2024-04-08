@@ -20,24 +20,26 @@ class AmberGAFFTrans(FroceFieldTrans):
         super().__init__()
 
         #Preparation for the abnormal(water/ions/ligand)force field transformation
-        self.aggressive = Aggressive
-        self.FFpara = {}
-        supported_FFpara = [WaterAndIonsForceField.water_para,WaterAndIonsForceField.ion_para,GAFFForceField.gaff_para]
-        
-        for i in supported_FFpara:
-            self.FFpara.update(i) 
-        
-        if self.aggressive:
-            additional_FFpara = [GAFFForceField.unpair_gaff_para]
-            for i in additional_FFpara : self.FFpara.update(i)
-        
+        self.Aggressive: bool = Aggressive
+        self.FFParameter: dict = {}
         #Preparation for the normal(amino acid)force field transformation
-        self.force_field_dict = AmberForceFieldDict._amberpara
-        self.residue_list =  [
+        self.ForceFieldDict: dict[str, dict[str, int]] = AmberForceFieldDict._amberpara
+        self.ResidueList: list[str] =  [
             "ALA", "ARG", "ASN", "ASP", "CYS",
             "GLN", "GLU", "GLY", "HIE", "ILE",
             "LEU", "LYS", "MET", "PHE", "PRO",
             "SER", "THR", "TRP", "TYR", "VAL","HIS"]
+        
+        supported_FFpara = [WaterAndIonsForceField.water_para,WaterAndIonsForceField.ion_para,GAFFForceField.gaff_para]
+        
+        for i in supported_FFpara:
+            self.FFParameter.update(i) 
+        
+        if self.Aggressive:
+            additional_FFpara = [GAFFForceField.unpair_gaff_para]
+            for i in additional_FFpara : self.FFParameter.update(i)
+        
+        
 
 
     def __call__(self,atom_residue:str, atom_type: str) -> str:
@@ -47,15 +49,15 @@ class AmberGAFFTrans(FroceFieldTrans):
     
         #To check whether the residue is normal residue
         #Normal residue: LYS, ARG, GLU, etc.
-        if atom_residue in self.residue_list:
+        if atom_residue in self.ResidueList:
             return self.get_atom_type(atom_residue, atom_type)
 
         #Abnormal residue: WAT, LIG, Na+, etc.
         else:
-            return self.FFpara.get(atom_type, 'None')
+            return self.FFParameter.get(atom_type, 'None')
 
     def get_atom_type(self,atom_residue, atom_type):
-        residue_dict = self.force_field_dict.get((atom_residue), "None")
+        residue_dict = self.ForceFieldDict.get((atom_residue), "None")
         if residue_dict == "None":
             return "None"
         else:

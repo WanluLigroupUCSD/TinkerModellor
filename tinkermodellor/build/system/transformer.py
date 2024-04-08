@@ -1,3 +1,4 @@
+from typing import Callable
 from .. import GMXSystem
 from .. import TinkerSystem
 from ..dataset import AmberGAFFTrans
@@ -26,7 +27,7 @@ import numpy as np
 class Transformer():
 
     def __init__(self) -> None:
-        self.transformer_function = AmberGAFFTrans()
+        self.TransformerFunction: Callable = AmberGAFFTrans()
 
     @TransformerReminder
     def __call__(self,gmx_input:GMXSystem) -> TinkerSystem:
@@ -40,10 +41,10 @@ class Transformer():
 
         #Simple information transfer
         tinker.SystemName = gmx.SystemName
-        tinker.AtomCrds = gmx.coordinates  #nm to Angstrom
-        tinker.AtomNums = gmx.system_atom_nums
-        tinker.BoxSize = np.array(gmx.box_size) * 10.0 #nm to Angstrom
-        tinker.AtomIndex = gmx.atom_index
+        tinker.AtomCrds = gmx.Coordinates  #nm to Angstrom
+        tinker.AtomNums = gmx.SystemAtomNums
+        tinker.BoxSize = np.array(gmx.BoxSize) * 10.0 #nm to Angstrom
+        tinker.AtomIndex = gmx.AtomIndex
         self._add_by_single_molecule_type(gmx,tinker)
         #print(tinker.AtomTypesNum)
         #print(tinker.AtomTypesStr)
@@ -54,10 +55,10 @@ class Transformer():
         
         index = 1
 
-        for i in range(1,len(gmx.moleculetype)):
-            molecule_type = gmx.moleculetype[i]
-            molecule_nums = int(gmx.moleculetype_num[i-1])
-            molecule_name = gmx.moleculetype[i].MoleculeName
+        for i in range(1,len(gmx.MoleculeType)):
+            molecule_type = gmx.MoleculeType[i]
+            molecule_nums = int(gmx.MoleculeTypeNum[i-1])
+            molecule_name = gmx.MoleculeType[i].MoleculeName
 
             print('\n')
             print(f"The atom index of {molecule_name} is from", index,'to',index+int(molecule_type.AtomNums)*int(molecule_nums)-1)
@@ -77,7 +78,7 @@ class Transformer():
         for i in range(len(molecule_type.AtomTypes)):
             #DEBUG##print(element)
             #DEBUG##print(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
-            trans_type = self.transformer_function(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
+            trans_type = self.TransformerFunction(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
             if trans_type == 'None':
                 print(f'WARNING!!! Atomtype {molecule_type.AtomTypes[i]} of Residue {molecule_type.AtomResidue[i]} not found in force field. Atom index is {i+index}')
                 print('And TinerModellor has already automatically set it as "None" \n')
@@ -106,7 +107,7 @@ class Transformer():
     def _check(gmx:GMXSystem, tinker:TinkerSystem) -> None :
 
         #Two system atom numbers must be equal
-        assert gmx.system_atom_nums == tinker.AtomNums  == len(tinker.AtomTypesNum)  == len(tinker.AtomCrds), f'TinkerSystem data length is not equal to AtomNums,\
+        assert gmx.SystemAtomNums == tinker.AtomNums  == len(tinker.AtomTypesNum)  == len(tinker.AtomCrds), f'TinkerSystem data length is not equal to AtomNums,\
             AtomNums = {tinker.AtomNums}, AtomTypesNum = {len(tinker.AtomTypesNum)}, AtomCrds = {len(tinker.AtomCrds)}'
 
 
