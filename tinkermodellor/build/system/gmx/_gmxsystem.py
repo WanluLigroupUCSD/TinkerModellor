@@ -41,18 +41,18 @@ class GMXSystem():
     #   gmx.read_gmx_file(gro_file = r'gromacs.gro', top_file = r'gromacs.top')
 
     #information for each moleculetype:
-    #   gmx.moleculetype[1].AtomTypes       #The atom type list for atom in this molecule  (gmx.moleculetype[1] is the first moleculetype in the system and gmx.moleculetype[0] is empty)
-    #   gmx.moleculetype[1].Bonds           #The bond list for atom in this molecule (for connectivity recognition)
-    #   gmx.moleculetype[1].AtomNums        #The number of atoms in this molecule
-    #   gmx.moleculetype[1].AtomResidue     #The residue name for atom in this molecule
-    #   gmx.moleculetype[1].MoleculeName    #The name of this molecule
+    #   gmx.MoleculeType[1].AtomTypes       #The atom type list for atom in this molecule  (gmx.MoleculeType[1] is the first moleculetype in the system and gmx.MoleculeType[0] is empty)
+    #   gmx.MoleculeType[1].Bonds           #The bond list for atom in this molecule (for connectivity recognition)
+    #   gmx.MoleculeType[1].AtomNums        #The number of atoms in this molecule
+    #   gmx.MoleculeType[1].AtomResidue     #The residue name for atom in this molecule
+    #   gmx.MoleculeType[1].MoleculeName    #The name of this molecule
     
     #information for entire system:
-    #   gmx.moleculetype_num                #The number of each moleculetype in the system
-    #   gmx.coordinates                     #The coordinates of the entire system (first one is empty)
-    #   gmx.system_atom_nums                #The atom numbers of the entire system
-    #   gmx.box_size                        #The box size of the entire system  (default is 0,0,0)
-    #   gmx.box_angle                       #The box angle of the entire system (default is 90,90,90)
+    #   gmx.MoleculeTypeNum                 #The number of each moleculetype in the system
+    #   gmx.Coordinates                     #The coordinates of the entire system (first one is empty)
+    #   gmx.SystemAtomNums                  #The atom numbers of the entire system
+    #   gmx.BoxSize                         #The box size of the entire system  (default is 0,0,0)
+    #   gmx.BoxAngles                       #The box angle of the entire system (default is 90,90,90)
 
     def __init__(self, system_name :str = None) -> None:
         if system_name is None:
