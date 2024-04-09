@@ -26,12 +26,12 @@ def parse_args():
         help='Path to output Tinker .xyz file'
     )
     transform.add_argument(
-        '--clean', type=str, default=True,
+        '--clean', default=False, action='store_true',
         help='Keep temporary files created during GROMACS format conversion.\n \
-        Set to False to keep.\nDefault: True')
+        Use --clean to cleam.\nDefault: False')
     transform.add_argument(
         '--format', type=str, default='GROMACS',
-        choices=['AMBER', 'GROMACS', 'CHARMM'],
+        choices=['amber','gmx','charmm'],
         help='Select input file format (default: GROMACS)'
     )
 
@@ -57,11 +57,18 @@ def generate_banner(author, project_name, version, url):
 def main():
     args = parse_args()
     
-    print(generate_banner("Xujian Wang, Junhong Li and Haodong Liu", "TinkerModellor", "1.1",'https://github.com/Hsuchein/TinkerModellor'))
+    print(generate_banner("Xujian Wang, Junhong Li and Haodong Liu", "TinkerModellor", "1.1",'https://github.com/WanluLigroupUCSD/TinkerModellor'))
 
     if args.module == 'transform':
         from tinkermodellor import TinkerModellor
-
+        from tinkermodellor import ParmEd2GMX
+        
+        parm = ParmEd2GMX()
+        crd, top = parm(args.crd, args.top, args.format)
         tkm = TinkerModellor()
-        tkm.transform(args.crd, args.top, args.xyz)
+        tkm.transform(crd, top, args.xyz)
+
+        if args.clean:
+            os.remove(crd)
+            os.remove(top)
 

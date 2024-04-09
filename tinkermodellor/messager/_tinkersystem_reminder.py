@@ -9,7 +9,7 @@ def TinkerSystemReminder(func):
         print("******************************************************".center(width))
         print(message.center(width))
         print("******************************************************".center(width))
-        print('\n\n')
+        print('\n')
 
         result = func(*args, **kwargs)
 
