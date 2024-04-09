@@ -5,15 +5,15 @@ def TransformerReminder(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         width = os.get_terminal_size().columns
-        message = "*** TinkerModellor System Transformer is running ***"
+        message = "**** TinkerModellor System Transformer is running ****"
         print("******************************************************".center(width))
         print(message.center(width))
         print("******************************************************".center(width))
-        print('\n\n')
+        print('\n')
 
         result = func(*args, **kwargs)
 
-        message = "***TinkerModellor System Transformer is finished ***"
+        message = "****TinkerModellor System Transformer is finished ****"
         print("******************************************************".center(width))
         print(message.center(width))
         print("******************************************************".center(width))
