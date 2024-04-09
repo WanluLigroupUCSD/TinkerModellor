@@ -5,7 +5,7 @@
 from setuptools import find_packages, setup
 
 setup(
-    author="Xujian Wang, Haodong Liu",
+    author="Xujian Wang, Junhong Li and Haodong Liu",
     description="TinkerModellor",
     name='tinkermodellor',
     packages=find_packages(

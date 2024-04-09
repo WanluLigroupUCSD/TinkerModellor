@@ -2,6 +2,7 @@
 """
 
 import argparse
+import os
 
 def parse_args():
     p = argparse.ArgumentParser('tkm')
@@ -37,9 +38,27 @@ def parse_args():
 
     return p.parse_args()
 
-   
+def generate_banner(author, project_name, version, url):
+    term_width = os.get_terminal_size().columns
+    banner_width = 80
+    title = f"{project_name} Version {version}"
+    padding = ' ' * ((term_width - banner_width) // 2)
+
+    banner = f"""
+    {padding}{'*' * banner_width}
+    {padding}*{author.center(banner_width-2)}*
+    {padding}*{title.center(banner_width-2)}*
+    {padding}*{url.center(banner_width-2)}*
+    {padding}{'*' * banner_width}
+    """
+    return banner
+
+
 def main():
     args = parse_args()
+    
+    print(generate_banner("Xujian Wang, Junhong Li and Haodong Liu", "TinkerModellor", "1.1",'https://github.com/Hsuchein/TinkerModellor'))
+
     if args.module == 'transform':
         from tinkermodellor import TinkerModellor
 
