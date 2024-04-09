@@ -11,7 +11,8 @@ setup(
     packages=find_packages(
         include=['tinkermodellor', 'tinkermodellor.*', 'tinkermodellor.*.*']),
     include_package_data=True,
-    version='0.1',
+    version='1.1',
     python_requires='>=3.6',
+    entry_points={'console_scripts': ['tkm = tinkermodellor.main:main']},
     url='https://github.com/Hsuchein/TinkerModellor',
 )
