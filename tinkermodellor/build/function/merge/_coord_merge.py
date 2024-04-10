@@ -2,7 +2,12 @@ from ....build import TinkerSystem
 import numpy as np
 from typing import Tuple
 
+from ._reset import _reset
+
 def _coord_merge(tk1:TinkerSystem, tk2:TinkerSystem) -> TinkerSystem:
+
+    tk1 =_reset(tk1)
+    tk2 =_reset(tk2)
 
     tkm_merged = tk1
 
@@ -50,6 +55,9 @@ def _coord_merge(tk1:TinkerSystem, tk2:TinkerSystem) -> TinkerSystem:
 
 def _coord_merge_with_ff(tk1:TinkerSystem, tk2:TinkerSystem, atom_type_addition:int) -> TinkerSystem:
 
+    tk1 =_reset(tk1)
+    tk2 =_reset(tk2)
+
     tkm_merged = tk1
 
     # Define the box size and box angle of the merged system    
@@ -77,7 +85,7 @@ def _coord_merge_with_ff(tk1:TinkerSystem, tk2:TinkerSystem, atom_type_addition:
     # Simple merge of the two systems
     tkm_merged.AtomTypesStr.extend(tk2.AtomTypesStr)
     tkm_merged.AtomCrds = np.concatenate((tkm_merged.AtomCrds, tk2.AtomCrds))
-    tkm_merged.AtomTypesNum = np.concatenate((tkm_merged.AtomTypesNum, tk2.AtomTypesNum+atom_type_addition))
+    tkm_merged.AtomTypesNum = np.concatenate((tkm_merged.AtomTypesNum, np.array(tk2.AtomTypesNum+atom_type_addition)))
 
     # For connectivity and Atom Index should be adjusted
     tk2_bonds_adjusted = []    

@@ -3,7 +3,7 @@ import math
 import shlex
 
 from ....build import TinkerSystem
-from ._coord_merge import _coord_merge
+from ._coord_merge import (_coord_merge,_coord_merge_with_ff)
 
 
 class MergeTinkerSystemWithoutFF():
@@ -46,11 +46,10 @@ class MergeTinkerSystemWithFF():
             Tuple[TinkerSystem,str]: The merged Tinker system and the output force field file.
         """
 
-
-        tks_merged = _coord_merge(tk1, tk2)
-
         # Find the max atom type in the first force field
         atom_type_addition = self._find_max_atom_type(ff1)
+
+        tks_merged = _coord_merge_with_ff(tk1, tk2,atom_type_addition)
 
         # The atom class and atom type value in the second force field should be adjusted
         # So that two force fields can be merged
