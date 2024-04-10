@@ -206,7 +206,7 @@ class TinkerSystem() :
             AtomNums = {self.AtomNums}, AtomTypesNum = {len(self.AtomTypesNum)}, AtomTypesStr = {len(self.AtomTypesStr)},\
             Bonds = {len(self.Bonds)}, AtomCrds = {len(self.AtomCrds)}, AtomIndex = {len(self.AtomIndex)+1}' #AtomIndex is from 1 to AtomNums
         if 'None' in self.AtomTypesStr:
-            print('WARNING!!! Atomtype "None" is found in the system, please check the force field')
+            warnings.warn('WARNING!!! Atomtype "None" is found in the system, please check the force field')
 
     def _type_check(self):
         #   TinkerSystem specific type check

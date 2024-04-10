@@ -8,17 +8,17 @@ if __name__ == '__main__':
     for control in range(3):
         if control == 0:
             gmx = GMXSystem()
-            gmx.read_gmx_file(r'/home/wayne/quanmol/TinkerModellor/example/gromacs.gro', \
-                r'/home/wayne/quanmol/TinkerModellor/example/gromacs.top')
+            gmx.read_gmx_file(r'example\gmx_format\gromacs.gro', \
+                r'example\gmx_format\gromacs.top')
         elif control == 1:
             tk = TinkerSystem()
-            tk.read_from_tinker(r'/home/wayne/quanmol/TinkerModellor/example/gromacs.xyz')
-            tk.write(r'/home/wayne/quanmol/TinkerModellor/example/tinker.xyz')
+            tk.read_from_tinker(r'example\gmx_format\gromacs.xyz')
+            tk.write(r'example\gmx_format\tinker.xyz')
         elif control == 2:
             gmx = GMXSystem()
-            gmx.read_gmx_file(r'/home/wayne/quanmol/TinkerModellor/example/gromacs.gro', \
-                r'/home/wayne/quanmol/TinkerModellor/example/gromacs.top')
+            gmx.read_gmx_file(r'example\gmx_format\gromacs.gro', \
+                r'example\gmx_format\gromacs.top')
             transformer = Transformer()
             tk = transformer(gmx)
-            tk.write(r'/home/wayne/quanmol/TinkerModellor/example/tinker.xyz')
+            tk.write(r'example\gmx_format\tinker.xyz')
     
