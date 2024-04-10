@@ -4,6 +4,7 @@ import warnings
 from io import StringIO
 from dataclasses import dataclass
 import os
+import codecs
 
 from tinkermodellor.messager import TinkerSystemReminder
 
@@ -127,7 +128,7 @@ class TinkerSystem() :
 
         file = os.path.abspath(tinker_xyz)
         if isinstance(file, str):
-            with open(file) as f:
+            with codecs.open(file, 'r','utf-8-sig') as f:
                 contents = f.readlines()
         elif isinstance(file, StringIO):
             contents = file.getvalue().split("\n")
@@ -187,16 +188,34 @@ class TinkerSystem() :
         self.Bonds = atom_bonds
         self.BoxSize = box_size
 
+        print(f'This Tinker system contains {self.AtomNums} atoms')
+
     
     def write(self, file_path):
         with open(file_path, 'w') as f:
             f.write(self.__str__())
     
     def check(self):
-        #   TinkerSystem specific check
+        self._value_check()
+        self._type_check()
+
+    def _value_check(self):
+        #   TinkerSystem specific value check
         assert len(self.AtomTypesNum) == len(self.AtomTypesStr) == len(self.Bonds) == len(self.AtomCrds)\
             == len(self.AtomIndex)+1 == self.AtomNums, f'TinkerSystem data length is not equal to AtomNums,\
             AtomNums = {self.AtomNums}, AtomTypesNum = {len(self.AtomTypesNum)}, AtomTypesStr = {len(self.AtomTypesStr)},\
             Bonds = {len(self.Bonds)}, AtomCrds = {len(self.AtomCrds)}, AtomIndex = {len(self.AtomIndex)+1}' #AtomIndex is from 1 to AtomNums
         if 'None' in self.AtomTypesStr:
             print('WARNING!!! Atomtype "None" is found in the system, please check the force field')
+
+    def _type_check(self):
+        #   TinkerSystem specific type check
+        assert isinstance(self.AtomNums, int), f'AtomNums must be an integer, got {type(self.AtomNums)}'
+        assert isinstance(self.SystemName, str), f'SystemName must be a string, got {type(self.SystemName)}'
+        assert isinstance(self.AtomIndex, np.ndarray), f'AtomIndex must be a numpy array, got {type(self.AtomIndex)}'
+        assert isinstance(self.AtomTypesStr, list), f'AtomTypesStr must be a list, got {type(self.AtomTypesStr)}'
+        assert isinstance(self.AtomCrds, np.ndarray), f'AtomCrds must be a numpy array, got {type(self.AtomCrds)}'
+        assert isinstance(self.AtomTypesNum, np.ndarray), f'AtomTypesNum must be a numpy array, got {type(self.AtomTypesNum)}'
+        assert isinstance(self.Bonds, list), f'Bonds must be a list, got {type(self.Bonds)}'
+        assert isinstance(self.BoxSize, np.ndarray), f'BoxSize must be a numpy array, got {type(self.BoxSize)}'
+        assert isinstance(self.BoxAngle, np.ndarray), f'BoxAngle must be a numpy array, got {type(self.BoxAngle)}'
