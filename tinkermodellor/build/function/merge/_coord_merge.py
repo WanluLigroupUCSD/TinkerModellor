@@ -1,4 +1,5 @@
 from ....build import TinkerSystem
+import warnings
 import numpy as np
 from typing import Tuple
 
@@ -13,20 +14,20 @@ def _coord_merge(tk1:TinkerSystem, tk2:TinkerSystem) -> TinkerSystem:
 
     # Define the box size and box angle of the merged system    
     if tk1.BoxSize is None and tk2.BoxSize is None:
-        print('WARNING!!! No box size found in the two systems')
+        warnings.warn('WARNING!!! No box size found in the two systems')
     elif tk1.BoxSize is None and tk2.BoxSize is not None:
-        print('WARNING!!! The box size of the first system is not found, the box size of the second system will be used')
+        warnings.warn('WARNING!!! The box size of the first system is not found, the box size of the second system will be used')
         tkm_merged.BoxSize = tk2.BoxSize
     elif np.array_equal(tk1.BoxSize, tk2.BoxSize):
-        print('WARNING!!! The box size of the two systems are different, the box size of the first system will be used')
+        warnings.warn('WARNING!!! The box size of the two systems are different, the box size of the first system will be used')
 
     if tk1.BoxAngle is None and tk2.BoxAngle is None:
-        print('WARNING!!! No box angle found in the two systems')
+        warnings.warn('WARNING!!! No box angle found in the two systems')
     elif tk1.BoxAngle is None and tk2.BoxAngle is not None:
-        print('WARNING!!! The box angle of the first system is not found, the box angle of the second system will be used')
+        warnings.warn('WARNING!!! The box angle of the first system is not found, the box angle of the second system will be used')
         tkm_merged.BoxAngle = tk2.BoxAngle
     elif np.array_equal(tk1.BoxAngle, tk2.BoxAngle):
-        print('WARNING!!! The box angle of the two systems are different, the box angle of the first system will be used')
+        warnings.warn('WARNING!!! The box angle of the two systems are different, the box angle of the first system will be used')
 
 
     index1 = tk1.AtomNums
@@ -62,20 +63,20 @@ def _coord_merge_with_ff(tk1:TinkerSystem, tk2:TinkerSystem, atom_type_addition:
 
     # Define the box size and box angle of the merged system    
     if tk1.BoxSize is None and tk2.BoxSize is None:
-        print('WARNING!!! No box size found in the two systems')
+        warnings.warn('WARNING!!! No box size found in the two systems')
     elif tk1.BoxSize is None and tk2.BoxSize is not None:
-        print('WARNING!!! The box size of the first system is not found, the box size of the second system will be used')
+        warnings.warn('WARNING!!! The box size of the first system is not found, the box size of the second system will be used')
         tkm_merged.BoxSize = tk2.BoxSize
     elif np.array_equal(tk1.BoxSize, tk2.BoxSize):
-        print('WARNING!!! The box size of the two systems are different, the box size of the first system will be used')
+        warnings.warn('WARNING!!! The box size of the two systems are different, the box size of the first system will be used')
 
     if tk1.BoxAngle is None and tk2.BoxAngle is None:
-        print('WARNING!!! No box angle found in the two systems')
+        warnings.warn('WARNING!!! No box angle found in the two systems')
     elif tk1.BoxAngle is None and tk2.BoxAngle is not None:
-        print('WARNING!!! The box angle of the first system is not found, the box angle of the second system will be used')
+        warnings.warn('WARNING!!! The box angle of the first system is not found, the box angle of the second system will be used')
         tkm_merged.BoxAngle = tk2.BoxAngle
     elif np.array_equal(tk1.BoxAngle, tk2.BoxAngle):
-        print('WARNING!!! The box angle of the two systems are different, the box angle of the first system will be used')
+        warnings.warn('WARNING!!! The box angle of the two systems are different, the box angle of the first system will be used')
 
 
     index1 = tk1.AtomNums

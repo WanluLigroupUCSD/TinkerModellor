@@ -1,4 +1,5 @@
 from typing import Callable
+import warnings
 from .. import GMXSystem
 from .. import TinkerSystem
 from ..dataset import AmberGAFFTrans
@@ -80,8 +81,8 @@ class Transformer():
             #DEBUG##print(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
             trans_type = self.TransformerFunction(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
             if trans_type == 'None':
-                print(f'WARNING!!! Atomtype {molecule_type.AtomTypes[i]} of Residue {molecule_type.AtomResidue[i]} not found in force field. Atom index is {i+index}')
-                print('And TinerModellor has already automatically set it as "None" \n')
+                warnings.warn(f'WARNING!!! Atomtype {molecule_type.AtomTypes[i]} of Residue {molecule_type.AtomResidue[i]} not found in force field. Atom index is {i+index}')
+                warnings.warn('And TinerModellor has already automatically set it as "None" \n')
                 num_atomtype = np.append(num_atomtype, trans_type)
                 str_atomtype.append(molecule_type.AtomTypes[i])
             else:
