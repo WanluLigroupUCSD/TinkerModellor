@@ -1,8 +1,0 @@
-Metadata-Version: 2.1
-Name: tinkermodellor
-Version: 1.1
-Summary: TinkerModellor
-Home-page: https://github.com/Hsuchein/TinkerModellor
-Author: Xujian Wang, Junhong Li and Haodong Liu
-Requires-Python: >=3.6
-License-File: LICENSE
