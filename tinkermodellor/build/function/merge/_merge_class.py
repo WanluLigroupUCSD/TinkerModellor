@@ -126,18 +126,30 @@ class MergeTinkerSystemWithFF():
                 if len(parts) == 5:
                     if int(parts[-4]) >= 0:
                         parts[-4] = str(int(parts[-4]) + prm_addition_value)
+                    else:
+                        parts[-4] = str(int(parts[-4]) - prm_addition_value)
                     if int(parts[-3]) >= 0:
                         parts[-3] = str(int(parts[-3]) + prm_addition_value)
+                    else:
+                        parts[-3] = str(int(parts[-3]) - prm_addition_value)
                     if int(parts[-2]) >= 0:
                         parts[-2] = str(int(parts[-2]) + prm_addition_value)
+                    else:
+                        parts[-2] = str(int(parts[-2]) - prm_addition_value)
                 elif len(parts) == 4:
                     if int(parts[-3]) >= 0:
                         parts[-3] = str(int(parts[-3]) + prm_addition_value)
+                    else:
+                        parts[-3] = str(int(parts[-3]) - prm_addition_value)
                     if int(parts[-2]) >= 0:
                         parts[-2] = str(int(parts[-2]) + prm_addition_value)
+                    else:
+                        parts[-2] = str(int(parts[-2]) - prm_addition_value)
                 elif len(parts) == 3:
                     if int(parts[-2]) >= 0:
-                        parts[-2] = str(int(parts[-2]) + prm_addition_value)        
+                        parts[-2] = str(int(parts[-2]) + prm_addition_value)
+                    else:
+                        parts[-2] = str(int(parts[-2]) - prm_addition_value)        
             elif not any(char.isalpha() for char in line):
                 parts = [f"{float(part):.5f}" for part in parts]
 

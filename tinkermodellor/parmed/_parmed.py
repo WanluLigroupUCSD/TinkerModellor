@@ -44,11 +44,10 @@ class ParmEd2GMX():
 
         format = format.upper()    
         if format == 'GMX' or format == 'GROMACS':
-            # convert AMBER topology to GROMACS, CHARMM formats
-            gromacs = pmd.load_file(top, crd)
+            gmx_top = pmd.load_file(top, xyz=crd)
             # Save a GROMACS topology and GRO files
-            gromacs.save('TKM_temp.top')
-            gromacs.save('TKM_temp.gro')
+            gmx_top.save('TKM_temp.top')
+            gmx_top.save('TKM_temp.gro')
             crd = os.path.join(os.getcwd(), 'TKM_temp.gro')
             top = os.path.join(os.getcwd(), 'TKM_temp.top')
         elif format == 'AMBER':
