@@ -1,10 +1,12 @@
 import os
+from typing import List, Union
 
 from tinkermodellor.build import TinkerSystem
 from tinkermodellor.build import GMXSystem
 from tinkermodellor.build import Transformer
 
 from tinkermodellor.build import MergeTinkerSystem
+from tinkermodellor.build import DeleteTinkerSystem
 
 class TinkerModellor:
 
@@ -84,11 +86,38 @@ class TinkerModellor:
             tks_merged.write(tinker_xyz)
 
         return tks_merged
+    
+    def delete(self,tk:str, index:Union[int,List[int],List[str],str],tinker_xyz:str=None,) -> TinkerSystem:
+        """
+        Delete atoms in the Tinker system.
+
+        Args:
+            tk (str): Path to the Tinker system.
+            tinker_xyz (str): Path to the output Tinker system.
+            index (Union[int,List[int],List[str],str]): The index of the atoms to be deleted.
+
+        Returns:
+            TinkerSystem: The Tinker system after deletion.
+        """
+
+        tk = os.path.abspath(tk)
+        tinker_xyz = os.path.abspath(tinker_xyz)
+
+        dele = DeleteTinkerSystem()
+        tks = TinkerSystem()
+
+        tks.read_from_tinker(tk)
+        tks_deleted = dele(tks,index)
+
+        if tinker_xyz is not None:
+            tks_deleted.write(tinker_xyz)
+         
+        return tks_deleted
 
 
 
 if __name__ == '__main__':
-    control = 2
+    control = 3
     tkm= TinkerModellor()
     if control == 0:
         tkm.transform(r'/home/wayne/quanmol/TinkerModellor/example/gmx_format/gromacs.gro',r'/home/wayne/quanmol/TinkerModellor/example/gmx_format/gromacs.top')
@@ -103,3 +132,8 @@ if __name__ == '__main__':
                   ff1=r'/home/wayne/quanmol/TinkerModellor/example/tinker_format/merge_case/amoebabio18.prm',\
                   ff2=r'/home/wayne/quanmol/TinkerModellor/example/tinker_format/merge_case/ligand.prm',\
                   ffout=r'/home/wayne/quanmol/TinkerModellor/example/tinker_format/merge_case/merged.prm')
+    elif control ==3 :
+        tkm.delete(tk =r'/home/wayne/quanmol/TinkerModellor/example/delete/ex2/ligand.xyz',\
+                   tinker_xyz=r'/home/wayne/quanmol/TinkerModellor/example/delete/ex2/deleted.xyz',\
+                    index=[1,6,30])
+    
