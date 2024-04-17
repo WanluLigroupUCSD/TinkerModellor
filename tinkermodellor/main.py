@@ -64,6 +64,22 @@ def parse_args():
         help='Paht to force filed file of the output system (optional)'
     )
 
+    # delete
+    delete = subparsers.add_parser(
+        'delete', help='Delete atoms from a Tinker system')
+    delete.add_argument(
+        '--tk', type=str, required=True,
+        help='Path to the input TXYZ file'
+    )
+    delete.add_argument(
+        '--xyz', type=str, required=True,
+        help='Path to the output TXYZ file'
+    )
+    delete.add_argument(
+        '--ndx', type=str, required=True,
+        help='Index of the atoms to be deleted, could be a single integer 10,\n\
+        or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
+    )
 
     return p.parse_args()
 
@@ -103,6 +119,13 @@ def main():
             os.remove(top)
     
     elif args.module == "merge":
-
+        
         tkm = TinkerModellor()
         tkm.merge(args.tk1, args.tk2, args.xyz, args.ff1, args.ff2, args.ffout)
+
+    elif args.module == "delete":
+
+        from tinkermodellor.build import parse_ndx
+
+        tkm = TinkerModellor()
+        tkm.delete(args.tk, parse_ndx(args.ndx), args.xyz, )

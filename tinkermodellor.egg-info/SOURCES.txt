@@ -27,6 +27,7 @@ tinkermodellor/build/system/tinker/__init__.py
 tinkermodellor/build/system/tinker/_tinkersystem.py
 tinkermodellor/messager/__init__.py
 tinkermodellor/messager/_gmxsystem_reminder.py
+tinkermodellor/messager/_merge_reminder.py
 tinkermodellor/messager/_tinkersystem_reminder.py
 tinkermodellor/messager/_transformer_reminder.py
 tinkermodellor/parmed/__init__.py
