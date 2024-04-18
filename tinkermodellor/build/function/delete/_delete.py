@@ -49,7 +49,7 @@ class DeleteTinkerSystem():
                 raise ValueError("Index out of range.")
             
             else:
-                print("Deleting an atom with index of %d" % ndx_iter)
+                print("Deleting an atom with index of %d" % ndx_iter, f'and its atom type is {tks.AtomTypesStr[ndx_iter-1]}')
                 print('Updating the connectivity...\n')
                 # The index in tks is from 0 to AtomNums
                 tks_index = ndx_iter -1
