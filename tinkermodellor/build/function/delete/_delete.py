@@ -44,12 +44,13 @@ class DeleteTinkerSystem():
         ### Then if we delete the second atom in original order, the third atom (original) will be deleted ###
         index = sorted(index, reverse=True)
 
+        count = 0
         for ndx_iter in index:
             if ndx_iter <= 0 or ndx_iter > tks.AtomNums:
                 raise ValueError("Index out of range.")
             
             else:
-                print("Deleting an atom with index of %d" % ndx_iter)
+                print("Deleting an atom with index of %d" % ndx_iter, f'and its atom type is {tks.AtomTypesStr[ndx_iter-1]}')
                 print('Updating the connectivity...\n')
                 # The index in tks is from 0 to AtomNums
                 tks_index = ndx_iter -1
@@ -62,6 +63,9 @@ class DeleteTinkerSystem():
 
                 # Update the connectivity
                 tks.check()
+                count +=1
+                
+        print(f'{count} atoms have been deleted.')
 
         return tks
         

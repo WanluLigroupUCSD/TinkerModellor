@@ -7,6 +7,7 @@ from tinkermodellor.build import Transformer
 
 from tinkermodellor.build import MergeTinkerSystem
 from tinkermodellor.build import DeleteTinkerSystem
+from tinkermodellor.build import ReplaceTinkerSystem
 
 class TinkerModellor:
 
@@ -114,13 +115,56 @@ class TinkerModellor:
          
         return tks_deleted
 
+    def replace(self,tk1:str,tk2:str, tinker_xyz:str=None, ff1:str=None, ff2:str=None, ffout:str=None) -> TinkerSystem:
+        """
+        This function merges two Tinker systems with or without force field files.
+        But coincident water and ion molecules in tk1 would be deleted.
+
+        Args:
+            tk1 (TinkerSystem): The first Tinker system.
+            tk2 (TinkerSystem): The second Tinker system.
+            ff1 (str): The first force field file (optional).
+            ff2 (str): The second force field file (optional, when ff1 is required this should also be required).
+            ffout (str, optional): The output force field file (optional). Defaults to None.
+
+        Returns:
+            TinkerSystem: The merged Tinker system and the output force field file.
+        """
+
+        tk1 = os.path.abspath(tk1)
+        tk2 = os.path.abspath(tk2)
+        if tinker_xyz is not None:
+            tinker_xyz = os.path.abspath(tinker_xyz)
+        if ff1 is not None:
+            ff1 = os.path.abspath(ff1)
+        if ff2 is not None:
+            ff2 = os.path.abspath(ff2)
+        if ffout is not None:
+            ffout = os.path.abspath(ffout)
+        
+        tks1 = TinkerSystem()
+        tks1.read_from_tinker(tk1)
+        tks2 = TinkerSystem()
+        tks2.read_from_tinker(tk2)
+
+        replace = ReplaceTinkerSystem()
+        tks_replaced = replace(tks1, tks2, ff1, ff2, ffout)
+
+        if tinker_xyz is not None:
+            tks_replaced.write(tinker_xyz)
+
+        return tks_replaced
 
 
 if __name__ == '__main__':
-    control = 3
+    control = 4
     tkm= TinkerModellor()
+
+    # Transform
     if control == 0:
         tkm.transform(r'/home/wayne/quanmol/TinkerModellor/example/gmx_format/gromacs.gro',r'/home/wayne/quanmol/TinkerModellor/example/gmx_format/gromacs.top')
+
+    # Merge
     elif control ==1:
         tkm.merge(tk1=r'/home/wayne/quanmol/TinkerModellor/example/test/test.xyz',\
                   tk2=r'/home/wayne/quanmol/TinkerModellor/example/test/test.xyz',\
@@ -132,8 +176,23 @@ if __name__ == '__main__':
                   ff1=r'/home/wayne/quanmol/TinkerModellor/example/tinker_format/merge_case/amoebabio18.prm',\
                   ff2=r'/home/wayne/quanmol/TinkerModellor/example/tinker_format/merge_case/ligand.prm',\
                   ffout=r'/home/wayne/quanmol/TinkerModellor/example/tinker_format/merge_case/merged.prm')
+        
+    # Delete
     elif control ==3 :
         tkm.delete(tk =r'/home/wayne/quanmol/TinkerModellor/example/delete/ex2/ligand.xyz',\
                    tinker_xyz=r'/home/wayne/quanmol/TinkerModellor/example/delete/ex2/deleted.xyz',\
                     index=[1,6,30])
+        
+    # Replace
+    elif control ==4:
+        tkm.replace(tk1=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/protein.xyz',\
+                  tk2=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/ligand.xyz',\
+                  tinker_xyz=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/replaced_with_ff.xyz',\
+                  ff1=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/amoebabio18.prm',\
+                  ff2=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/ligand.prm',\
+                  ffout=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/replaced_with_ff.prm')
+    elif control ==5:
+        tkm.replace(tk1=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/protein.xyz',\
+                  tk2=r'//home/wayne/quanmol/TinkerModellor/example/replace/ex1/ligand.xyz',\
+                  tinker_xyz=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/replaced_withoud_ff.xyz',)
     
