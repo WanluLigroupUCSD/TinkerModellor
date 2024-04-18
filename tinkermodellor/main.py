@@ -81,6 +81,35 @@ def parse_args():
         or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
     )
 
+    # replace
+    replace = subparsers.add_parser(
+        'replace', help='Merge two system (force field also could be merged together).\n\
+        But coincident water and ion molecules in tk1 would be deleted',)
+    replace.add_argument(
+        '--tk1', type=str, required=True,
+        help='Path to the first TXYZ file'
+    )
+    replace.add_argument(
+        '--tk2', type=str, required=True,
+        help='Path to the second TXYZ file'
+    )
+    replace.add_argument(
+        '--xyz', type=str, required=True,
+        help='Path to the output TXYZ file'
+    )
+    replace.add_argument(
+        '--ff1', type=str, default=None,
+        help='Path to force field file of the first system (optional)'
+    )
+    replace.add_argument(
+        '--ff2', type=str, default=None,
+        help='Path to force field file of the second system (optional)'
+    )
+    replace.add_argument(
+        '--ffout', type=str, default=None,
+        help='Paht to force filed file of the output system (optional)'
+    )
+
     return p.parse_args()
 
 def generate_banner(author, project_name, version, url):
@@ -129,3 +158,8 @@ def main():
 
         tkm = TinkerModellor()
         tkm.delete(args.tk, parse_ndx(args.ndx), args.xyz, )
+
+    elif args.module == "replace":
+        
+        tkm = TinkerModellor()
+        tkm.replace(args.tk1, args.tk2, args.xyz, args.ff1, args.ff2, args.ffout)

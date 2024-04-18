@@ -1,6 +1,3 @@
-from typing import Any
-from typing import Tuple
-
 from ._replace_class import ReplaceTinkerSystemWithoutFF
 from ._replace_class import ReplaceTinkerSystemWithFF
 from ....build import TinkerSystem
@@ -30,15 +27,17 @@ class ReplaceTinkerSystem():
             
         if ff1 is None and ff2 is None and ffout is None:
             merge = ReplaceTinkerSystemWithoutFF()
-            tks_merged = merge(tk1, tk2)
+            tks_replaced = merge(tk1, tk2)
             
         else:
             if ff1 is not None and ff2 is not None and ffout is not None:
                 merge = ReplaceTinkerSystemWithFF()
 
-                tks_merged, ffout = merge(tk1, tk2, ff1, ff2, ffout)
+                tks_replaced, ffout = merge(tk1, tk2, ff1, ff2, ffout)
                 print('Output Force Field File:', ffout)
             else:
                 raise ValueError('Please provide the force field files (ff1 and ff2) and the output force field file (ffout)')
+            
+        tks_replaced.check()
         
-        return tks_merged
+        return tks_replaced

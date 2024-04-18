@@ -4,7 +4,7 @@ from ....build import TinkerSystem
 
 MIN_DISTANCE = 1.2
 
-def _find_coincidence(tks1, tks2):
+def _find_coincidence(tks1:TinkerSystem, tks2:TinkerSystem):
     """
     This function finds the coincidence of two Tinker systems.
 
