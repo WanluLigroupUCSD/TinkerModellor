@@ -25,7 +25,7 @@ class ReplaceTinkerSystemWithoutFF():
             TinkerSystem: The merged Tinker system.
         """
         coincidence_list = _find_coincidence(tk1, tk2)
-        
+
         tks_replaced = _coord_replace(tk1, tk2)
         
         tks_replaced = _exe_delete_and_move(tks_replaced, coincidence_list)
@@ -53,10 +53,12 @@ class ReplaceTinkerSystemWithFF():
             Tuple[TinkerSystem,str]: The merged Tinker system and the output force field file.
         """
 
+        coincidence_list = _find_coincidence(tk1, tk2)
+
         # Find the max atom type in the first force field
         atom_type_addition = self._find_max_atom_type(ff1)
 
-        tks_merged = _coord_replace_with_ff(tk1, tk2,atom_type_addition)
+        tks_replaced = _coord_replace_with_ff(tk1, tk2,atom_type_addition)
 
         # The atom class and atom type value in the second force field should be adjusted
         # So that two force fields can be merged
@@ -67,8 +69,10 @@ class ReplaceTinkerSystemWithFF():
                 file1_lines = file1.readlines()
             file1_lines += addition_prm
             file.writelines(file1_lines)
+        
+        tks_replaced = _exe_delete_and_move(tks_replaced, coincidence_list)     
 
-        return tks_merged, ffout
+        return tks_replaced, ffout
     
     @staticmethod
     def _find_max_atom_type(ff1:str):

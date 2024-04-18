@@ -18,7 +18,7 @@ def _exe_delete_and_move(tks1:TinkerSystem, delete_list:List) -> TinkerSystem:
 
     added_delete_list = _connectivity_search(tks1, delete_list)
     
-    print('Delete list:',added_delete_list)
+    print('Completed Delete list:',added_delete_list)
 
     delete = DeleteTinkerSystem()
     delete(tks1, added_delete_list)
