@@ -5,7 +5,7 @@
 
 namespace py = pybind11;
 
-double rmsd(py::array_t<double> arr1, py::array_t<double> arr2) {
+double rmsd(py::array_t<py::array_t<double>> arr1, py::array_t<py::array_t<>double> arr2) {
     py::buffer_info buf1 = arr1.request(), buf2 = arr2.request();
 
     if (buf1.shape[0] != buf2.shape[0] || buf1.shape[1] != 3 || buf2.shape[1] != 3) {
@@ -21,6 +21,6 @@ double rmsd(py::array_t<double> arr1, py::array_t<double> arr2) {
     return rmsd;
 }
 
-PYBIND11_MODULE(tkmcpptoolkit, m) {
+PYBIND11_MODULE(tkmtoolkit, m) {
     m.def("rmsd", &rmsd, "A function to compute the RMSD between two sets of atomic coordinates.");
 }
