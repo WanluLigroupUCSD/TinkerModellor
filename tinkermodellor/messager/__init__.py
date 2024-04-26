@@ -3,3 +3,4 @@ from ._tinkersystem_reminder import TinkerSystemReminder
 from ._transformer_reminder import TransformerReminder
 from ._merge_reminder import TKMMergeReminder
 from ._delete_reminder import TKMDeleteReminder
+from ._trajctory_reminder import TinkerTrajectoryReminder

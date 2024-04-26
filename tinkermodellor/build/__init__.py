@@ -7,4 +7,7 @@ from .function.merge._merge import MergeTinkerSystem
 from .function.delete._delete import DeleteTinkerSystem
 from .function.replace._replace import ReplaceTinkerSystem
 
+from .system.tinker._tkmtrajectory import TKMTrajectory
+
+
 from .function.index_seprator._ndx_seprator import parse_ndx

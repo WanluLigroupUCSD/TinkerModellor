@@ -9,6 +9,10 @@ from tinkermodellor.build import MergeTinkerSystem
 from tinkermodellor.build import DeleteTinkerSystem
 from tinkermodellor.build import ReplaceTinkerSystem
 
+from tinkermodellor.build import TKMTrajectory
+
+import tinkermodellor.tkmtoolkit as ttk
+
 class TinkerModellor:
 
     def __init__(self) -> None:
@@ -154,10 +158,56 @@ class TinkerModellor:
             tks_replaced.write(tinker_xyz)
 
         return tks_replaced
+    
+    def rmsd(self, xyz:str, arc:str, ref:str = None, skip:int = None) -> List[float]:
+        """
+            Calculate the RMSD of Tinker trajectories.
+        
+        Args:
+            xyz (str): Path to the xyz file.
+            arc (str): Path to the arc file.
+            ref (str, optional): Path to the reference xyz file. Defaults to None.
+            skip (int, optional): Skip frames. Defaults to None.
+        
+        Returns:
+            List: A list of RMSD values.
+        """
+
+        if isinstance(xyz, str):
+            xyz = os.path.abspath(xyz)
+        else:
+            raise TypeError("The xyz file path must be a string.")
+        
+        if isinstance(arc, str):
+            arc = os.path.abspath(arc)
+        else:
+            raise TypeError("The arc file path must be a string.")
+        
+        input = TKMTrajectory()
+        input.read_from_tinker(xyz)
+        input.read_from_traj(arc)
+
+
+        if skip is None:
+            traj = input.AtomCrds
+        else:
+            traj = input.AtomCrds[::skip]
+            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+
+        if ref is not None:
+            ref = TKMTrajectory()
+            ref.read_from_tinker(ref)
+            ref_traj = ref.AtomCrds[0]
+        else:
+            ref_traj = traj[0]
+
+        output = ttk.rmsd(ref_traj, traj)
+        output = [round(float(i), 6) for i in output]
+        return output
 
 
 if __name__ == '__main__':
-    control = 4
+    control = 6
     tkm= TinkerModellor()
 
     # Transform
@@ -195,4 +245,8 @@ if __name__ == '__main__':
         tkm.replace(tk1=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/protein.xyz',\
                   tk2=r'//home/wayne/quanmol/TinkerModellor/example/replace/ex1/ligand.xyz',\
                   tinker_xyz=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/replaced_withoud_ff.xyz',)
-    
+    elif control == 6:
+        output = tkm.rmsd(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
+                        arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
+                        skip=10)
+        print(output)
