@@ -159,7 +159,8 @@ class TinkerModellor:
 
         return tks_replaced
     
-    def rmsd(self, xyz:str, arc:str, ref:str = None, skip:int = None) -> List[float]:
+    def rmsd(self, xyz:str, arc:str, ref:str = None, skip:int = None, ndx:List[int] = None,
+            bfra:int = 0, efra:int = -1) -> List[float]:
         """
             Calculate the RMSD of Tinker trajectories.
         
@@ -168,6 +169,9 @@ class TinkerModellor:
             arc (str): Path to the arc file.
             ref (str, optional): Path to the reference xyz file. Defaults to None.
             skip (int, optional): Skip frames. Defaults to None.
+            ndx (List[int], optional): Index of the atoms. Defaults to None.
+            bfra (int, optional): The beginning frame. Defaults to 0.
+            efra (int, optional): The ending frame. Defaults to -1.
         
         Returns:
             List: A list of RMSD values.
@@ -187,7 +191,6 @@ class TinkerModellor:
         input.read_from_tinker(xyz)
         input.read_from_traj(arc)
 
-
         if skip is None:
             traj = input.AtomCrds
         else:
@@ -201,7 +204,17 @@ class TinkerModellor:
         else:
             ref_traj = traj[0]
 
-        output = ttk.rmsd(ref_traj, traj)
+        if ndx is not None:
+            # Convert the index to 0-based
+            # The index in the trajectory file is 1-based
+            ndx = [elemnt-1 for elemnt in ndx]
+
+            traj = traj[:, ndx]
+            ref_traj = ref_traj[ndx]
+        else:
+            pass
+
+        output = ttk.rmsd(ref_traj, traj[bfra:efra])
         output = [round(float(i), 6) for i in output]
         return output
 
@@ -248,5 +261,5 @@ if __name__ == '__main__':
     elif control == 6:
         output = tkm.rmsd(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
                         arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
-                        skip=10)
-        print(output)
+                        ndx=[51,45,12,64,53,21,74])
+        

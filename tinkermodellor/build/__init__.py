@@ -9,5 +9,5 @@ from .function.replace._replace import ReplaceTinkerSystem
 
 from .system.tinker._tkmtrajectory import TKMTrajectory
 
-
+from .function.analysis._csvmaker import CSVMaker 
 from .function.index_seprator._ndx_seprator import parse_ndx

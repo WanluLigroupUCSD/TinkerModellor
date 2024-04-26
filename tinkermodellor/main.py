@@ -110,6 +110,48 @@ def parse_args():
         help='Paht to force filed file of the output system (optional)'
     )
 
+    # rmsd
+    rmsd = subparsers.add_parser(
+        'rmsd', help='Calculate the RMSD of Tinker trajectory file (.arc).',)
+    rmsd.add_argument(
+        '--xyz', type=str, required=True,
+        help='Path to the TXYZ file (.xyz) for identifying the topology'
+    )
+    rmsd.add_argument(
+        '--traj', type=str, required=True,
+        help='Path to the Tinker trajectory file (.arc)'
+    )
+    rmsd.add_argument(
+        '--ref', type=str,
+        help='Path to the reference coordinates file (.xyz),if not given,\n\
+            the first frame of the trajectory would be used as reference (optional)'
+    )
+    rmsd.add_argument(
+        '--skip', type=str, default=None,
+        help='Skip frames in the trajectory file (optional)'
+    )
+    rmsd.add_argument(
+        '--ndx', type=str, default=None,
+        help='The index of atoms to be calculated RMSD (optional), could be a single integer 10,\n\
+        or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
+    )
+    rmsd.add_argument(
+        '--bfra', type=str, default='0',
+        help='The begin frame of the trajectory to be calculated RMSD (optional)\n\
+        Default: 0'
+    )
+    rmsd.add_argument(
+        '--efra', type=str, default='-1',
+        help='The end frame of the trajectory to be calculated RMSD (optional)\n\
+        Default: the last frame of the trajectory'
+    )
+    rmsd.add_argument(
+        '--out', type=str, default='./TKM_rmsd.csv',
+        help='Path to the output CSV file. Default: ./TKM_rmsd.csv'
+    )
+
+
+
     return p.parse_args()
 
 def generate_banner(author, project_name, version, url):
@@ -163,3 +205,19 @@ def main():
         
         tkm = TinkerModellor()
         tkm.replace(args.tk1, args.tk2, args.xyz, args.ff1, args.ff2, args.ffout)
+    
+    elif args.module == "rmsd":
+
+        from tinkermodellor.build import parse_ndx
+        from tinkermodellor.build import CSVMaker
+
+        csv = CSVMaker()
+        tkm = TinkerModellor()
+        if args.ndx is not None:
+            ndx = parse_ndx(args.ndx)
+        else:
+            ndx = None
+        skip = int(args.skip) if args.skip is not None else None
+        result = tkm.rmsd(args.xyz, args.traj, args.ref, skip, ndx,int(args.bfra),int(args.efra))
+        csv.column_writer(result, args.out)
+        
