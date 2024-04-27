@@ -33,7 +33,3 @@ std::vector<double> rmsd(py::array_t<double> ref_frame, py::array_t<double> traj
 
     return rmsd_values;
 }
-
-PYBIND11_MODULE(tkmtoolkit, m) {
-    m.def("rmsd", &rmsd, "A function to compute the RMSD between a reference frame and multiple trajectory frames.");
-}

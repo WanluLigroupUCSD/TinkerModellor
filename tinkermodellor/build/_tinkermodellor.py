@@ -1,5 +1,5 @@
 import os
-from typing import List, Union
+from typing import List, Union, Tuple
 
 from tinkermodellor.build import TinkerSystem
 from tinkermodellor.build import GMXSystem
@@ -12,6 +12,7 @@ from tinkermodellor.build import ReplaceTinkerSystem
 from tinkermodellor.build import TKMTrajectory
 
 import tinkermodellor.tkmtoolkit as ttk
+
 
 class TinkerModellor:
 
@@ -217,10 +218,123 @@ class TinkerModellor:
         output = ttk.rmsd(ref_traj, traj[bfra:efra])
         output = [round(float(i), 6) for i in output]
         return output
+    
+    def distance(self, xyz:str, arc:str, skip:int = None, ndx:List[int] = None,
+            bfra:int = 0, efra:int = -1) -> Tuple[List[float], float]:
+        """
+            Calculate the distance of Tinker trajectories.
+        
+        Args:
+            xyz (str): Path to the xyz file.
+            arc (str): Path to the arc file.
+            skip (int, optional): Skip frames. Defaults to None.
+            ndx (List[int]): Index of the atoms. Defaults to None.
+            bfra (int, optional): The beginning frame. Defaults to 0.
+            efra (int, optional): The ending frame. Defaults to -1.
+        
+        Returns:
+            Tuple: A tuple of the distance values and the average distance.
+        """
+
+        if isinstance(xyz, str):
+            xyz = os.path.abspath(xyz)
+        else:
+            raise TypeError("The xyz file path must be a string.")
+        
+        if isinstance(arc, str):
+            arc = os.path.abspath(arc)
+        else:
+            raise TypeError("The arc file path must be a string.")
+        
+        input = TKMTrajectory()
+        input.read_from_tinker(xyz)
+        input.read_from_traj(arc)
+
+        if skip is None:
+            traj = input.AtomCrds
+        else:
+            traj = input.AtomCrds[::skip]
+            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+
+
+        if len(ndx) != 2:
+            raise ValueError("The index must contain two elements.")
+        else:
+            # Convert the index to 0-based
+            # The index in the trajectory file is 1-based
+            ndx = [elemnt-1 for elemnt in ndx]
+
+            atom1_traj = traj[:, ndx[0]]
+            atom2_traj = traj[:, ndx[1]]
+
+
+        output = ttk.distance(atom1_traj[bfra:efra], atom2_traj[bfra:efra])
+        output = [round(float(i), 6) for i in output]
+
+        avg_output = sum(output)/len(output)
+        print(f"The average distance is {avg_output}.")
+        return output, avg_output
+    
+    def angle(self, xyz:str, arc:str, skip:int = None, ndx:List[int] = None,
+            bfra:int = 0, efra:int = -1) -> Tuple[List[float], float]:
+        """
+            Calculate the distance of Tinker trajectories.
+        
+        Args:
+            xyz (str): Path to the xyz file.
+            arc (str): Path to the arc file.
+            skip (int, optional): Skip frames. Defaults to None.
+            ndx (List[int]): Index of the atoms. Defaults to None.
+            bfra (int, optional): The beginning frame. Defaults to 0.
+            efra (int, optional): The ending frame. Defaults to -1.
+        
+        Returns:
+            Tuple: A tuple of the distance values and the average distance.
+        """
+
+        if isinstance(xyz, str):
+            xyz = os.path.abspath(xyz)
+        else:
+            raise TypeError("The xyz file path must be a string.")
+        
+        if isinstance(arc, str):
+            arc = os.path.abspath(arc)
+        else:
+            raise TypeError("The arc file path must be a string.")
+        
+        input = TKMTrajectory()
+        input.read_from_tinker(xyz)
+        input.read_from_traj(arc)
+
+        if skip is None:
+            traj = input.AtomCrds
+        else:
+            traj = input.AtomCrds[::skip]
+            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+
+
+        if len(ndx) != 3:
+            raise ValueError("The index must contain two elements.")
+        else:
+            # Convert the index to 0-based
+            # The index in the trajectory file is 1-based
+            ndx = [elemnt-1 for elemnt in ndx]
+
+            atom1_traj = traj[:, ndx[0]]
+            atom2_traj = traj[:, ndx[1]]
+            atom3_traj = traj[:, ndx[2]]
+
+
+        output = ttk.angle(atom1_traj[bfra:efra], atom2_traj[bfra:efra],atom3_traj[bfra:efra])
+        output = [round(float(i), 6) for i in output]
+
+        avg_output = sum(output)/len(output)
+        print(f"The average distance is {avg_output}.")
+        return output, avg_output
 
 
 if __name__ == '__main__':
-    control = 6
+    control = 8
     tkm= TinkerModellor()
 
     # Transform
@@ -258,8 +372,22 @@ if __name__ == '__main__':
         tkm.replace(tk1=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/protein.xyz',\
                   tk2=r'//home/wayne/quanmol/TinkerModellor/example/replace/ex1/ligand.xyz',\
                   tinker_xyz=r'/home/wayne/quanmol/TinkerModellor/example/replace/ex1/replaced_withoud_ff.xyz',)
+    # RMSD
     elif control == 6:
         output = tkm.rmsd(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
                         arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
                         ndx=[51,45,12,64,53,21,74])
+    
+    # Distance
+    elif control == 7:
+        output, avg_output = tkm.distance(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
+                        arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
+                        ndx=[51,51])
+        
+    # Distance
+    elif control == 8:
+        output, avg_output = tkm.angle(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
+                        arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
+                        ndx=[51,46,74])
+        
         

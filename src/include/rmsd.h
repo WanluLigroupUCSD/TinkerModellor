@@ -3,12 +3,10 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <Eigen/Dense>
 #include <stdexcept>
-#include <rmsd.h>
 
 namespace py = pybind11;
 
-double compute_rmsd(py::array_t<double> arr1, py::array_t<double> arr2);
+std::vector<double> rmsd(py::array_t<double> ref_frame, py::array_t<double> traj_frames);
 
 #endif // RMSD_H
