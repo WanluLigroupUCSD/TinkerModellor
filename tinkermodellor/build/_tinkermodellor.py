@@ -1,6 +1,8 @@
 import os
 from typing import List, Union, Tuple
 
+import numpy as np
+
 from tinkermodellor.build import TinkerSystem
 from tinkermodellor.build import GMXSystem
 from tinkermodellor.build import Transformer
@@ -192,11 +194,11 @@ class TinkerModellor:
         input.read_from_tinker(xyz)
         input.read_from_traj(arc)
 
-        if skip is None:
-            traj = input.AtomCrds
-        else:
-            traj = input.AtomCrds[::skip]
+        traj = input.AtomCrds
+
+        if skip is not None:
             print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+            traj = input.AtomCrds[::skip]
 
         if ref is not None:
             ref = TKMTrajectory()
@@ -215,7 +217,10 @@ class TinkerModellor:
         else:
             pass
 
-        output = ttk.rmsd(ref_traj, traj[bfra:efra])
+            ref_copy = np.copy(ref_traj)
+            traj_copy = np.copy(traj[bfra:efra])
+
+        output = ttk.rmsd(ref_copy, traj_copy)
         output = [round(float(i), 6) for i in output]
         return output
     
@@ -250,12 +255,12 @@ class TinkerModellor:
         input.read_from_tinker(xyz)
         input.read_from_traj(arc)
 
-        if skip is None:
-            traj = input.AtomCrds
-        else:
-            traj = input.AtomCrds[::skip]
-            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+        traj = input.AtomCrds
 
+        if skip is not None:
+            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+            traj = input.AtomCrds[::skip]
+            
 
         if len(ndx) != 2:
             raise ValueError("The index must contain two elements.")
@@ -267,8 +272,10 @@ class TinkerModellor:
             atom1_traj = traj[:, ndx[0]]
             atom2_traj = traj[:, ndx[1]]
 
+            atom1_copy = np.copy(atom1_traj[bfra:efra])
+            atom2_copy = np.copy(atom2_traj[bfra:efra])
 
-        output = ttk.distance(atom1_traj[bfra:efra], atom2_traj[bfra:efra])
+        output = ttk.distance(atom1_copy, atom2_copy)
         output = [round(float(i), 6) for i in output]
 
         avg_output = sum(output)/len(output)
@@ -278,7 +285,7 @@ class TinkerModellor:
     def angle(self, xyz:str, arc:str, skip:int = None, ndx:List[int] = None,
             bfra:int = 0, efra:int = -1) -> Tuple[List[float], float]:
         """
-            Calculate the distance of Tinker trajectories.
+            Calculate the atomic angle of Tinker trajectories.
         
         Args:
             xyz (str): Path to the xyz file.
@@ -306,26 +313,28 @@ class TinkerModellor:
         input.read_from_tinker(xyz)
         input.read_from_traj(arc)
 
-        if skip is None:
-            traj = input.AtomCrds
-        else:
-            traj = input.AtomCrds[::skip]
-            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+        traj = input.AtomCrds
 
+        if skip is not None:
+            print(f"Skipping every {skip} frames. Total frames: {len(traj)}.")
+            traj = input.AtomCrds[::skip]
 
         if len(ndx) != 3:
-            raise ValueError("The index must contain two elements.")
+            raise ValueError("The index must contain three elements.")
         else:
             # Convert the index to 0-based
             # The index in the trajectory file is 1-based
             ndx = [elemnt-1 for elemnt in ndx]
 
-            atom1_traj = traj[:, ndx[0]]
-            atom2_traj = traj[:, ndx[1]]
-            atom3_traj = traj[:, ndx[2]]
+            atom1_traj = traj[:, ndx[0],:]
+            atom2_traj = traj[:, ndx[1],:]
+            atom3_traj = traj[:, ndx[2],:]
 
+            atom1_copy = np.copy(atom1_traj[bfra:efra])
+            atom2_copy = np.copy(atom2_traj[bfra:efra])
+            atom3_copy = np.copy(atom3_traj[bfra:efra])
 
-        output = ttk.angle(atom1_traj[bfra:efra], atom2_traj[bfra:efra],atom3_traj[bfra:efra])
+        output = ttk.angle(atom1_copy, atom2_copy,atom3_copy)
         output = [round(float(i), 6) for i in output]
 
         avg_output = sum(output)/len(output)

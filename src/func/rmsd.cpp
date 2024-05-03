@@ -26,8 +26,7 @@ std::vector<double> rmsd(py::array_t<double> ref_frame, py::array_t<double> traj
         Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> frame_mat(
             static_cast<double*>(buf_traj.ptr) + i * num_atoms * 3, num_atoms, 3);
 
-        Eigen::Matrix<double, Eigen::Dynamic, 1> diff = (ref_mat - frame_mat).colwise().squaredNorm().array().sqrt();
-        double rmsd = std::sqrt(diff.squaredNorm() / num_atoms);
+        double rmsd = std::sqrt((ref_mat - frame_mat).squaredNorm() / num_atoms);
         rmsd_values.push_back(rmsd);
     }
 

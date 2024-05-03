@@ -16,17 +16,17 @@ std::vector<double> angle(py::array_t<double> atom1, py::array_t<double> atom2, 
         throw std::runtime_error("All input shapes must match and be of the form [n,3].");
     }
 
-    int num_points = buf_atom1.shape[0];
+    int num_frames = buf_atom1.shape[0];
     std::vector<double> angles;
 
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> coords1(
-        static_cast<double*>(buf_atom1.ptr), num_points, 3);
+        static_cast<double*>(buf_atom1.ptr), num_frames, 3);
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> coords2(
-        static_cast<double*>(buf_atom2.ptr), num_points, 3);
+        static_cast<double*>(buf_atom2.ptr), num_frames, 3);
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> coords3(
-        static_cast<double*>(buf_atom3.ptr), num_points, 3);
+        static_cast<double*>(buf_atom3.ptr), num_frames, 3);
 
-    for (int i = 0; i < num_points; i++) {
+    for (int i = 0; i < num_frames; i++) {
         Eigen::Vector3d vec1 = coords1.row(i) - coords2.row(i);
         Eigen::Vector3d vec2 = coords3.row(i) - coords2.row(i);
 

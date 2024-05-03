@@ -150,6 +150,76 @@ def parse_args():
         help='Path to the output CSV file. Default: ./TKM_rmsd.csv'
     )
 
+    # distance
+    distance = subparsers.add_parser(
+        'distance', help='Calculate the atomic distance of Tinker trajectory file (.arc).',)
+    distance.add_argument(
+        '--xyz', type=str, required=True,
+        help='Path to the TXYZ file (.xyz) for identifying the topology'
+    )
+    distance.add_argument(
+        '--traj', type=str, required=True,
+        help='Path to the Tinker trajectory file (.arc)'
+    )
+    distance.add_argument(
+        '--skip', type=str, default=None,
+        help='Skip frames in the trajectory file (optional)'
+    )
+    distance.add_argument(
+        '--ndx', type=str, required=True,
+        help='The index of atoms to be calculated RMSD (optional), could be a single integer 10,\n\
+        or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
+    )
+    distance.add_argument(
+        '--bfra', type=str, default='0',
+        help='The begin frame of the trajectory to be calculated RMSD (optional)\n\
+        Default: 0'
+    )
+    distance.add_argument(
+        '--efra', type=str, default='-1',
+        help='The end frame of the trajectory to be calculated RMSD (optional)\n\
+        Default: the last frame of the trajectory'
+    )
+    distance.add_argument(
+        '--out', type=str, default='./TKM_distance.csv',
+        help='Path to the output CSV file. Default: ./TKM_distance.csv'
+    )
+
+    # angle
+    angle = subparsers.add_parser(
+        'angle', help='Calculate the atomic angle of Tinker trajectory file (.arc).',)
+    angle.add_argument(
+        '--xyz', type=str, required=True,
+        help='Path to the TXYZ file (.xyz) for identifying the topology'
+    )
+    angle.add_argument(
+        '--traj', type=str, required=True,
+        help='Path to the Tinker trajectory file (.arc)'
+    )
+    angle.add_argument(
+        '--skip', type=str, default=None,
+        help='Skip frames in the trajectory file (optional)'
+    )
+    angle.add_argument(
+        '--ndx', type=str, required=True,
+        help='The index of atoms to be calculated RMSD (optional), could be a single integer 10,\n\
+        or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
+    )
+    angle.add_argument(
+        '--bfra', type=str, default='0',
+        help='The begin frame of the trajectory to be calculated RMSD (optional)\n\
+        Default: 0'
+    )
+    angle.add_argument(
+        '--efra', type=str, default='-1',
+        help='The end frame of the trajectory to be calculated RMSD (optional)\n\
+        Default: the last frame of the trajectory'
+    )
+    angle.add_argument(
+        '--out', type=str, default='./TKM_angle.csv',
+        help='Path to the output CSV file. Default: ./TKM_angle.csv'
+    )
+
 
 
     return p.parse_args()
@@ -219,5 +289,40 @@ def main():
             ndx = None
         skip = int(args.skip) if args.skip is not None else None
         result = tkm.rmsd(args.xyz, args.traj, args.ref, skip, ndx,int(args.bfra),int(args.efra))
+        csv.column_writer(result, args.out)
+    
+    elif args.module == "distance":
+
+        from tinkermodellor.build import parse_ndx
+        from tinkermodellor.build import CSVMaker
+
+        csv = CSVMaker()
+        tkm = TinkerModellor()
+        if args.ndx is not None:
+            ndx = parse_ndx(args.ndx)
+
+            if len(ndx) != 2:
+                raise ValueError("The index must contain two elements.")
+        else:
+            ndx = None
+        skip = int(args.skip) if args.skip is not None else None
+        result, _ = tkm.distance(args.xyz, args.traj, skip, ndx,int(args.bfra),int(args.efra))
+        csv.column_writer(result, args.out)
+
+    elif args.module == "angle":
+
+        from tinkermodellor.build import parse_ndx
+        from tinkermodellor.build import CSVMaker
+
+        csv = CSVMaker()
+        tkm = TinkerModellor()
+        if args.ndx is not None:
+            ndx = parse_ndx(args.ndx)
+            if len(ndx) != 3:
+                raise ValueError("The index must contain three elements.")
+        else:
+            raise ValueError("The index of atoms to be calculated angle is required.")
+        skip = int(args.skip) if args.skip is not None else None
+        result, _ = tkm.angle(args.xyz, args.traj, skip, ndx,int(args.bfra),int(args.efra))
         csv.column_writer(result, args.out)
         
