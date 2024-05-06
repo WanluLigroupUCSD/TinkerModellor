@@ -123,7 +123,7 @@ class TinkerSystem() :
             tinker_xyz (str): Path to input tinker xyz file.
 
         Returns:
-            txyz_mol (TXYZMol): A tinker molecule.
+            TinkerSystem (TinkerSystem): A tinker system.
         """
 
         file = os.path.abspath(tinker_xyz)
