@@ -19,8 +19,8 @@ git clone git@github.com:Hsuchein/TinkerModellor.git
 Then go into the TinkerModellor folder, construct environment for TinkerModellor by conda
 ``` sh
 cd TinkerModellor.
-conda env create -n TinkerModellor -f env.yml
-conda activate TinkerModellor
+conda env create -n tkm -f env.yml
+conda activate tkm
 ```
 
 Additionally, TinkerModellor is based on ParmEd programme. Hence, you also need to install ParmEd
@@ -32,7 +32,11 @@ pip install .
 Ultimately, install the TinkerModellor
 ``` sh
 cd TinkerModellor
-pip install .
+python -m build
+```
+This step will generate a folder called dist, which contains .whl file for environment setup.
+``` sh
+pip install dist/tinkermodellor-0.1.0-py3-none-any.whl
 ```
 
 ## Testing
