@@ -21,6 +21,11 @@ def _exe_delete_and_move(tks1:TinkerSystem, delete_list:List) -> TinkerSystem:
     print('Completed Delete list:',added_delete_list)
 
     delete = DeleteTinkerSystem()
+
+    # If no atom is found to be deleted, raise an error
+
+    if added_delete_list == []:
+        raise ValueError("No atom is found to be deleted. The Replace function is not necessary. Maybe you should use the Merge function.")
     delete(tks1, added_delete_list)
 
     return tks1
