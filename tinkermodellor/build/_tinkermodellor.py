@@ -341,6 +341,33 @@ class TinkerModellor:
         avg_output = sum(output)/len(output)
         print(f"The average distance is {avg_output}.")
         return output, avg_output
+    
+    def connect(self,tk:str, index:Union[int,List[int],List[str],str],tinker_xyz:str=None,) -> TinkerSystem:
+        """
+        Connect atoms in the Tinker system.
+
+        Args:
+            tk (str): Path to the Tinker system.
+            tinker_xyz (str): Path to the output Tinker system.
+            index (Union[int,List[int],List[str],str]): The index of the atoms to be connected.
+
+        Returns:
+            TinkerSystem: The Tinker system after connection.
+        """
+
+        tk = os.path.abspath(tk)
+        tinker_xyz = os.path.abspath(tinker_xyz)
+
+        conn = ConnectTinkerSystem()
+        tks = TinkerSystem()
+
+        tks.read_from_tinker(tk)
+        tks_connected = conn(tks,index)
+
+        if tinker_xyz is not None:
+            tks_connected.write(tinker_xyz)
+         
+        return tks_connected
 
 
 if __name__ == '__main__':
