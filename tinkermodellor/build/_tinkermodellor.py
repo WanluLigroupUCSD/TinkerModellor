@@ -10,6 +10,7 @@ from tinkermodellor.build import Transformer
 from tinkermodellor.build import MergeTinkerSystem
 from tinkermodellor.build import DeleteTinkerSystem
 from tinkermodellor.build import ReplaceTinkerSystem
+from tinkermodellor.build import ConnectTinkerSystem
 
 from tinkermodellor.build import TKMTrajectory
 

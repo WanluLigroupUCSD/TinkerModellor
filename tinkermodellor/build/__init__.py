@@ -6,6 +6,7 @@ from .system.transformer import Transformer
 from .function.merge._merge import MergeTinkerSystem
 from .function.delete._delete import DeleteTinkerSystem
 from .function.replace._replace import ReplaceTinkerSystem
+from .function.connect._connect import ConnectTinkerSystem
 
 from .system.tinker._tkmtrajectory import TKMTrajectory
 

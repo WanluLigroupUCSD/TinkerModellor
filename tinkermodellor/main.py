@@ -220,7 +220,21 @@ def parse_args():
         help='Path to the output CSV file. Default: ./TKM_angle.csv'
     )
 
-
+    # connect
+    connect = subparsers.add_parser(
+        'connect', help='Connect atoms from a Tinker system')
+    connect.add_argument(
+        '--tk', type=str, required=True,
+        help='Path to the input TXYZ file'
+    )
+    connect.add_argument(
+        '--xyz', type=str, required=True,
+        help='Path to the output TXYZ file'
+    )
+    connect.add_argument(
+        '--ndx', type=str, required=True,
+        help='Index of the atoms to be connected, could a list seperated by comma 1,2. Two atoms only.'
+    )
 
     return p.parse_args()
 
@@ -325,4 +339,10 @@ def main():
         skip = int(args.skip) if args.skip is not None else None
         result, _ = tkm.angle(args.xyz, args.traj, skip, ndx,int(args.bfra),int(args.efra))
         csv.column_writer(result, args.out)
-        
+    
+    elif args.module == "connect":
+
+        from tinkermodellor.build import parse_ndx
+
+        tkm = TinkerModellor()
+        tkm.connect(args.tk, parse_ndx(args.ndx), args.xyz)
