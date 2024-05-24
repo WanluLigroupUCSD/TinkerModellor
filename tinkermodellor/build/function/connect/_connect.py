@@ -39,7 +39,7 @@ class ConnectTinkerSystem():
             raise ValueError("The index should be a list with two elements.")
 
 
-        tks.Bonds[index[0]].append(index[1]) 
-        tks.Bonds[index[1]].append(index[0])
+        tks.Bonds[index[0]-1].append(index[1]) 
+        tks.Bonds[index[1]-1].append(index[0])
 
         return tks
