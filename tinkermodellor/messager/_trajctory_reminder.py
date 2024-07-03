@@ -4,7 +4,11 @@ import functools
 def TinkerTrajectoryReminder(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        width = os.get_terminal_size().columns
+        # A try-except block to avoid any unexceptions that may occur during the call to os.get_terminal_size()
+        # Due to pytest not being able to process os.get_terminal_size() 
+        # OSError: [Errno 25] Inappropriate ioctl for device
+        try:width = os.get_terminal_size().columns
+        except:width = 120
         message = "**TinkerModellor Tinker Trajctory Reader Is Running **"
         print("******************************************************".center(width))
         print(message.center(width))
