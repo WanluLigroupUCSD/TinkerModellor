@@ -171,4 +171,4 @@ cython_debug/
 
 # python -m build # file for cpp compiling
 dist/
-build/
+/TinkerModellor/build/

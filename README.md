@@ -18,6 +18,7 @@ git clone git@github.com:Hsuchein/TinkerModellor.git
 
 Then go into the TinkerModellor folder, construct environment for TinkerModellor by conda
 
+
 ```bash
 cd TinkerModellor.
 conda env create -n tkm -f env.yml
@@ -66,6 +67,7 @@ A successful installation will look like the following:
 #Processing ./dist/TinkerModellor-1.1-cp39-cp39-linux_x86_64.whl
 #Installing collected packages: TinkerModellor
 #Successfully installed TinkerModellor-1.1
+
 ```
 
 ## Testing
