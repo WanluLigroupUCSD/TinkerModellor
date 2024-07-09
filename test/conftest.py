@@ -8,7 +8,7 @@ import pytest
 def pytest_configure():
     this_dir = pathlib.Path(__file__).parent
     pytest.EXAMPLE_PATH = str(this_dir.joinpath("dataset"))
-    pytest.OUTPUT_PATH = this_dir.joinpath(".pytest/")
+    pytest.OUTPUT_PATH = this_dir.joinpath(".pytest_cache/")
     
     #If .pytest not exist, then create a new .pytest folder.
     pytest.OUTPUT_PATH.mkdir(parents=True, exist_ok=True)

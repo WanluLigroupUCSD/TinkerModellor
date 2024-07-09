@@ -4,7 +4,11 @@ import functools
 def TKMConnectReminder(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        width = os.get_terminal_size().columns
+        #set a default width , in case of the terminal size is not available
+        try:
+            width = os.get_terminal_size().columns
+        except:
+            width = 120
         message = "********* TinkerModellor is Connecting Atoms *********"
         print("******************************************************".center(width))
         print(message.center(width))
