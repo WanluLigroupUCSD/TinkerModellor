@@ -165,9 +165,16 @@ class GMXSystem():
                         temp_atomtype = match_atomtype.group(5)[:4].replace(' ', '')
                         temp_atomresidue = re.sub(r'\d', '', match_atomtype.group(4)).replace(' ', '')
 
-                        #In CYS, S in both of S-S or S-H is defined as SG in GMX top file, but in Tinker XYZ file, S in S-S is defined as SGS
-                        if temp_atomresidue == 'CYS' and temp_atomtype == 'S':
-                            atomtype_read.append('SGS')
+                        ###In CYS, S in both of S-S or S-H is defined as SG in GMX top file, but in Tinker XYZ file, S in S-S is defined as SGS
+                        #CYS and CYX has the same SG , the only difference is that CYX has no H atom
+                        #two path to deal with the problem
+                        # 1: divide in to CYS and CYX via HG 
+                        # 2: divide in to SG and SGH via HG 
+                        # we choose the second one , however CYX is also avaliable
+                        if temp_atomresidue == 'CYS' and temp_atomtype == 'HG':
+                            atomtype_read.pop()#remove restored SG
+                            atomtype_read.append('SGH')#mark it and append , see dataset/amoebabio/_amber.py
+                            atomtype_read.append('HG')#normal append
                         else:
                             atomtype_read.append(temp_atomtype)
                         
