@@ -7,11 +7,13 @@ class AmberForceFieldDict:
         'O':11,'OXT':234,'OC1':234,'OC2':234,'OTe':234,
     }
 
-    #old[In AMOEBABIO18, S in both of S-S and S-H is defined as SG. Hence, here we define SGS is S in S-S]
-    #new[]
+    #new[# CYS and CYX has the same SG , the only difference is that CYX has no H atom
+         # two paths to deal with the problem
+         # 1: divide residue into CYS and CYX via HG 2: divide atomtype into SG and SGH via HG 
+         # we choose the second one , however CYX is also avaliable]
     _amberpara={
-        'GLY': {**_commonpara, **{"N":1,"CA":2,"C":3,"HN":4,"O":5,"HA1":6,"HA2":6,"HA3":6}},
-        'ALA': {**_commonpara, **{"N":7,"CA":8,"C":9,"HN":10,"O":11,"HA":12,"CB":13,"HB":14,"HB1":14,"HB2":14,"HB3":14,}},
+        'GLY': {**_commonpara, **{"N": 1,"CA": 2,"C": 3,"H": 4,"O": 5,"HA1": 6,"HA2": 6}},
+        'ALA': {**_commonpara, **{"CB": 13,"HB1": 14,"HB2": 14,"HB3": 14}},
         'VAL': {**_commonpara, **{"CB":15,"HB":16,'HB1':16,'HB2':16,"CG":17,"HG":18,'HG11':18,'HG12':18,'HG13':18,'HG21':18,'HG22':18,'HG23':18,},},
         'LEU': {**_commonpara, **{"CB":19,"HB":20,'HB1':20,'HB2':20,"CG":21,"HG":22,"CD":23,"CD1":23,"CD2":23,"HD":24,"HD11":24,"HD12":24,"HD13":24,"HD21":24,"HD22":24,"HD23":24,}},
         'ILE': {**_commonpara, **{"CB":25,"HB":26,"HB2":26,"CG1":27,"HG1":28,"HG11":28,"HG12":28,"HG12":28,"HG13":28,"HG21":30,"HG22":30,"HG23":30,"CG2":29,"HG2":30,"CD":31,'CD1':31,"HD":32,"HD1":32,"HD2":32,"HD3":32,"HD11":32,"HD12":32,"HD13":32,}},
@@ -41,7 +43,7 @@ class AmberForceFieldDict:
         'GLU': {**_commonpara, **{"CB":153,"HB1":154,"HB2":154,"CG":155,"HG1":156,"HG2":156,"CD":157,"OE1":158,"OE2":158}},
         'GLUH': {**_commonpara, **{"CB":159,"HB1":160,"HB2":160,"CG":161,"HG1":162,"HG2":162,"CD":163,"OE1":164,"OE2":165,'HE2':166}},
 
-        'HIS': {**_commonpara, **{"CB":106,"HB1":107,"HB2":107,"CG":108,"ND1":109,"HD1":110,"CD2":111,"HD2":112,"CE1":113,"HE1":114,"NE2":115,"HE2":116}},
+        'HISH': {**_commonpara, **{"CB":106,"HB1":107,"HB2":107,"CG":108,"ND1":109,"HD1":110,"CD2":111,"HD2":112,"CE1":113,"HE1":114,"NE2":115,"HE2":116}},
         'HISD': {**_commonpara, **{"CB":117,"HB1":118,"HB2":118,"CG":119,"ND1":120,"HD1":121,"CD2":122,"HD2":123,"CE1":124,"HE1":125,"NE2":126}},
         'HISE': {**_commonpara, **{"CB":127,"HB1":128,"HB2":128,"CG":129,"ND1":130,"CD2":131,"HD2":132,"CE1":133,"HE1":134,"NE2":135,"HE2":136}},
 
@@ -50,4 +52,3 @@ class AmberForceFieldDict:
     }
 
     _amberpara.update(_special)
-    

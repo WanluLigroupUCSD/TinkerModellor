@@ -29,6 +29,7 @@ class AmberGAFFTrans(FroceFieldTrans):
             "GLN", "GLU", "GLY", "HIE", "ILE",
             "LEU", "LYS", "MET", "PHE", "PRO",
             "SER", "THR", "TRP", "TYR", "VAL","HIS"]
+        self.Special_Warning_Flag = []
         
         supported_FFpara = [WaterAndIonsForceField.water_para,WaterAndIonsForceField.ion_para,GAFFForceField.gaff_para]
         
@@ -46,10 +47,18 @@ class AmberGAFFTrans(FroceFieldTrans):
         return self._transform_to_tinker(atom_type,atom_residue)        
     
     def _transform_to_tinker(self, atom_type: str, atom_residue: str) -> str:
-    
+       
         #To check whether the residue is normal residue
         #Normal residue: LYS, ARG, GLU, etc.
         if atom_residue in self.ResidueList:
+            return self.get_atom_type(atom_residue, atom_type)
+        
+        #Allow some special residues (e.g. ASPH,HISD,HISE) to use the force field in ./build/dataset/amoebabio18/_amber.py
+        elif atom_residue in AmberForceFieldDict._amberpara.keys():
+            if atom_residue not in self.Special_Warning_Flag :
+                self.Special_Warning_Flag.append(atom_residue)
+                print(f"Warning: The special residue {atom_residue} is using the force field in ./build/dataset/amoebabio18/_amber.py")
+            
             return self.get_atom_type(atom_residue, atom_type)
 
         #Abnormal residue: WAT, LIG, Na+, etc.

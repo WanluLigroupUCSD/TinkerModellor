@@ -16,6 +16,16 @@ Firstly, you can to download it through git or zip file
 git clone git@github.com:Hsuchein/TinkerModellor.git
 ```
 
+A more simple way to build TinkerModellor is to use the shell script install.sh
+
+```bash
+cd TinkerModellor
+#now you are at /TinkerModellor
+bash install.sh
+```
+
+### Normal way
+
 Then go into the TinkerModellor folder, construct environment for TinkerModellor by conda
 
 ```bash
@@ -84,7 +94,7 @@ pytest . -v
 
 ### Command Line Usage
 
-#### The general usage of the command is as follows:
+#### The general usage of the command is as follows
 
 ``` python
 python tkm.py -c coordination_file -p topology_file -out output_file [options]
