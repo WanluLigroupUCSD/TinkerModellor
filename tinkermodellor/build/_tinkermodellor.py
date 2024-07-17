@@ -11,6 +11,7 @@ from tinkermodellor.build import MergeTinkerSystem
 from tinkermodellor.build import DeleteTinkerSystem
 from tinkermodellor.build import ReplaceTinkerSystem
 from tinkermodellor.build import ConnectTinkerSystem
+from tinkermodellor.build import Tinker2PDB
 
 from tinkermodellor.build import TKMTrajectory
 
@@ -368,10 +369,34 @@ class TinkerModellor:
             tks_connected.write(tinker_xyz)
          
         return tks_connected
+    
+    def tk2pdb(self,tk:str,pdb:str) -> str:
+        """
+        Convert a Tinker system to a PDB file.
+
+        Args:
+            tk (str): Path to the Tinker system.
+            pdb (str): Path to the output PDB file.
+
+        Returns:
+            str: The PDB file.
+
+        Usage:
+            tkm= TinkerModellor()
+            tkm.tk2pdb(r'/path/to/your/tinker.xyz',r'/path/to/your/output.pdb')
+        """
+
+        tk = os.path.abspath(tk)
+        pdb = os.path.abspath(pdb)
+
+        tkpdb = Tinker2PDB(tk, pdb)
+        tkpdb()
+
+        return tkpdb
 
 
 if __name__ == '__main__':
-    control = 8
+    control = 9
     tkm= TinkerModellor()
 
     # Transform
@@ -427,4 +452,8 @@ if __name__ == '__main__':
                         arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
                         ndx=[51,46,74])
         
+    # TK2PDB
+    elif control == 9:
+        tkm.tk2pdb(r'/home/wayne/data/TinkerModellor/example/tk2pdb/ex1/tinker.xyz',\
+                r'/home/wayne/data/TinkerModellor/example/tk2pdb/ex1/tk2pdb.pdb')
         

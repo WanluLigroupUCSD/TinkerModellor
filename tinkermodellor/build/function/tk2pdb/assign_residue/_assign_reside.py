@@ -5,6 +5,8 @@ from ._residue_database import GraphData
 from ._residue_database import ResidueDatabase
 
 class AssignResidue():
+
+    
     def __init__(self) -> None:
         pass
 
