@@ -10,8 +10,16 @@ from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 @pytest.mark.parametrize('data', ['ASP','1ALB','1BHZ','134L','GLU','HIS','LYS'])
 def test_transform(data, get_file_path):
     tkm_toolkit = tkm()
-    """Test that both __call__ and map methods return the expected atom map."""
-    #got path
+    """
+    1.get the file path
+    2.transform the tinker-file and create [tinker-system]Class-A
+    3.create a random index list(maybe have same index)
+    4.Use TKM delete part to remove atom in [tinker-system]Class-A via random index list and produce tinker-files
+    5.check the tinker-file and create [tinker-system]Class-B
+    6.check the atom number and atom crd in [tinker-system]Class-A and Class-B
+    6-1. index atom_crd shouldnt be same
+    6-2. atom number should be gap 
+    """
     gro, top ,xyz= get_file_path(data)
     delete_file = os.path.join(pytest.OUTPUT_PATH,data+'_del.xyz')
 

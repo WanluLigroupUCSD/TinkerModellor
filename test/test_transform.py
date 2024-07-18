@@ -1,5 +1,4 @@
 import pytest
-import os
 from tinkermodellor import TinkerModellor as tkm
 from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 
@@ -9,7 +8,13 @@ from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 @pytest.mark.parametrize('data',['ASP','1ALB','1BHZ','134L','GLU','HIS','LYS'])
 def test_transform(data, get_file_path):
     tkm_toolkit = tkm()
-    """Test that both __call__ and map methods return the expected atom map."""
+    """
+    1.get the file path
+    2.transform the gmx-file to tinker-file and create a [tinker-system]Class-A
+    3.[tinker-system]Class-A check it self
+    4.read the output tinker-file to [tinker-system]Class-B
+    5.[tinker-system]Class-B check it self
+    """
     gro, top ,xyz= get_file_path(data)
     tinker_system_1_1 = tkm_toolkit.transform(gmx_gro=gro,gmx_top=top,tinker_xyz=xyz)
     tinker_system_1_1.check()
