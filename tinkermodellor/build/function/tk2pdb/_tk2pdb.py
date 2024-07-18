@@ -1,4 +1,5 @@
 from typing import List
+import sys
 import numpy as np
 
 from tinkermodellor.build.function.tk2pdb.assign_residue._assign_reside import AssignResidue
@@ -29,6 +30,7 @@ class Tinker2PDB(TinkerSystem):
         self.ResidueNum = np.zeros(self.AtomNums)
 
         segment_list = self._split_segement()
+        #print(segment_list)
         segment_type = self._determine_segment_type(segment_list)
         
         current_residue_index = 1
@@ -36,12 +38,14 @@ class Tinker2PDB(TinkerSystem):
 
         for type, index in zip(segment_type, segment_list):
             if type == 'ION':
-                self.ResidueName[index[0]:index[-1]] = 'ION'
-                self.ResidueNum[index[0]:index[-1]] = current_residue_index
+                for i in range(index[0], index[-1]+1):
+                    self.ResidueName[i] = 'ION'
+                    self.ResidueNum[i] = current_residue_index
                 current_residue_index += 1
             elif type == 'WAT':
-                self.ResidueName[index[0]:index[-1]] = 'WAT'
-                self.ResidueNum[index[0]:index[-1]] = current_residue_index
+                for i in range(index[0], index[-1]+1):
+                    self.ResidueName[i] = 'WAT'
+                    self.ResidueNum[i] = current_residue_index
                 current_residue_index += 1
             else:
                 self._assign_residue(index, current_residue_index)
@@ -102,7 +106,7 @@ class Tinker2PDB(TinkerSystem):
                 if self.AtomTypesStr[i-3] == 'C' and self.AtomTypesStr[i-2] == 'O':
 
                     edge = self._clean_edges(edge, 1, i-last_residue)
-                    
+
                     resname = find_residue(node, edge, residue_index, i-last_residue)
 
                     # last_residue is the index of the first atom in the residue
@@ -142,7 +146,6 @@ class Tinker2PDB(TinkerSystem):
                     for i in range(last_residue-1, i-1):
                         self.ResidueName[i] = resname
                         self.ResidueNum[i] = residue_index
-                    
                     residue_index += 1
 
                     # Update the index of the first atom in the residue
@@ -196,9 +199,10 @@ class Tinker2PDB(TinkerSystem):
     def _determine_segment_type(self,segment_list:List[List[int]]) -> List[str]:
         segment_type = []
         for segment in segment_list:
-            if len(segment) == 1:
+            start, end = segment
+            if end-start+1 == 1:
                 segment_type.append('ION')
-            elif len(segment) == 3:
+            elif end-start+1 == 3:
                 segment_type.append('WAT')
             else:
                 segment_type.append('BIO')
@@ -215,7 +219,7 @@ class Tinker2PDB(TinkerSystem):
         Returns:
             List[int]: Complete list of connected atom indices, sorted.
         """
-
+        sys.setrecursionlimit(10000)
         residue_list = []
         visited = set()  # Track visited atoms to prevent infinite recursion
 
@@ -247,35 +251,18 @@ class Tinker2PDB(TinkerSystem):
 
 if __name__ == '__main__':
         import os
-        tk = r'example/tk2pdb/ex1/tinker.xyz'
-        pdb = r'example/tk2pdb/ex1/tk2pdb.pdb'
+        control = 2
+        if control == 1:
+            tk = r'example/tk2pdb/ex1/tinker.xyz'
+            pdb = r'example/tk2pdb/ex1/tk2pdb.pdb'
+        elif control == 2:
+            tk = r'example/tk2pdb/ex2/complex.xyz'
+            pdb = r'example/tk2pdb/ex2/tk2pdb.pdb'
         tk = os.path.abspath(tk)
         pdb = os.path.abspath(pdb)
 
         tkpdb = Tinker2PDB()
         tkpdb(tk, pdb)
-
-        node : GraphData.Node = [
-                (1, {'element': 'N'}),
-                (2, {'element': 'C'}),
-                (3, {'element': 'C'}),
-                (4, {'element': 'O'}),
-                (5, {'element': 'C'}),
-                (6, {'element': 'C'}),
-                (7, {'element': 'C'}),
-                (8, {'element': 'C'}),
-            ]
-        edge : GraphData.Edge =[
-                (1, 2,),
-                (2, 3,),
-                (3, 4,),
-                (2, 5,),
-                (5, 6,),
-                (6, 7,),
-                (6, 8,),
-            ]
-        
-        atom_number = 8
 
         #resname = find(node, edge, 1, atom_number)
         #print(resname)
