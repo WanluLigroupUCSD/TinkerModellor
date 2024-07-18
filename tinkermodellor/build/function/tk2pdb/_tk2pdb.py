@@ -60,15 +60,15 @@ class Tinker2PDB(TinkerSystem):
             # Format the string for each atom including its index, type, coordinates, and type number.
             # Ensure that the atom type number is aligned correctly without decimal points for integers.
             contents.append(
-                "ATOM   "
-                f"{(i + 1):4>} {self.AtomTypesStr[i]:<4} "
+                f"ATOM  {i + 1:>4d} {self.AtomTypesStr[i]:<4} "
                 f"{self.ResidueName[i]:>3} A "
-                f"{int(self.ResidueNum[i]):>3} "
-                f"{self.AtomCrds[i, 0]:12.3f} "
-                f"{self.AtomCrds[i, 1]:12.3f} "
-                f"{self.AtomCrds[i, 2]:12.3f} "
-                f" 1.00  0.00 {self.AtomTypesStrPDB[i]:<2}"
+                f"{int(self.ResidueNum[i]):4d}    "
+                f"{self.AtomCrds[i, 0]:8.3f}"
+                f"{self.AtomCrds[i, 1]:8.3f}"
+                f"{self.AtomCrds[i, 2]:8.3f}  "
+                f"1.00 15.14           {self.AtomTypesStrPDB[i]:>2}"
             )
+
         contents.append("END")
         return "\n".join(contents)
 
@@ -100,13 +100,10 @@ class Tinker2PDB(TinkerSystem):
             normal = i
             if self.AtomTypesStr[i-1] == 'N':
                 if self.AtomTypesStr[i-3] == 'C' and self.AtomTypesStr[i-2] == 'O':
-                    print(edge)
+
                     edge = self._clean_edges(edge, 1, i-last_residue)
-                    #print(edge)
-                    print(node)
-                    #print(edge)
+                    
                     resname = find_residue(node, edge, residue_index, i-last_residue)
-                    print(resname)
 
                     # last_residue is the index of the first atom in the residue
                     # But ResidueName and ResidueNum are 0-indexed
@@ -136,10 +133,7 @@ class Tinker2PDB(TinkerSystem):
                     # But the former process is to find the first atom in the residue (N)
                     # So i should plus 1
                     i+=1
-                    print(edge)
                     edge = self._clean_edges(edge, 1, i-last_residue)
-                    print(node)
-                    print(edge)
 
                     resname = find_residue(node, edge, residue_index, i-last_residue)
 
