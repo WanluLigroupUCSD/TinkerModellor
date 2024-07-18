@@ -2,17 +2,17 @@ from typing import List
 import sys
 import numpy as np
 
-from tinkermodellor.build.function.tk2pdb.assign_residue._assign_reside import AssignResidue
-from tinkermodellor.build.function.tk2pdb.assign_residue._residue_database import GraphData
-from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
+#from tinkermodellor.build.function.tk2pdb.assign_residue._assign_reside import AssignResidue
+#from tinkermodellor.build.function.tk2pdb.assign_residue._residue_database import GraphData
+#from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 
 
-#from .assign_residue._assign_reside import AssignResidue
-#from .assign_residue._residue_database import GraphData
-#from ...system.tinker._tinkersystem import TinkerSystem
+from .assign_residue._assign_reside import AssignResidue
+from .assign_residue._residue_database import GraphData
+from ...system.tinker._tinkersystem import TinkerSystem
 
 class Tinker2PDB(TinkerSystem):
-    def __init__(self) -> None:
+    def __init__(self, depth:int) -> None:
         super().__init__()
 
         #Used for store the residue name
@@ -21,6 +21,10 @@ class Tinker2PDB(TinkerSystem):
         self.ResidueNum: np.array = []
         #Used for store the atom type string in pdb
         self.AtomTypesStrPDB : list[str] = []
+
+        if depth == None:
+            self.depth = 10000
+        self.depth = depth
 
     def __call__(self,tk:str, pdb:str) -> None:
 
@@ -219,7 +223,7 @@ class Tinker2PDB(TinkerSystem):
         Returns:
             List[int]: Complete list of connected atom indices, sorted.
         """
-        sys.setrecursionlimit(10000)
+        sys.setrecursionlimit(self.depth)
         residue_list = []
         visited = set()  # Track visited atoms to prevent infinite recursion
 
