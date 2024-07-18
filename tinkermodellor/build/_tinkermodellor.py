@@ -423,8 +423,8 @@ if __name__ == '__main__':
         
     # Distance
     elif control == 8:
-        output, avg_output = tkm.angle(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
-                        arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
+        output, avg_output = tkm.angle(xyz=r'example/rmsd/pr_coord.xyz',\
+                        arc = r'example/rmsd/pr_coord.arc',
                         ndx=[51,46,74])
         
         

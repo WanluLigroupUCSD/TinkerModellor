@@ -13,7 +13,7 @@ class DeleteTinkerSystem():
         pass
 
     @TKMDeleteReminder
-    def __call__(self,tks:TinkerSystem, index:Union[int,List[int],List[str],str]) -> TinkerSystem:
+    def __call__(self,tks:TinkerSystem, IndexToBeDel:Union[int,List[int],List[str],str]) -> TinkerSystem:
         """
         This function deletes atoms from a Tinker system.
 
@@ -25,29 +25,29 @@ class DeleteTinkerSystem():
             TinkerSystem: The Tinker system after deletion.
         """
 
-        if isinstance(index, int):
-            index = [index]
-        elif isinstance(index, str):
-            index = [int(index)]
-        elif isinstance(index, list):
-            if isinstance(index[0], str):
-                index = [int(i) for i in index]
+        if isinstance(IndexToBeDel, int):
+            IndexToBeDel = [IndexToBeDel]
+        elif isinstance(IndexToBeDel, str):
+            IndexToBeDel = [int(IndexToBeDel)]
+        elif isinstance(IndexToBeDel, list):
+            if isinstance(IndexToBeDel[0], str):
+                IndexToBeDel = [int(i) for i in IndexToBeDel]
         else:
             raise ValueError("The index should be int, str or list.")
         
         # Creation a index list without duplication
-        index = list(set(index))
+        IndexToBeDel = list(set(IndexToBeDel))
 
         ### It is REALLY IMPORTANT to sort the index in reverse order ###
         ### Otherwise, the index will be wrong after the first deletion ###
         ### For example, if we delete the first atom, the second atom will be the first one ###
         ### Then if we delete the second atom in original order, the third atom (original) will be deleted ###
-        index = sorted(index, reverse=True)
+        IndexToBeDel = sorted(IndexToBeDel, reverse=True)
 
         count = 0
-        for ndx_iter in index:
+        for ndx_iter in IndexToBeDel:
             if ndx_iter <= 0 or ndx_iter > tks.AtomNums:
-                raise ValueError("Index out of range.")
+                raise ValueError(f"Index {ndx_iter} out of range [{1}, {tks.AtomNums}].")
             
             else:
                 print("Deleting an atom with index of %d" % ndx_iter, f'and its atom type is {tks.AtomTypesStr[ndx_iter-1]}')
@@ -61,7 +61,7 @@ class DeleteTinkerSystem():
                 # Update connectivity
                 self._update_connectivity(tks,tks_index)
 
-                # Update the connectivity
+                # Check the connectivity
                 tks.check()
                 count +=1
                 
@@ -71,7 +71,7 @@ class DeleteTinkerSystem():
         
 
         
-    def _delete(self,tks:TinkerSystem, tks_index:int) -> TinkerSystem:
+    def _delete(self,tks:TinkerSystem, tks_index:int):
 
         # Delete the corresponding elementks from the properties
         del tks.AtomTypesStr[tks_index]
@@ -83,11 +83,11 @@ class DeleteTinkerSystem():
         
         # Update AtomIndex
         tks.AtomNums -= 1
-        tks.AtomIndex = np.arange(1, len(tks.AtomCrds))
+        tks.AtomIndex = np.arange(1, len(tks.AtomCrds)+1)
         
         
 
-    def _update_connectivity(self,tks:TinkerSystem, tks_index:int) -> TinkerSystem:
+    def _update_connectivity(self,tks:TinkerSystem, tks_index:int):
 
         for i in range(len(tks.Bonds)):
             tks.Bonds[i] = [bond for bond in tks.Bonds[i] if bond != tks_index+1]

@@ -243,7 +243,7 @@ class GMXSystem():
 
             #To record the entire system's coordinates
             self.Coordinates.append(np.array([float(i)*10 for i in line[-3:]]))
-        self.AtomIndex = np.arange(1, len(self.Coordinates))
+        self.AtomIndex = np.arange(1, len(self.Coordinates)+1)
         self.Coordinates = np.array(self.Coordinates)
 
         #read box size
