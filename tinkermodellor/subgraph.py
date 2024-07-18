@@ -1,16 +1,20 @@
 import networkx as nx
-from networkx.algorithms import isomorphism
 
-from ._residue_database import GraphData
-from ._residue_database import ResidueDatabase
+class ResidueDatabase:
+    # Residue database with example data
+    database = [
+        # Each residue contains (node list, edge list, residue name, atom count)
+        ([(0, {'element': 'O'}), (1, {'element': 'O'}), (2, {'element': 'H'})], [(0, 1), (1, 2)], 'OOH', 3),
+    ]
 
-class AssignResidue():
-
-    
-    def __init__(self) -> None:
+class GraphData:
+    class Node(list):
         pass
 
+    class Edge(list):
+        pass
 
+class ResidueIdentifier:
     def __call__(self, nodes: GraphData.Node, edges: GraphData.Edge, resid: int, resiatoms: int) -> str:
         """
         Assigns a residue name to a residue based on the residue database.
@@ -57,6 +61,19 @@ class AssignResidue():
                 break
 
         if residue_name == "UKN":
-            print('Warning: Residue ID: {} is not found in the residue database. Assigning residue name as "UKN"'.format(resid))
+            print(f'Warning: Residue ID: {resid} is not found in the residue database. Assigning residue name as "UKN"')
 
         return residue_name
+
+# Main function to test subgraph isomorphism
+def main():
+    # Main graph (H-O-O-H)
+    nodes = [(0, {'element': 'H'}), (1, {'element': 'O'}), (2, {'element': 'O'}), (3, {'element': 'H'})]
+    edges = [(0, 1), (1, 2), (2, 3)]
+
+    identifier = ResidueIdentifier()
+    residue_name = identifier(nodes, edges, resid=1, resiatoms=4)
+    print(f'Residue name: {residue_name}')
+
+if __name__ == "__main__":
+    main()
