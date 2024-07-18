@@ -389,8 +389,8 @@ class TinkerModellor:
         tk = os.path.abspath(tk)
         pdb = os.path.abspath(pdb)
 
-        tkpdb = Tinker2PDB(tk, pdb)
-        tkpdb()
+        tkpdb = Tinker2PDB()
+        tkpdb(tk, pdb)
 
         return tkpdb
 
@@ -454,6 +454,6 @@ if __name__ == '__main__':
         
     # TK2PDB
     elif control == 9:
-        tkm.tk2pdb(r'/home/wayne/data/TinkerModellor/example/tk2pdb/ex1/tinker.xyz',\
-                r'/home/wayne/data/TinkerModellor/example/tk2pdb/ex1/tk2pdb.pdb')
+        tkm.tk2pdb(r'example/tk2pdb/ex1/tinker.xyz',\
+                r'example/tk2pdb/ex1/tk2pdb.pdb')
         

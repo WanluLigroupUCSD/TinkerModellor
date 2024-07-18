@@ -20,8 +20,8 @@ class Tinker2PDB(TinkerSystem):
 
         self.read_from_tinker(tk)
 
-        self.ResidueName = ['UNK']*self.AtomNum
-        self.ResidueNum = np.zeros(self.AtomNum)
+        self.ResidueName = ['UNK']*self.AtomNums
+        self.ResidueNum = np.zeros(self.AtomNums)
 
         segment_list = self._split_segement()
         segment_type = self._determine_segment_type(segment_list)
