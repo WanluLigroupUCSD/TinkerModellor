@@ -23,7 +23,7 @@ class TinkerModellor:
     def __init__(self) -> None:
         pass
 
-    def transform(self,gmx_gro:str,gmx_top:str,tinker_xyz:str =None) -> TinkerSystem:
+    def transform(self,gmx_gro:str,gmx_top:str,tinker_xyz:str =None, forcefield:int =1) -> TinkerSystem:
         """
         Transform a Gromacs system to a Tinker system.
         If tinker_xyz is given, the Tinker system will be written to the file.
@@ -32,7 +32,9 @@ class TinkerModellor:
             gmx_gro (str): Path to the Gromacs .gro file.
             gmx_top (str): Path to the Gromacs .top file.
             tinker_xyz (str, optional): Path to the Tinker .xyz file. Defaults to None.
-        
+            forcefield (int, optional): The force field to be used. Defaults to 1.\
+            1: AMOEBABIO18, 2: AMOEBABIO09, 3: AMOEBAPRO13
+
         Returns:
             TinkerSystem: The Tinker system.
 
@@ -50,7 +52,7 @@ class TinkerModellor:
 
         gmx = GMXSystem()
         gmx.read_gmx_file(gmx_gro, gmx_top)
-        transformer = Transformer()
+        transformer = Transformer(forcefield=forcefield)
         tk = transformer(gmx)
 
         if tinker_xyz is not None:

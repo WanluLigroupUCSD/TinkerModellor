@@ -1,4 +1,6 @@
-class AmberForceFieldDict:
+from ._water_ions_trans import WaterAndIonsForceField
+
+class AMOEBABIO18ForceFieldDict:
 
     _commonpara={
         'H':10,'H1':232,'H2':232,'H3':232,'HA':12,'HD1':24,'HD2':24,'HD3':24,
@@ -37,5 +39,4 @@ class AmberForceFieldDict:
         'LYS': {**_commonpara,**{"CB":182,"HB":183,"HB1":183,'HB2':183,'HB3':183,"CG":184,"HG":185,"HG1":185,'HG2':185,'HG3':185,"CD":186,"HD":187,"HD1":187,"HD2":187,"HD3":187,"CE":188,"HE":189,"HE1":189,"HE2":189,"HE3":189,"NZ":190,"HZ1":191,"HZ2":191,"HZ3":191,"HN":191,},},
         'ARG': {**_commonpara,**{"CB":202,"HB":203,"HB1":203,"HB2":203,"HB3":203,"CG":204,"HG":205,"HG1":205,"HG2":205,"HG3":205,"CD":206,"HD":207,"HD1":207,"HD2":207,"HD3":207,"NE":208,"HE":209,"CZ":210,"NH":211,"NH1":211,"NH2":211,"HH":212,"HH11":212,"HH12":212,"HH21":212,"HH22":212,},},
         }
-
     

@@ -1,2 +1,2 @@
-from ._amoebabio18 import AMOEBABIO18ForceFieldDict
+from ._amoebabio09 import AMOEBABIO09ForceFieldDict
 from ._water_ions_trans import WaterAndIonsForceField

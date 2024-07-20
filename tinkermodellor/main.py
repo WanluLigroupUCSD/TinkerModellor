@@ -28,11 +28,16 @@ def parse_args():
     transform.add_argument(
         '--clean', default=False, action='store_true',
         help='Keep temporary files created during GROMACS format conversion.\n\
-        Use --clean to cleam.\nDefault: False')
+        Use --clean to clean.\nDefault: False')
     transform.add_argument(
         '--format', type=str, default='GROMACS',
         choices=['amber','gmx','charmm'],
         help='Select input file format (default: GROMACS)'
+    )
+    transform.add_argument(
+        '--ff', type=int, default=1,
+        help='Select force field type (default: 1, 1: AMOEBABIO18, 2: AMOEBABIO09,\n\
+            3: AMOEBAPRO13)'
     )
 
     # merge
@@ -283,7 +288,7 @@ def main():
         parm = ParmEd2GMX()
         crd, top = parm(args.crd, args.top, args.format)
         tkm = TinkerModellor()
-        tkm.transform(crd, top, args.xyz)
+        tkm.transform(crd, top, args.xyz, args.ff)
 
         if args.clean:
             os.remove(crd)
