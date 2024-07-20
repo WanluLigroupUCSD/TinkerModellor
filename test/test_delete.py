@@ -38,5 +38,8 @@ def test_delete(data, get_file_path):
     
     for index in random_index:
         deleted_atom_crd = former_atom_crd[index]
-        assert deleted_atom_crd[0] != tinker_system_2.AtomCrds[index][0]
+        X = (deleted_atom_crd[0] != tinker_system_2.AtomCrds[index][0])
+        Y = (deleted_atom_crd[1] != tinker_system_2.AtomCrds[index][1])
+        Z = (deleted_atom_crd[2] != tinker_system_2.AtomCrds[index][2])
+        assert X and Y and Z , "index atom_crd shouldnt be same"
     assert len(set(random_index)) == (tinker_system_2_0.AtomNums - tinker_system_2.AtomNums)

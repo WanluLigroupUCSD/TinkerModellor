@@ -43,6 +43,7 @@ class DeleteTinkerSystem():
         ### For example, if we delete the first atom, the second atom will be the first one ###
         ### Then if we delete the second atom in original order, the third atom (original) will be deleted ###
         IndexToBeDel = sorted(IndexToBeDel, reverse=True)
+        print('A list of Atom will be deleted:', IndexToBeDel)
 
         count = 0
         for ndx_iter in IndexToBeDel:
