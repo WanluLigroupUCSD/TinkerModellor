@@ -142,6 +142,7 @@ class TinkerSystem() :
 
         for (line_idx, line) in enumerate(contents):
             line = line.rstrip()
+
             if len(line) == 0:
                 continue
 
@@ -151,12 +152,18 @@ class TinkerSystem() :
                 system_name = " ".join(arr)
                 continue
 
-            elif line_idx == 1:
-                try:
+            elif line_idx == 1 :
+                if '.' in line.split()[0]:
                     box_size = np.array([float(x) for x in line.split()[0:3]])
-                    continue
-                except ValueError:
+                else:
                     warnings.warn("No PBC box info found in tinker file.")
+                    arr = line.split()
+                    atom_index.append(int(arr[0]))
+                    atom_type_str.append(arr[1])
+                    atom_crds.append([float(x) for x in arr[2:5]])
+                    atom_type_num.append(int(arr[5]))
+                    atom_bonds.append([int(x) for x in arr[6:]])
+
 
             else:
                 arr = line.split()
@@ -169,7 +176,7 @@ class TinkerSystem() :
         if len(atom_crds) != atom_nums:
             warnings.warn(
                 f"The number of atoms ({atom_nums}) does not match the size of"
-                f" atom_crds {atom_crds.shape}, reset the number of atoms to "
+                f" atom_crds {len(atom_crds)}, reset the number of atoms to "
                 f"{len(atom_crds)}."
             )
             atom_nums = len(atom_crds)

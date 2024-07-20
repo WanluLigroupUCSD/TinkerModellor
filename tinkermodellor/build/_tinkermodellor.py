@@ -65,7 +65,7 @@ class TinkerModellor:
             tk1 (TinkerSystem): The first Tinker system.
             tk2 (TinkerSystem): The second Tinker system.
             ff1 (str): The first force field file (optional).
-            ff2 (str): The second force field file (optional, when ff1 is required this should also be required).
+            ff2 (str): The second force field file (optional, when ff1 is provided this should also be required).
             ffout (str, optional): The output force field file (optional). Defaults to None.
 
         Returns:

@@ -8,7 +8,7 @@ from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 #Special residual : 'ASP','CYX'(two chains is not supported yet),'GLU','HIS','LYS'
 #Protein&substrate : '1AM6','3HTB'$Will be supported latter
 @pytest.mark.parametrize('data', ['ASP','1ALB','1BHZ','134L','GLU','HIS','LYS'])
-def test_transform(data, get_file_path):
+def test_delete(data, get_file_path):
     tkm_toolkit = tkm()
     """
     1.get the file path
