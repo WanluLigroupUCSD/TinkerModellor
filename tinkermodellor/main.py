@@ -236,6 +236,22 @@ def parse_args():
         help='Index of the atoms to be connected, could a list seperated by comma 1,2. Two atoms only.'
     )
 
+    # tk2pdb
+    tk2pdb = subparsers.add_parser(
+        'tk2pdb', help='Transform Tinker XYZ file to PDB file')
+    tk2pdb.add_argument(
+        '--tk', type=str, required=True,
+        help='Path to the input TXYZ file'
+    )
+    tk2pdb.add_argument(
+        '--pdb', type=str, required=True,
+        help='Path to the output PDB file'
+    )
+    tk2pdb.add_argument(
+        '--depth', type=str, default='10000',
+        help='Depth of search algorithm (optional), Default: 10000'
+    )
+
     return p.parse_args()
 
 def generate_banner(author, project_name, version, url):
@@ -346,3 +362,8 @@ def main():
 
         tkm = TinkerModellor()
         tkm.connect(args.tk, parse_ndx(args.ndx), args.xyz)
+    
+    elif args.module == "tk2pdb":
+            
+        tkm = TinkerModellor()
+        tkm.tk2pdb(args.tk, args.pdb,int(args.depth))   
