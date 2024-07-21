@@ -28,5 +28,5 @@ for i in {'asp','cys','glu','his','lys'} ;do
     fi
 done  
 
-
+pytest -n auto
 

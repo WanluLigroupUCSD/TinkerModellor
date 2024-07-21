@@ -1,5 +1,4 @@
-conda env create -n tkm -f env.yml
-conda activate tkm
+
 pip uninstall tinkermodellor -y
 export TKMROOT=$(pwd)
 python -m build > build.log
