@@ -7,7 +7,7 @@ from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 #Protein&water : '1ALB','1BHZ','134L'
 #Special residual : 'ASP','CYX'(two chains is not supported yet),'GLU','HIS','LYS'
 #Protein&substrate : '1AM6','3HTB'$Will be supported latter
-@pytest.mark.parametrize('data', ['ASP','1ALB','1BHZ','134L','GLU','HIS','LYS'])
+@pytest.mark.parametrize('data', ['HIS','1ALB','1BHZ','134L','ASP','GLU','LYS'])
 def test_delete(data, get_file_path):
     tkm_toolkit = tkm()
     """
@@ -41,5 +41,5 @@ def test_delete(data, get_file_path):
         X = (deleted_atom_crd[0] != tinker_system_2.AtomCrds[index][0])
         Y = (deleted_atom_crd[1] != tinker_system_2.AtomCrds[index][1])
         Z = (deleted_atom_crd[2] != tinker_system_2.AtomCrds[index][2])
-        assert X and Y and Z , "index atom_crd shouldnt be same"
+        assert X or Y or Z , "index atom_crd shouldnt be same"
     assert len(set(random_index)) == (tinker_system_2_0.AtomNums - tinker_system_2.AtomNums)

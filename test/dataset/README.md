@@ -1,7 +1,14 @@
-Illustration for data
+
+# Illustration for data
+
+## Protein&water : '1ALB','1BHZ','134L'
 
 Pure protein system:1ALB 1BHZ 134L
 
-Protein-ligand complex system:1AM6 3HTB
+## Special residual : 'ASP','GLU','HIS','LYS'
 
+'CYX'(two chains is not supported by python methods yet)
 
+## Protein&substrate : '1AM6','3HTB'
+
+$Will be supported latter

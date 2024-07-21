@@ -31,10 +31,7 @@ class AMOEBABIO09ForceFieldDict:
         'MET': {**_commonpara,**{"CB":178,"HB":179,"HB1":179,"HB2":179,"CG":180,"HG":181,"HG1":181,"HG2":181,"HG3":181,"SD":182,"CE":183,"HE":184,"HE1":184,"HE2":184,"HE3":184,},},
         'LYS': {**_commonpara,**{"CB":185,"HB":186,"HB1":186,'HB2':186,"CG":187,"HG":188,"HG1":188,'HG2':188,'HG3':188,"CD":189,"HD":190,"HD1":190,"HD2":190,"HD3":190,"CE":191,"HE":192,"HE1":192,"HE2":192,"HE3":192,"NZ":193,"HZ1":194,"HZ2":194,"HZ3":194,"HN":194,},},
         'ARG': {**_commonpara,**{"CB": 205,"HB1": 206,"HB2": 206,"CG": 207,"HG1": 208,"HG2": 208,"CD": 209,"HD1": 210,"HD2": 210,"NE": 211,"HE": 212,"CZ": 213,"NH1": 214,"NH2": 214,"HH11": 215,"HH12":215,"HH21": 215,"HH22": 215},},
-        }
 
-    #CYS->CYS(HS)-SGH,CYX-> CYS(SS)-SG
-    _special = {
         'CYS': {**_commonpara, **{"CB":45,"HB1":46,"HB2":46,"SGH":47,"HG":48,'SG':49}},
         'CYX': {**_commonpara, **{"CB":43,"HB1":44,"HB2":44,"SG":47}},
         'CYSA':{**_commonpara, **{"CA":48,"CB":50,"HB1":51,"HB2":51,"SG":52}},
@@ -50,6 +47,6 @@ class AMOEBABIO09ForceFieldDict:
         'LYSN': {**_commonpara,**{"CB":195,"HB1":196,'HB2':196,"CG":197,"HG1":198,'HG2':198,"CD":199,"HD1":200,"HD2":200,"CE":201,"HE1":202,"HE2":202,"NZ":203,"HZ1":204,"HZ2":204}},
     }
 
-    _amberpara.update(_special)
     _amberpara.update(WaterAndIonsForceField.ion_para)
     _amberpara.update(WaterAndIonsForceField.water_para)
+    _Amberpara = _amberpara

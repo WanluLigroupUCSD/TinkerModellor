@@ -161,7 +161,7 @@ class TinkerSystem() :
                     atom_index.append(int(arr[0]))
                     atom_type_str.append(arr[1])
                     atom_crds.append([float(x) for x in arr[2:5]])
-                    atom_type_num.append(int(arr[5]))
+                    atom_type_num.append(int(float(arr[5])))
                     atom_bonds.append([int(x) for x in arr[6:]])
 
 
@@ -170,7 +170,8 @@ class TinkerSystem() :
                 atom_index.append(int(arr[0]))
                 atom_type_str.append(arr[1])
                 atom_crds.append([float(x) for x in arr[2:5]])
-                atom_type_num.append(int(arr[5]))
+                try : atom_type_num.append(int(float(arr[5])))
+                except : atom_type_num.append(arr[5])
                 atom_bonds.append([int(x) for x in arr[6:]])
 
         if len(atom_crds) != atom_nums:

@@ -89,8 +89,9 @@ class Transformer():
             #DEBUG##print(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
             trans_type = self.TransformerFunction(molecule_type.AtomResidue[i],molecule_type.AtomTypes[i])
             if trans_type == 'None':
-                warnings.warn(f'WARNING!!! Atomtype {molecule_type.AtomTypes[i]} of Residue {molecule_type.AtomResidue[i]} not found in force field. Atom index is {i+index}')
-                warnings.warn('And TinerModellor has already automatically set it as "None"')
+                warnings.warn(f'WARNING!!! Atomtype {molecule_type.AtomTypes[i]} of Residue {molecule_type.AtomResidue[i]} not found in force field.\n'+ 
+                              f'Atom index is {i+index},we support {self.TransformerFunction.ForceFieldDict.keys()},\n'+
+                              'And TinerModellor has already automatically set it as "None"')
                 num_atomtype = np.append(num_atomtype, trans_type)
                 str_atomtype.append(molecule_type.AtomTypes[i])
             else:

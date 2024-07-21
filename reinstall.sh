@@ -11,7 +11,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 cd test
-pytest -n auto
+pytest -n auto -s
 if [ $? -ne 0 ]; then
     echo "Tests failed"
     exit 1
