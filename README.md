@@ -16,16 +16,27 @@ Firstly, you can to download it through git or zip file
 git clone git@github.com:Hsuchein/TinkerModellor.git
 ```
 
-Then go into the TinkerModellor folder, construct environment for TinkerModellor by conda
+A more simple way to build TinkerModellor is to use the shell script install.sh
 
+```bash
+cd TinkerModellor
+#now you are at /TinkerModellor
+bash install.sh
+```
+
+### Normal way
+
+Then go into the TinkerModellor folder, construct environment for TinkerModellor by conda
 
 ```bash
 cd TinkerModellor.
+#now you are at /TinkerModellor
 conda env create -n tkm -f env.yml
 conda activate tkm
 ```
 
 Additionally, TinkerModellor is based on ParmEd programme. Hence, you also need to install ParmEd
+This step is optional in most situation
 
 ```bash
 git clone git@github.com:ParmEd/ParmEd.git
@@ -37,6 +48,7 @@ Ultimately, install the TinkerModellor
 
 ```bash
 cd TinkerModellor
+#now you are at /TinkerModellor
 export TKMROOT=$(pwd)
 #direct to current directory
 ```
@@ -46,7 +58,6 @@ export TKMROOT=$(pwd)
 To build TinkerModellor, execute the following code in the terminal:
 
 ```bash
-cd TinkerModellor
 python -m build > build.log
 ```
 
@@ -83,7 +94,7 @@ pytest . -v
 
 ### Command Line Usage
 
-#### The general usage of the command is as follows:
+#### The general usage of the command is as follows
 
 ``` python
 python tkm.py -c coordination_file -p topology_file -out output_file [options]

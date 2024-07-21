@@ -68,7 +68,7 @@ class TinkerModellor:
             tk1 (TinkerSystem): The first Tinker system.
             tk2 (TinkerSystem): The second Tinker system.
             ff1 (str): The first force field file (optional).
-            ff2 (str): The second force field file (optional, when ff1 is required this should also be required).
+            ff2 (str): The second force field file (optional, when ff1 is provided this should also be required).
             ffout (str, optional): The output force field file (optional). Defaults to None.
 
         Returns:
@@ -451,8 +451,8 @@ if __name__ == '__main__':
         
     # Distance
     elif control == 8:
-        output, avg_output = tkm.angle(xyz=r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.xyz',\
-                        arc = r'/home/wayne/quanmol/TinkerModellor/example/rmsd/pr_coord.arc',
+        output, avg_output = tkm.angle(xyz=r'example/rmsd/pr_coord.xyz',\
+                        arc = r'example/rmsd/pr_coord.arc',
                         ndx=[51,46,74])
         
     # TK2PDB
