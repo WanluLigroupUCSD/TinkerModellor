@@ -7,6 +7,7 @@ from .function.merge._merge import MergeTinkerSystem
 from .function.delete._delete import DeleteTinkerSystem
 from .function.replace._replace import ReplaceTinkerSystem
 from .function.connect._connect import ConnectTinkerSystem
+from .function.tk2pdb._tk2pdb import Tinker2PDB
 
 from .system.tinker._tkmtrajectory import TKMTrajectory
 

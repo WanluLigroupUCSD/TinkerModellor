@@ -53,7 +53,7 @@ class TinkerSystem() :
         #Used for store the atom type in number
         self.AtomTypesNum: np.array = []
         #Used for store the molecular bond
-        self.Bonds: Union[List[List[int]],List[List[str]]] = []
+        self.Bonds: Union[List[List[int]], List[List[str]]] = []
         #Used for store the box size and angle
         self.BoxSize: np.array = np.array([0.0, 0.0, 0.0])
         self.BoxAngle: np.array = np.array([90.0,90.0,90.0])
