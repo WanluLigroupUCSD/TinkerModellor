@@ -51,10 +51,12 @@ class Transformer():
         #print(tinker.AtomTypesStr)
         #print(tinker.Bonds)
         #print(tinker.AtomCrds)
+        print(tinker.AtomNums,tinker.AtomIndex)
 
     def _add_by_single_molecule_type(self,gmx:GMXSystem, tinker:TinkerSystem) -> None:
         
-        index = 1
+        index = 0
+        #index = 1
 
         for i in range(1,len(gmx.MoleculeType)):
             molecule_type = gmx.MoleculeType[i]
@@ -62,10 +64,16 @@ class Transformer():
             molecule_name = gmx.MoleculeType[i].MoleculeName
 
             print('\n')
-            print(f"The atom index of {molecule_name} is from", index,'to',index+int(molecule_type.AtomNums)*int(molecule_nums)-1)
+            print(f"The atom index of {molecule_name} is from", index+1,'to',index+int(molecule_type.AtomNums)*int(molecule_nums))
+            # if we have a complex containing 50-atoms molecule-A, 10-water
+            # the text should be 
+            # (init_index=0)The atom index of molecule-A is from 1 to 50[0+50*1](currently_index=50)
+            # (init_index=50)The atom index of water is from 51 to 80[50+10*3=80](finally_index=80)
+            # finally_index == len(tinker.AtomIndex) = tinker.AtomNums
 
             for _ in range(molecule_nums):
                 index = self._add_by_single_molecule(tinker,molecule_type,index)
+                # if singlere_molecule has ten atom ,index will plus ten,1+10=11,however there is no atom index 11,so the init_index should be 0
                 
 
        

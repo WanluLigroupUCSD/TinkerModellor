@@ -115,15 +115,13 @@ class TinkerSystem() :
     @TinkerSystemReminder
     def read_from_tinker(
         self,
-        tinker_xyz: str,
-    ) -> "TinkerSystem":
+        tinker_xyz: str,):
         """Load molecule from input tinker xyz file.
 
         Args:
             tinker_xyz (str): Path to input tinker xyz file.
 
-        Returns:
-            TinkerSystem (TinkerSystem): A tinker system.
+        Returns:Nonetype
         """
 
         file = os.path.abspath(tinker_xyz)
@@ -144,47 +142,53 @@ class TinkerSystem() :
 
         for (line_idx, line) in enumerate(contents):
             line = line.rstrip()
+
             if len(line) == 0:
                 continue
 
-            if line_idx == 0:
+            elif line_idx == 0:
                 arr = line.split()
                 atom_nums = int(arr.pop(0))
                 system_name = " ".join(arr)
                 continue
 
-            if line_idx == 1:
-                try:
+            elif line_idx == 1 :
+                if '.' in line.split()[0]:
                     box_size = np.array([float(x) for x in line.split()[0:3]])
-                    continue
-                except ValueError:
+                else:
                     warnings.warn("No PBC box info found in tinker file.")
-                finally:
-                    pass
+                    arr = line.split()
+                    atom_index.append(int(arr[0]))
+                    atom_type_str.append(arr[1])
+                    atom_crds.append([float(x) for x in arr[2:5]])
+                    atom_type_num.append(int(arr[5]))
+                    atom_bonds.append([int(x) for x in arr[6:]])
 
-            arr = line.split()
-            atom_index.append(int(arr[0]))
-            atom_type_str.append(arr[1])
-            atom_crds.append([float(x) for x in arr[2:5]])
-            atom_type_num.append(int(arr[5]))
-            atom_bonds.append([int(x) for x in arr[6:]])
 
-        atom_crds = np.array(atom_crds)
+            else:
+                arr = line.split()
+                atom_index.append(int(arr[0]))
+                atom_type_str.append(arr[1])
+                atom_crds.append([float(x) for x in arr[2:5]])
+                atom_type_num.append(int(arr[5]))
+                atom_bonds.append([int(x) for x in arr[6:]])
 
         if len(atom_crds) != atom_nums:
             warnings.warn(
                 f"The number of atoms ({atom_nums}) does not match the size of"
-                f" atom_crds {atom_crds.shape}, reset the number of atoms to "
+                f" atom_crds {len(atom_crds)}, reset the number of atoms to "
                 f"{len(atom_crds)}."
             )
             atom_nums = len(atom_crds)
 
+        assert atom_nums == len(atom_index) ,print(atom_nums,len(atom_index))
+
         self.AtomNums = atom_nums
         self.SystemName = system_name
-        self.AtomIndex = atom_index
+        self.AtomIndex = np.array(atom_index)
         self.AtomTypesStr = atom_type_str
-        self.AtomCrds = atom_crds
-        self.AtomTypesNum = atom_type_num
+        self.AtomCrds = np.array(atom_crds)
+        self.AtomTypesNum = np.array(atom_type_num)
         self.Bonds = atom_bonds
         self.BoxSize = box_size
 
@@ -202,9 +206,10 @@ class TinkerSystem() :
     def _value_check(self):
         #   TinkerSystem specific value check
         assert len(self.AtomTypesNum) == len(self.AtomTypesStr) == len(self.Bonds) == len(self.AtomCrds)\
-            == len(self.AtomIndex)+1 == self.AtomNums, f'TinkerSystem data length is not equal to AtomNums,\
+            == len(self.AtomIndex) == self.AtomNums, f'TinkerSystem data length is not equal to AtomNums,\
             AtomNums = {self.AtomNums}, AtomTypesNum = {len(self.AtomTypesNum)}, AtomTypesStr = {len(self.AtomTypesStr)},\
-            Bonds = {len(self.Bonds)}, AtomCrds = {len(self.AtomCrds)}, AtomIndex = {len(self.AtomIndex)+1}' #AtomIndex is from 1 to AtomNums
+            Bonds = {len(self.Bonds)}, AtomCrds = {len(self.AtomCrds)}, AtomIndex = {len(self.AtomIndex)}' 
+        # if you have ten atoms ,you will get AtomIndex from 1 to 10 and there are ten numbers in AtomIndex ,we dont need to add 1
         if 'None' in self.AtomTypesStr:
             warnings.warn('WARNING!!! Atomtype "None" is found in the system, please check the force field')
 

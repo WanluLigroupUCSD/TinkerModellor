@@ -126,6 +126,7 @@ class GMXSystem():
             j -=1
 
         molecules_count = 1
+        HIS_box = []
         for line in lines:
             #A new molecule start (according to the GMX top file format)
             #GMX topology file format description: https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html
@@ -164,17 +165,43 @@ class GMXSystem():
                     else:
                         temp_atomtype = match_atomtype.group(5)[:4].replace(' ', '')
                         temp_atomresidue = re.sub(r'\d', '', match_atomtype.group(4)).replace(' ', '')
+                        
+                        # CYS and CYX has the same SG , the only difference is that CYX has no H atom
+                        # two paths to deal with the problem
+                        # 1: divide residue into CYS and CYX via HG 2: divide atomtype into SG and SGH via HG 
+                        # we choose the second one , however CYX is also avaliable
+                        if temp_atomresidue == 'CYS' and temp_atomtype == 'HG':
+                            atomtype_read.pop()#remove restored SG
+                            atomtype_read.append('SGH')#mark it and append , see dataset/amoebabio/_amber.py
+                            atomtype_read.append('HG')#normal append
 
-                        #In CYS, S in both of S-S or S-H is defined as SG in GMX top file, but in Tinker XYZ file, S in S-S is defined as SGS
-                        if temp_atomresidue == 'CYS' and temp_atomtype == 'S':
-                            atomtype_read.append('SGS')
+                        elif temp_atomresidue == 'HIS':
+                            # HIS has three types,HISE(HE2) HISD(HD1), HISH(HE2,HD1) , the read order is {HD1>HE2}
+                            # so if read HE2 , the residue is HISE or HISH ,just check if HD1 is in HIS_box
+                            HIS_box.append(temp_atomtype)
+                            atomtype_read.append(temp_atomtype)
+
+                            if temp_atomtype == 'O':
+                                if 'HE2' in HIS_box:
+                                    if 'HD1' in HIS_box:
+                                        residue = "HISH"
+                                    else:
+                                        residue = "HISE"
+                                else:
+                                    residue = "HISD"
+                                atomresidue_read.extend([residue]*len(HIS_box))
+                                HIS_box = []
+           
+                        #this is common path
                         else:
                             atomtype_read.append(temp_atomtype)
                         
                         #Residue name in GMX top file is not always the same as the residue name in Tinker XYZ file
-                        atomresidue_read.append(temp_atomresidue)
+                        if temp_atomresidue != "HIS":
+                            atomresidue_read.append(temp_atomresidue)
                         
-                        #DEBUG##print(line)
+
+
 
                 #DEBUG##print(atomresidue_read)
                 #DEBUG##print(atomtype_read)
@@ -216,7 +243,7 @@ class GMXSystem():
 
             #To record the entire system's coordinates
             self.Coordinates.append(np.array([float(i)*10 for i in line[-3:]]))
-        self.AtomIndex = np.arange(1, len(self.Coordinates))
+        self.AtomIndex = np.arange(1, len(self.Coordinates)+1)
         self.Coordinates = np.array(self.Coordinates)
 
         #read box size
@@ -232,4 +259,3 @@ class GMXSystem():
                 box_flag = False
 
             j -=1
-        
