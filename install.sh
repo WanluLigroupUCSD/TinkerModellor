@@ -12,7 +12,7 @@ if [ $? -ne 0 ]; then
     echo "Installation failed"
     exit 1
 fi
-cd test
+bash test.sh
 pytest . -n auto
 if [ $? -ne 0 ]; then
     echo "Tests failed"
