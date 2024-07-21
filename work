@@ -1,0 +1,4 @@
+#!/bin/bash
+
+bash reinstall.sh
+bash test.sh

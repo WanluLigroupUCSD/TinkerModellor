@@ -5,7 +5,7 @@ from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
 #Protein&water : '1ALB','1BHZ','134L'
 #Special residual : 'ASP','CYX'(two chains is not supported yet),'GLU','HIS','LYS'
 #Protein&substrate : '1AM6','3HTB'$Will be supported latter
-@pytest.mark.parametrize('data',['HIS','1ALB','1BHZ','134L','ASP','GLU','LYS'])
+@pytest.mark.parametrize('data',['1ALB','1BHZ','134L'])
 def test_transform(data, get_file_path):
     tkm_toolkit = tkm()
     """

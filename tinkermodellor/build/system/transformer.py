@@ -51,12 +51,12 @@ class Transformer():
         #print(tinker.AtomTypesStr)
         #print(tinker.Bonds)
         #print(tinker.AtomCrds)
-        print(tinker.AtomNums,tinker.AtomIndex)
+        #print(tinker.AtomNums,tinker.AtomIndex)
 
     def _add_by_single_molecule_type(self,gmx:GMXSystem, tinker:TinkerSystem) -> None:
         
-        index = 0
-        #index = 1
+        #index = 0
+        index = 1
 
         for i in range(1,len(gmx.MoleculeType)):
             molecule_type = gmx.MoleculeType[i]

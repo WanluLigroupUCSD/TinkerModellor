@@ -9,7 +9,7 @@ mkdir -p $outpath
 function transform(){
     echo "transforming...$i"
     cp -r test/amber14sb_parmbsc1.ff test/amoebabio18.prm -t $file_pre 
-    tkm transform --top $top --crd $gro --xyz $outpath/$i"_transformed.xyz" --clean
+    tkm transform --top $top --crd $gro --xyz $outpath/$i"_transformed.xyz" --clean --ff $1
     rm -r $file_pre/amber14sb_parmbsc1.ff $file_pre/amoebabio18.prm
     }
 
@@ -24,7 +24,7 @@ for i in {'asp','cys','glu','his','lys'} ;do
                 top+=$file_pre/$file' '
             fi
         done
-        transform      
+        transform 2
     fi
 done  
 

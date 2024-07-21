@@ -1,34 +1,29 @@
 class WaterAndIonsForceField:
     
     '''
-    Only support TIP3P water model, SPCE water model and SPC water model now.
+    Only support AMOEBA water model.
     '''
         
     water_para = {
-    'OW':349,
-    'HW':350,
-    'HW1':350,
-    'HW2':350,
-    'OW_spc':349,
-    'HW_spc':350,
-    'H1':350,
-    'H2':350,
-    'O':349,
+    'OW':247,
+    'HW':248,
+    'HW1':248,
+    'HW2':248,
     }
 
-    ion_para = {
-    'C0':358,              
-    'Cl':363,
-    'Na':352, 
-    'MG':357, 
-    'K':353, 
-    'Rb':354,
-    'Cs':355,
-    'Li':351,
-    'Zn':102,
-    'Na+':352,
-    'Cl-':363,
-    'CL':363,
-    'NA':352,
-    'ZN':102,
+    ion_para = {            
+    'Cl':261,
+    'Na':250, 
+    'MG':255, 
+    'K':251, 
+    'Rb':252,
+    'Cs':253,
+    'Li':249,
+    'Li+':249,
+    'Zn':259,
+    'Na+':250,
+    'Cl-':261,
+    'CL':261,
+    'NA':250,
+    'ZN':259,
     }
