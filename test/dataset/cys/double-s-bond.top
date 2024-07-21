@@ -1,0 +1,47 @@
+;
+;	File 'double-s-bond.top' was generated
+;	By user: wayne (1002)
+;	On host: pharm-l2u8z2
+;	At date: Sat Jul  6 13:54:15 2024
+;
+;	This is a standalone topology file
+;
+;	Created by:
+;	                    :-) GROMACS - gmx pdb2gmx, 2024.2 (-:
+;	
+;	Executable:   /home/wayne/software/gromacs-2024.2/bin/gmx
+;	Data prefix:  /home/wayne/software/gromacs-2024.2
+;	Working dir:  /home/wayne/data/tkm/proton
+;	Command line:
+;	  gmx pdb2gmx -f 1bom.pdb -o double-s-bond.gro -p double-s-bond.top -ignh
+;	Force field was read from the standard GROMACS share directory.
+;
+
+; Include forcefield parameters
+#include "amber03.ff/forcefield.itp"
+
+; Include chain topologies
+#include "double-s-bond_Protein_chain_A.itp"
+#include "double-s-bond_Protein_chain_B.itp"
+
+; Include water topology
+#include "amber03.ff/tip3p.itp"
+
+#ifdef POSRES_WATER
+; Position restraint for each water oxygen
+[ position_restraints ]
+;  i funct       fcx        fcy        fcz
+   1    1       1000       1000       1000
+#endif
+
+; Include topology for ions
+#include "amber03.ff/ions.itp"
+
+[ system ]
+; Name
+BOMBYXIN-II,BOMBYXIN A-2; BOMBYXIN-II,BOMBYXIN A-6
+
+[ molecules ]
+; Compound        #mols
+Protein_chain_A     1
+Protein_chain_B     1
