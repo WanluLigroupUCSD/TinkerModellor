@@ -1,4 +1,6 @@
-class AmberForceFieldDict:
+from ._water_ions_trans import WaterAndIonsForceField
+
+class AMOEBABIO18ForceFieldDict:
 
     _commonpara={
         'H':10,'H1':232,'H2':232,'H3':232,'HA':12,'HD1':24,'HD2':24,'HD3':24,

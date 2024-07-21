@@ -1,1 +1,1 @@
-from .amoebabio18._forcefieldtrans import AmberGAFFTrans
+from ._forcefieldtrans import AmberTrans
