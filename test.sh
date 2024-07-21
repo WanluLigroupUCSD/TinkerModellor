@@ -2,15 +2,15 @@
 
 echo tkm will be tested
 DIR=test/dataset
-outpath=test/test_cache
+outpath=test/.pytest_cache
 mkdir -p $outpath
 
 #transform
 function transform(){
     echo "transforming...$i"
-    cp -r test/amber14sb_parmbsc1.ff test/amoebabio18.prm -t $file_pre 
+    cp -r data/para/gromacs/amber14sb_parmbsc1.ff -t $file_pre 
     tkm transform --top $top --crd $gro --xyz $outpath/$i"_transformed.xyz" --clean --ff $1
-    rm -r $file_pre/amber14sb_parmbsc1.ff $file_pre/amoebabio18.prm
+    rm -r $file_pre/amber14sb_parmbsc1.ff 
     }
 
 for i in {'asp','cys','glu','his','lys'} ;do
