@@ -21,6 +21,8 @@ A more simple way to build TinkerModellor is to use the shell script install.sh
 ```bash
 cd TinkerModellor
 #now you are at /TinkerModellor
+conda env create -n tkm -f env.yml
+conda activate tkm
 bash install.sh
 ```
 
@@ -86,8 +88,8 @@ A successful installation will look like the following:
 To automatically run the TinkerModelling tests, execute the following code in the terminal:
 
 ``` sh
-cd test
-pytest . -v
+bash test.sh
+pytest -n auto -s
 ```
 
 ## Usage
@@ -97,22 +99,18 @@ pytest . -v
 #### The general usage of the command is as follows
 
 ``` python
-python tkm.py -c coordination_file -p topology_file -out output_file [options]
+tkm transform --top top_file --crd gro_file --xyz output_xyz_file --clean 
 ```
 
-#### Arguments
+#### optional arguments
 
-**-c**: Path to the coordination file. Supported formats: Amber(.inpcrd/.crd), CHARMM(.crd), GROMACS(.gro). This argument is required.
-
-**-p**: Path to the topology file. Supported formats: Amber(.prmtop/.top), CHARMM(.psf), GROMACS(.top). This argument is required.
-
-**-o**: Output file path or name. Default is "./TinkerModellor.xyz". The format is tinker(.xyz).
-
-**-k**: Option to keep temporary files created during GROMACS format conversion. Set to True to keep. Default is False.
-
-**-f**: Input file format. Options: {A: Amber, C: CHARMM, G: GROMACS}. Default is GROMACS.
-
-**-a**: Aggressive atomtype matching mode. May result in atomtype mismatching but can match irregular atomtypes. Default is True.
+  *-h*, --help            show this help message and exit
+  *--top* TOP             Path to the topology file.Supported formats: Amber(.prmtop/.top), CHARMM(.psf), GROMACS(.top)
+  *--crd* CRD             Path to coordination file. Supported formats: Amber(.inpcrd/.crd), CHARMM(.crd), GROMACS(.gro)
+  *--xyz* XYZ             Path to output Tinker .xyz file
+  *--clean*               Keep temporary files created during GROMACS format conversion. Use --clean to clean. Default: False
+  *--format* {amber,gmx,charmm} Select input file format (default: GROMACS)
+  *--ff* FF               Select force field type (default: 1, 1: AMOEBABIO18, 2: AMOEBABIO09, 3: AMOEBAPRO13)
 
 #### Example
 
@@ -127,11 +125,16 @@ This command will run the TinkerModellor with a GROMACS coordination file my_coo
 ### Packge Usage
 
 ``` python
-# in python
-import tinkermodellor as tkm
-new= tkm()
-new('gromacs.gro',gromacs.top')
-new.write_tkmsystem('gromacs.xyz')
+from tinkermodellor import TinkerModellor as tkm
+from tinkermodellor.build.system.tinker._tinkersystem import TinkerSystem
+
+tkm_toolkit = tkm()
+tkm_toolkit.transform(gmx_gro=gro,gmx_top=top,tinker_xyz=xyz)
+
+tinker_system_1_2 = TinkerSystem()
+tinker_system_1_2.read_from_tinker(xyz)
+tinker_system_1_2.check()
+
 ```
 
 ## Authors and Contributors

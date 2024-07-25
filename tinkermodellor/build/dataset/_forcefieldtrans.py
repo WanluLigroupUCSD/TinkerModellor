@@ -27,7 +27,8 @@ class AmberTrans(FroceFieldTrans):
             "LEU", "LYS", "MET", "PHE", "PRO",
             "SER", "THR", "TRP", "TYR", "VAL",
             "HISD","HISE","HISH","LYSN","GLUH",
-            "ASPH","CYX","TYRA"]
+            "ASPH","CYX","TYRA","HID","HIE",
+            "HIP",]
         
         support_forcefield = []
 

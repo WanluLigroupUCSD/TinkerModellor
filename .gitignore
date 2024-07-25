@@ -173,3 +173,6 @@ cython_debug/
 # python -m build # file for cpp compiling
 dist/
 /TinkerModellor/build/
+
+#test
+test_cache/*

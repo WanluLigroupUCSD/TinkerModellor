@@ -1,5 +1,4 @@
-conda env create -n tkm -f env.yml
-conda activate tkm
+
 pip uninstall tinkermodellor -y
 export TKMROOT=$(pwd)
 python -m build > build.log
@@ -12,7 +11,7 @@ if [ $? -ne 0 ]; then
     echo "Installation failed"
     exit 1
 fi
-cd test
+bash test.sh
 pytest . -n auto
 if [ $? -ne 0 ]; then
     echo "Tests failed"
