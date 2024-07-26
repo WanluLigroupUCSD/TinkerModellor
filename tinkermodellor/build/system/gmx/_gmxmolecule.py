@@ -126,10 +126,21 @@ class GMXMolecule() :
                 terminal_count = 0
                 first_n:bool = False
                 while not first_n :
+                    # Normal N terminal Check
                     if self.AtomTypes[terminal_count] in GMXMolecule.n_terminal_atomtype:
                         self.AtomTypes[terminal_count] = 'NTe'
                         first_n = True
                     terminal_count += 1
+
+                # Proline N terminal Check
+                pro_count = 0
+                if self.AtomResidue[0] == 'PRO':
+                    while True:
+                        pro_count += 1
+                        if self.AtomTypes[pro_count] == 'O':
+                            pro_count += 1
+                            break
+                    self.AtomResidue[0:pro_count] = ['PRT']*pro_count
             
             if c_terminal:
                 terminal_count = -1
