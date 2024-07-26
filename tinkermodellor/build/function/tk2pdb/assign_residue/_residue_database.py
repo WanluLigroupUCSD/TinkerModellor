@@ -144,8 +144,41 @@ class ResidueDatabase():
             'ARG',
             11
         ],
+        
+        #Residue HISH, two hydrogen atoms are attached to the nitrogen atom （GROMACS HIP）
+        [
+            [   (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'O'}),
+                (5, {'element': 'C'}),
+                (6, {'element': 'C'}),
+                (7, {'element': 'N'}), # ND
+                (8, {'element': 'C'}),
+                (9, {'element': 'N'}), # NE
+                (10,{'element': 'C'}),
+                (11,{'element': 'H'}),
+                (12,{'element': 'H'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (2, 5,),
+                (5, 6,),
+                (6, 7,),
+                (7, 8,),
+                (8, 9,),
+                (9,10,),
+                (10,6,),
+                (11,7,),
+                (12,9,),
+            ],
+            'HIP',
+            10
+        ],
 
-        #Residue HISD 
+        #Residue HISD, in GROMCAS is called HID
         [
             [   (1, {'element': 'N'}),
                 (2, {'element': 'C'}),
@@ -172,7 +205,7 @@ class ResidueDatabase():
                 (10,6,),
                 (11,7,),
             ],
-            'HIS',
+            'HID',
             10
         ],
 
@@ -203,38 +236,10 @@ class ResidueDatabase():
                 (10,6,),
                 (11,9,),
             ],
-            'HIS',
+            'HIE',
             10
         ],
 
-        #Residue HISH, two hydrogen atoms are attached to the nitrogen atom 
-        [
-            [   (1, {'element': 'N'}),
-                (2, {'element': 'C'}),
-                (3, {'element': 'C'}),
-                (4, {'element': 'O'}),
-                (5, {'element': 'C'}),
-                (6, {'element': 'C'}),
-                (7, {'element': 'N'}), # ND
-                (8, {'element': 'C'}),
-                (9, {'element': 'N'}), # NE
-                (10,{'element': 'C'}),
-            ],
-            [
-                (1, 2,),
-                (2, 3,),
-                (3, 4,),
-                (2, 5,),
-                (5, 6,),
-                (6, 7,),
-                (7, 8,),
-                (8, 9,),
-                (9,10,),
-                (10,6,),
-            ],
-            'HISh',
-            10
-        ],
         #Residue GLUH
         [
             [
@@ -609,7 +614,7 @@ class ResidueDatabase():
                 (5, 6,),
                 (6, 7,),
             ],
-            'CYX',
+            'CYS',
             6
         ],
         #Residue CYS
@@ -629,7 +634,7 @@ class ResidueDatabase():
                 (2, 5,),
                 (5, 6,),
             ],
-            'CYS',
+            'CYX',
             6
         ],
         #Residue SER

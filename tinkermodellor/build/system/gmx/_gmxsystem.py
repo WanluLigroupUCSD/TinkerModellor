@@ -95,89 +95,58 @@ class GMXSystem():
         self._read_gro_file(gro_file)
 
 
-    def _read_top_file(self,top_path:str):
-        
-        with open(top_path,'r') as f:
-            lines=f.readlines()
-        #To control whether the has already appeared
-        molecules_flag= False
-
-        #Used for counting how many moleculetypes have been read
-        molecule_type_count = 0 
-
-        #Used for counting which line is reading
+    def _read_top_file(self, top_path: str):
+        with open(top_path, 'r') as f:
+            lines = f.readlines()
+        molecules_flag = False
+        molecule_type_count = 0
         line_count = 0
-
-        #Due to the similarity of [ bond ] and [ pairs ]
-        #We must use bond_flag to determine whether it is bond or pairs
         bond_flag = False
-
-        #Used to search each molecule's name
-        molecules_name_flag=True
+        molecules_name_flag = True
         molecule_name_list = [None]
         j = -1
+
         while molecules_name_flag:
             if '[ molecules ]' in lines[j]:
-                molecules_name_flag =False
-                #print(molecule_name_list)
-            elif re.fullmatch(MOLECULES_PATTERN,lines[j]):
+                molecules_name_flag = False
+            elif re.fullmatch(MOLECULES_PATTERN, lines[j]):
                 molecule_name_list.insert(1, lines[j].strip().split(' ')[0])
-
-            j -=1
+            j -= 1
+        
+        print(molecule_name_list)
 
         molecules_count = 1
         HIS_box = []
         for line in lines:
-            #A new molecule start (according to the GMX top file format)
-            #GMX topology file format description: https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html
             line_count += 1
 
             if '[ moleculetype ]' in line:
-                #DEBUG##print("Detect a new moleculetype")
-    
-                #To add items into moleculetype(GMXMolecule)
                 if molecule_type_count > 0:
-                    #print(atomtype_read)
-                    #print(molecule_type_count)
-                    #print(bond_read)
-                    #print(molecule_type_count,molecule_name_list[molecule_type_count])
-                    self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}',atomtype_read, atomresidue_read, bond_read)
-      
-                #Build a new GMXMolecule class to store a new moleculetype
+                    self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}', atomtype_read, atomresidue_read, bond_read)
                 molecule_type_count += 1
-                self.MoleculeType.append(GMXMolecule())    
+                self.MoleculeType.append(GMXMolecule())
                 atomtype_read = []
                 bond_read = []
                 atomresidue_read = []
                 continue
 
-            #Only when the molecule type is not empty, the program would read the information
-            if molecule_type_count > 0 and molecules_flag == False:
-                
-                #To match the ATOMTYPE_PATTE
-                match_atomtype = re.fullmatch(SYSTEM_ATOMTYPE_PATTERN,line)
+            if molecule_type_count > 0 and not molecules_flag:
+                match_atomtype = re.fullmatch(SYSTEM_ATOMTYPE_PATTERN, line)
                 if match_atomtype:
-                    ligand_atomtype =re.fullmatch(LIGAND_ATOMTYPE_PATTERN,line)
+                    ligand_atomtype = re.fullmatch(LIGAND_ATOMTYPE_PATTERN, line)
                     if ligand_atomtype:
                         atomtype_read.append(ligand_atomtype.group(2).replace(' ', ''))
                         atomresidue_read.append(re.sub(r'\d', '', match_atomtype.group(4)).replace(' ', ''))
-                        #DEBUG##print(line)
                     else:
                         temp_atomtype = match_atomtype.group(5)[:4].replace(' ', '')
                         temp_atomresidue = re.sub(r'\d', '', match_atomtype.group(4)).replace(' ', '')
-                        
-                        # CYS and CYX has the same SG , the only difference is that CYX has no H atom
-                        # two paths to deal with the problem
-                        # 1: divide residue into CYS and CYX via HG 2: divide atomtype into SG and SGH via HG 
-                        # we choose the second one , however CYX is also avaliable
+
                         if temp_atomresidue == 'CYS' and temp_atomtype == 'HG':
-                            atomtype_read.pop()#remove restored SG
-                            atomtype_read.append('SGH')#mark it and append , see dataset/amoebabio/_amber.py
-                            atomtype_read.append('HG')#normal append
+                            atomtype_read.pop()
+                            atomtype_read.append('SGH')
+                            atomtype_read.append('HG')
 
                         elif temp_atomresidue == 'HIS':
-                            # HIS has three types,HISE(HE2) HISD(HD1), HISH(HE2,HD1) , the read order is {HD1>HE2}
-                            # so if read HE2 , the residue is HISE or HISH ,just check if HD1 is in HIS_box
                             HIS_box.append(temp_atomtype)
                             atomtype_read.append(temp_atomtype)
 
@@ -189,47 +158,36 @@ class GMXSystem():
                                         residue = "HISE"
                                 else:
                                     residue = "HISD"
-                                atomresidue_read.extend([residue]*len(HIS_box))
+                                atomresidue_read.extend([residue] * len(HIS_box))
                                 HIS_box = []
-           
-                        #this is common path
+
                         else:
                             atomtype_read.append(temp_atomtype)
-                        
-                        #Residue name in GMX top file is not always the same as the residue name in Tinker XYZ file
+
                         if temp_atomresidue != "HIS":
                             atomresidue_read.append(temp_atomresidue)
-                        
 
-
-
-                #DEBUG##print(atomresidue_read)
-                #DEBUG##print(atomtype_read)
-
-                #To match the BOND_PATTERN
                 if '[ bonds ]' in line:
                     bond_flag = True
                 if not line.strip():
-                    bond_flag = False 
+                    bond_flag = False
 
-                #match_bond = re.fullmatch(BOND_PATTERN,line)
                 if bond_flag and ';' not in line and '[ bonds ]' not in line:
-                    #DEBUG##print(line)
-                    #DEBUG##print(line_count)
                     bond_line = line.strip().split()
-                    bond_read.append([int(bond_line[0]),int(bond_line[1])])
-                    #bond_read.append([int(match_bond.group(1)),int(match_bond.group(2))])
-            
-            
+                    bond_read.append([int(bond_line[0]), int(bond_line[1])])
+
             if '[ molecules ]' in line:
-                self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}',atomtype_read, atomresidue_read, bond_read)
-                molecules_flag =True
-            
-            
-            if molecules_flag and re.fullmatch(MOLECULES_PATTERN,line):
+                self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}', atomtype_read, atomresidue_read, bond_read)
+                molecules_flag = True
+
+            if molecules_flag and re.fullmatch(MOLECULES_PATTERN, line):
                 self.MoleculeTypeNum.append(line.strip().split(' ')[-1])
-                print(f"Detect a new molecule, and it has {self.MoleculeTypeNum[-1]} molecules, its name is {self.MoleculeType[molecules_count].MoleculeName} and it consists of {self.MoleculeType[molecules_count].AtomNums} atoms.\n")
+                if molecules_count < len(self.MoleculeType):
+                    print(f"Detect a new molecule, and it has {self.MoleculeTypeNum[-1]} molecules, its name is {self.MoleculeType[molecules_count].MoleculeName} and it consists of {self.MoleculeType[molecules_count].AtomNums} atoms.\n")
+                else:
+                    print(f"Error: Molecule count {molecules_count} exceeds MoleculeType length {len(self.MoleculeType)}.")
                 molecules_count += 1
+
 
     def _read_gro_file(self,gro_path):
 

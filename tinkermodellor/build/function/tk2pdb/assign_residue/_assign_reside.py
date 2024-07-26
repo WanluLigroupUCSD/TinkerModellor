@@ -54,6 +54,8 @@ class AssignResidue():
 
             if is_subgraph_isomorphic:
                 residue_name = residue_data[2]
+                if residue_name == "HIS":
+                    print('Warning: Residue ID: {} is assigned as "HIS"'.format(resid))
                 break
 
         if residue_name == "UKN":
