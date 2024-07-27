@@ -27,6 +27,14 @@ class Tinker2PDB(TinkerSystem):
         self.depth = depth
 
     def __call__(self,tk:str, pdb:str, xyz_style:int=2 ) -> None:
+        """
+        Convert the tinker xyz file to pdb file
+        Args:
+            tk (str): The path of the tinker xyz file
+            pdb (str): The path of the output pdb file
+            xyz_style (int): The style of the xyz file, 1 for TinkerModellor style, 2 for Tinker style
+        """
+
 
         self.read_from_tinker(tk)
 
