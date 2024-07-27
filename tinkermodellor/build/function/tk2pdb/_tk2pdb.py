@@ -26,7 +26,7 @@ class Tinker2PDB(TinkerSystem):
             self.depth = 10000
         self.depth = depth
 
-    def __call__(self,tk:str, pdb:str) -> None:
+    def __call__(self,tk:str, pdb:str, xyz_style:int=2 ) -> None:
 
         self.read_from_tinker(tk)
 
@@ -52,7 +52,10 @@ class Tinker2PDB(TinkerSystem):
                     self.ResidueNum[i] = current_residue_index
                 current_residue_index += 1
             else:
-                self._assign_residue(index, current_residue_index)
+                if xyz_style == 1:
+                    self._tkm_assign_residue(index, current_residue_index)
+                elif xyz_style == 2:
+                    self._tinker_assign_residue(index, current_residue_index)
 
         self._pdb_atomtype()
 
@@ -85,7 +88,7 @@ class Tinker2PDB(TinkerSystem):
             f.write(self.__str__())
 
         
-    def _assign_residue(self, index:List[int], residue_index: int) -> str:
+    def _tkm_assign_residue(self, index:List[int], residue_index: int) -> str:
         
         find_residue = AssignResidue()
         node : List[GraphData.Node] = []
@@ -174,6 +177,80 @@ class Tinker2PDB(TinkerSystem):
                 for j in self.Bonds[normal-1]:
                     if j < normal:
                         edge.append((normal-last_residue+1, j-last_residue+1))
+
+    def _tinker_assign_residue(self, index: List[int], residue_index: int) -> str:
+
+        find_residue = AssignResidue()
+        node: List[GraphData.Node] = []
+        edge: List[GraphData.Edge] = []
+
+        last_residue = index[0]-1
+
+        first_residue:bool = True
+
+        element = {
+            'H': 1,
+            'C': 6,
+            'N': 7,
+            'O': 8,
+            'S': 16,
+        }
+
+        i = index[0] - 1
+        while i < index[-1]:
+
+            # normal is the index of the current atom
+            normal = i
+            # 如果当前原子是N
+            if self.AtomTypesStr[i] == 'N':
+                # 检查接下来的三个原子是否为C-C-O
+                if (i+3 < len(self.AtomTypesStr) and 
+                    self.AtomTypesStr[i+1] == 'CA' and 
+                    self.AtomTypesStr[i+2] == 'C' and 
+                    self.AtomTypesStr[i+3] == 'O'):
+
+                    if first_residue:
+                        first_residue = False
+                    else:
+                    
+                        # 处理上一个残基
+                        edge = self._clean_edges(edge, 1, i-last_residue)
+                        resname = find_residue(node, edge, residue_index, i-last_residue)
+
+                        for x in range(last_residue-1, i):
+                            self.ResidueName[x] = resname
+                            self.ResidueNum[x] = residue_index
+
+                        residue_index += 1
+
+                        # 更新last_residue
+                        last_residue = i
+                        node = []
+                        edge = []
+
+                # 将当前N原子添加到node和edge
+                node.append((normal-last_residue+1, {'element': f'{self.AtomTypesStr[normal][0]}'}))
+
+                for j in self.Bonds[normal]:
+                    if j < normal+1:
+                        edge.append((j-last_residue, normal-last_residue+1))
+
+            else:
+                # 将当前原子添加到node和edge
+                node.append((normal-last_residue+1, {'element': f'{self.AtomTypesStr[normal][0]}'}))
+
+                for j in self.Bonds[normal]:
+                    if j < normal+1:
+                        edge.append((j-last_residue, normal-last_residue+1))
+
+            i += 1
+
+        # 处理最后一个残基
+        edge = self._clean_edges(edge, 1, index[-1] - last_residue)
+        resname = find_residue(node, edge, residue_index, index[-1] - last_residue)
+        for x in range(last_residue-1, index[-1]):
+            self.ResidueName[x] = resname
+            self.ResidueNum[x] = residue_index
         
 
     def _clean_edges(self, edges:List[GraphData.Edge] , start:int , end: int) -> List[GraphData.Edge]:
@@ -182,7 +259,7 @@ class Tinker2PDB(TinkerSystem):
         new_edges: List[GraphData.Edge] = []
 
         for edge in edges:
-            atom_i, atom_2 = edge  # 直接在这里解包
+            atom_i, atom_2 = edge  
             if atom_i >= start and atom_i <= end and atom_2 >= start and atom_2 <= end:
                 new_edges.append(edge)
 
