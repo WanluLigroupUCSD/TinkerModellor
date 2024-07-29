@@ -251,7 +251,7 @@ class TinkerSystem() :
                 coord1 = self.AtomCrds[atom1 - 1]
                 coord2 = self.AtomCrds[atom2 - 1]
                 distance = np.linalg.norm(coord1 - coord2)
-                if distance <= 3.0:  # Only consider distances less than or equal to 3 Å
+                if distance <= 2.5:  # Only consider distances less than or equal to 2.5 Å
                     distances.append((distance, atom1, atom2))
 
         # Sort distances to implement a greedy algorithm

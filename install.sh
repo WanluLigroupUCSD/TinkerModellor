@@ -11,12 +11,6 @@ if [ $? -ne 0 ]; then
     echo "Installation failed"
     exit 1
 fi
-bash test.sh
-pytest . -n auto
-if [ $? -ne 0 ]; then
-    echo "Tests failed"
-    exit 1
-fi
 
 echo "install complete"
 echo "Run 'tkm' to start the app"
