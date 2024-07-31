@@ -225,3 +225,57 @@ class TinkerSystem() :
         assert isinstance(self.Bonds, list), f'Bonds must be a list, got {type(self.Bonds)}'
         assert isinstance(self.BoxSize, np.ndarray), f'BoxSize must be a numpy array, got {type(self.BoxSize)}'
         assert isinstance(self.BoxAngle, np.ndarray), f'BoxAngle must be a numpy array, got {type(self.BoxAngle)}'
+
+    def _disulfide_bond_check(self) -> None:
+        # Find all SG atoms and their bond connectivities
+        sg_atoms = []
+        for i, atom_type in enumerate(self.AtomTypesStr):
+            if atom_type == "SG":
+                # Check the connectivity of the SG atom
+                bond_count = sum([1 for bond in self.Bonds if (i + 1) in bond])
+                if bond_count == 1:
+                    sg_atoms.append(i + 1)
+
+        if not sg_atoms:
+            print("No unpaired SG atoms found.")
+            return
+
+        # Warn about unpaired SG atoms
+        print(f"Warning: Found {len(sg_atoms)} unpaired SG atoms: {sg_atoms}")
+
+        # Calculate distances between all pairs of SG atoms
+        distances = []
+        for i in range(len(sg_atoms)):
+            for j in range(i + 1, len(sg_atoms)):
+                atom1, atom2 = sg_atoms[i], sg_atoms[j]
+                coord1 = self.AtomCrds[atom1 - 1]
+                coord2 = self.AtomCrds[atom2 - 1]
+                distance = np.linalg.norm(coord1 - coord2)
+                if distance <= 2.5:  # Only consider distances less than or equal to 2.5 Å
+                    distances.append((distance, atom1, atom2))
+
+        # Sort distances to implement a greedy algorithm
+        distances.sort()
+
+        # Pair the atoms
+        paired_atoms = set()
+        for distance, atom1, atom2 in distances:
+            if atom1 not in paired_atoms and atom2 not in paired_atoms:
+                # Update the Bonds list for atom1 and atom2
+                if len(self.Bonds) < atom1:
+                    self.Bonds.extend([[] for _ in range(atom1 - len(self.Bonds))])
+                if len(self.Bonds) < atom2:
+                    self.Bonds.extend([[] for _ in range(atom2 - len(self.Bonds))])
+                self.Bonds[atom1 - 1].append(atom2)
+                self.Bonds[atom2 - 1].append(atom1)
+                paired_atoms.add(atom1)
+                paired_atoms.add(atom2)
+                print(f"Formed disulfide bond between atom {atom1} and atom {atom2} with distance {distance:.2f} Å")
+
+        # Check if there are any SG atoms left unpaired
+        unpaired_atoms = [atom for atom in sg_atoms if atom not in paired_atoms]
+        if unpaired_atoms:
+            print(f"Warning: Unpaired SG atoms remaining: {unpaired_atoms}")
+
+
+

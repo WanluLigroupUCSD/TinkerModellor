@@ -372,7 +372,7 @@ class TinkerModellor:
          
         return tks_connected
     
-    def tk2pdb(self,tk:str,pdb:str, depth:int=10000) -> str:
+    def tk2pdb(self,tk:str,pdb:str, depth:int=10000, style:int=1) -> str:
         """
         Convert a Tinker system to a PDB file.
 
@@ -380,6 +380,7 @@ class TinkerModellor:
             tk (str): Path to the Tinker system.
             pdb (str): Path to the output PDB file.
             depth (int, optional): The depth of the searching algorithm.
+            style (int, optional): The style of the XYZ file. Defaults to 1.
 
         Returns:
             str: The PDB file.
@@ -393,7 +394,7 @@ class TinkerModellor:
         pdb = os.path.abspath(pdb)
 
         tkpdb = Tinker2PDB(depth)
-        tkpdb(tk, pdb)
+        tkpdb(tk, pdb, style)
 
         return tkpdb
 

@@ -144,8 +144,8 @@ class ResidueDatabase():
             'ARG',
             11
         ],
-
-        #Residue HIS 
+        
+        #Residue HISH, two hydrogen atoms are attached to the nitrogen atom （GROMACS HIP）
         [
             [   (1, {'element': 'N'}),
                 (2, {'element': 'C'}),
@@ -153,10 +153,12 @@ class ResidueDatabase():
                 (4, {'element': 'O'}),
                 (5, {'element': 'C'}),
                 (6, {'element': 'C'}),
-                (7, {'element': 'N'}),
+                (7, {'element': 'N'}), # ND
                 (8, {'element': 'C'}),
-                (9, {'element': 'N'}),
+                (9, {'element': 'N'}), # NE
                 (10,{'element': 'C'}),
+                (11,{'element': 'H'}),
+                (12,{'element': 'H'}),
             ],
             [
                 (1, 2,),
@@ -169,9 +171,102 @@ class ResidueDatabase():
                 (8, 9,),
                 (9,10,),
                 (10,6,),
+                (11,7,),
+                (12,9,),
             ],
-            'HIS',
+            'HIP',
             10
+        ],
+
+        #Residue HISD, in GROMCAS is called HID
+        [
+            [   (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'O'}),
+                (5, {'element': 'C'}),
+                (6, {'element': 'C'}),
+                (7, {'element': 'N'}),
+                (8, {'element': 'C'}),
+                (9, {'element': 'N'}),
+                (10,{'element': 'C'}),
+                (11,{'element': 'H'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (2, 5,),
+                (5, 6,),
+                (6, 7,),
+                (7, 8,),
+                (8, 9,),
+                (9,10,),
+                (10,6,),
+                (11,7,),
+            ],
+            'HID',
+            10
+        ],
+
+        #Residue HISE 
+        [
+            [   (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'O'}),
+                (5, {'element': 'C'}),
+                (6, {'element': 'C'}),
+                (7, {'element': 'N'}),
+                (8, {'element': 'C'}),
+                (9, {'element': 'N'}),
+                (10,{'element': 'C'}),
+                (11,{'element': 'H'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (2, 5,),
+                (5, 6,),
+                (6, 7,),
+                (7, 8,),
+                (8, 9,),
+                (9,10,),
+                (10,6,),
+                (11,9,),
+            ],
+            'HIE',
+            10
+        ],
+
+        #Residue GLUH
+        [
+            [
+                (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'O'}),
+                (5, {'element': 'C'}),
+                (6, {'element': 'C'}),
+                (7, {'element': 'C'}),
+                (8, {'element': 'O'}),
+                (9, {'element': 'O'}),
+                (10, {'element': 'H'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (2, 5,),
+                (5, 6,),
+                (6, 7,),
+                (7, 8,),
+                (7, 9,),
+                (9, 10,),
+            ],
+            'GLUH',
+            9
         ],
 
         #Residue GLU
@@ -213,6 +308,39 @@ class ResidueDatabase():
                 (7, {'element': 'C'}),
                 (8, {'element': 'C'}),
                 (9, {'element': 'N'}),
+                (10, {'element': 'H'}),
+                (11, {'element': 'H'}),
+                (12, {'element': 'H'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (2, 5,),
+                (5, 6,),
+                (6, 7,),
+                (7, 8,),
+                (8, 9,),
+                (9, 10,),
+                (9, 11,),
+                (9, 12,),
+            ],
+            'LYS',
+            9
+        ],
+
+        #Residue LYSN, deprotonated lysine
+        [
+            [
+                (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'O'}),
+                (5, {'element': 'C'}),
+                (6, {'element': 'C'}),
+                (7, {'element': 'C'}),
+                (8, {'element': 'C'}),
+                (9, {'element': 'N'}),
             ],
             [
                 (1, 2,),
@@ -224,7 +352,7 @@ class ResidueDatabase():
                 (7, 8,),
                 (8, 9,),
             ],
-            'LYS',
+            'LYSN',
             9
         ],
         #Residue GLN
@@ -253,7 +381,32 @@ class ResidueDatabase():
             'GLN',
             9
         ],
-
+        #Residue ASPH
+        [
+            [
+                (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'C'}),
+                (5, {'element': 'O'}),
+                (6, {'element': 'O'}),
+                (7, {'element': 'H'}),
+                (8, {'element': 'C'}),
+                (9, {'element': 'O'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (4, 5,),
+                (4, 6,),
+                (6, 7,),
+                (2, 8,),
+                (8, 9,),
+            ],
+            'ASPH',
+            8
+        ],
         #Residue ASP
         [
             [
@@ -442,6 +595,28 @@ class ResidueDatabase():
             'VAL',
             7
         ],
+        #Residue CYX
+        [
+            [
+                (1, {'element': 'N'}),
+                (2, {'element': 'C'}),
+                (3, {'element': 'C'}),
+                (4, {'element': 'O'}),
+                (5, {'element': 'C'}),
+                (6, {'element': 'S'}),
+                (7, {'element': 'H'}),
+            ],
+            [
+                (1, 2,),
+                (2, 3,),
+                (3, 4,),
+                (2, 5,),
+                (5, 6,),
+                (6, 7,),
+            ],
+            'CYS',
+            6
+        ],
         #Residue CYS
         [
             [
@@ -459,7 +634,7 @@ class ResidueDatabase():
                 (2, 5,),
                 (5, 6,),
             ],
-            'CYS',
+            'CYX',
             6
         ],
         #Residue SER

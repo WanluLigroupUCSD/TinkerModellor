@@ -36,6 +36,7 @@ class Transformer():
         self._build_tinker_system(gmx_input,tinker)
         self._check(gmx_input,tinker)
         tinker.check()
+        tinker._disulfide_bond_check()
         return tinker
 
     def _build_tinker_system(self,gmx:GMXSystem,tinker:TinkerSystem):

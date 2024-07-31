@@ -1,0 +1,49 @@
+;
+;	File 'topol.top' was generated
+;	By user: wayne (1000)
+;	On host: wayne-X15-AT-23
+;	At date: Fri Jul 26 03:55:44 2024
+;
+;	This is a standalone topology file
+;
+;	Created by:
+;	                    :-) GROMACS - gmx pdb2gmx, 2023.1 (-:
+;	
+;	Executable:   /home/wayne/software/gromacs-2023.1/bin/gmx
+;	Data prefix:  /home/wayne/software/gromacs-2023.1
+;	Working dir:  /home/wayne/quanmol/TinkerModellor/example/dna
+;	Command line:
+;	  gmx pdb2gmx -f 1bna.pdb -ignh -p topol.top -o dna.gro
+;	Force field was read from current directory or a relative path - path added.
+;
+
+; Include forcefield parameters
+#include "./amber14sb_parmbsc1.ff/forcefield.itp"
+
+; Include chain topologies
+#include "topol_DNA_chain_A.itp"
+#include "topol_DNA_chain_B.itp"
+
+; Include water topology
+#include "./amber14sb_parmbsc1.ff/tip3p.itp"
+
+#ifdef POSRES_WATER
+; Position restraint for each water oxygen
+[ position_restraints ]
+;  i funct       fcx        fcy        fcz
+   1    1       1000       1000       1000
+#endif
+
+; Include topology for ions
+#include "./amber14sb_parmbsc1.ff/ions.itp"
+
+[ system ]
+; Name
+DNA (5'-D(*CP*GP*CP*GP*AP*AP*TP*TP*CP*GP*CP*G)-3')
+
+[ molecules ]
+; Compound        #mols
+DNA_chain_A         1
+DNA_chain_B         1
+SOL                37
+SOL                43

@@ -21,6 +21,7 @@ class AmberTrans(FroceFieldTrans):
         #Preparation for the normal(amino acid)force field transformation
         self.ForceFieldDict: dict[str, dict[str, int]] = {}
 
+        #PRT is defined in AMOEBA force field as the terminal proline
         self.ResidueList: list[str] =  [
             "ALA", "ARG", "ASN", "ASP", "CYS",
             "GLN", "GLU", "GLY", "HIE", "ILE",
@@ -28,7 +29,7 @@ class AmberTrans(FroceFieldTrans):
             "SER", "THR", "TRP", "TYR", "VAL",
             "HISD","HISE","HISH","LYSN","GLUH",
             "ASPH","CYX","TYRA","HID","HIE",
-            "HIP",]
+            "HIP","PRT"]
         
         support_forcefield = []
 
