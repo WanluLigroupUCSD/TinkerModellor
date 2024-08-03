@@ -1,4 +1,5 @@
 from ._abc import FroceFieldTrans
+from ._json_loader import JsonLoader
 from .amoebabio09 import AMOEBABIO09ForceFieldDict
 from .amoebabio18 import AMOEBABIO18ForceFieldDict
 from .amoebapro13 import AMOEBAPRO13ForceFieldDict
@@ -46,9 +47,11 @@ class AmberTrans(FroceFieldTrans):
             self.ForceFieldDict = AMOEBAPRO13ForceFieldDict._Amberpara
             support_forcefield=[WaterAndIonsForceField.ion_para,WaterAndIonsForceField.water_para]
         
+        DNAAndRNAForceField = JsonLoader.load_json(self.ForceField)
+        support_forcefield.append(DNAAndRNAForceField)
+
         #Update the force field transformation dictionary
-        for i in support_forcefield:
-            self.FFParameter.update(i)
+        for i in support_forcefield:self.FFParameter.update(i)
             
 
     def __call__(self,atom_residue:str, atom_type: str) -> str:

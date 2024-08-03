@@ -9,9 +9,9 @@ class GMXMolecule() :
     #As for entire system information, it is build in the GMXSystem
     #GMX format: https://manual.gromacs.org/current/reference-manual/topologies/topology-file-formats.html
     
-    n_terminal_atomtype = ['N','NH']
-    c_terminal_atomtype = ['C']
-    c_terminal_atomtype_for_oxygen = ['OXT','OC1','OC2','O']
+    Protein_N_terminal_atomtype = ['N','NH']
+    Proteion_C_terminal_atomtype = ['C']
+    Protein_C_terminal_atomtype_for_oxygen = ['OXT','OC1','OC2','O']
 
     #Used for store the residue name list
     residue_list =  [
@@ -127,7 +127,7 @@ class GMXMolecule() :
                 first_n:bool = False
                 while not first_n :
                     # Normal N terminal Check
-                    if self.AtomTypes[terminal_count] in GMXMolecule.n_terminal_atomtype:
+                    if self.AtomTypes[terminal_count] in GMXMolecule.Protein_N_terminal_atomtype:
                         self.AtomTypes[terminal_count] = 'NTe'
                         first_n = True
                     terminal_count += 1
@@ -149,10 +149,10 @@ class GMXMolecule() :
                 #C terminal contains 1 Carbon atom and 2 Oxygen atoms
                 three_atom_count = 0
                 while not last_c :
-                    if self.AtomTypes[terminal_count] in GMXMolecule.c_terminal_atomtype:
+                    if self.AtomTypes[terminal_count] in GMXMolecule.Proteion_C_terminal_atomtype:
                         self.AtomTypes[terminal_count] = 'CTe'
                         three_atom_count +=1
-                    if self.AtomTypes[terminal_count] in GMXMolecule.c_terminal_atomtype_for_oxygen:
+                    if self.AtomTypes[terminal_count] in GMXMolecule.Protein_C_terminal_atomtype_for_oxygen:
                         self.AtomTypes[terminal_count] = 'OTe'
                         three_atom_count +=1
                     if three_atom_count == 3:

@@ -161,6 +161,16 @@ class GMXSystem():
                                 atomresidue_read.extend([residue] * len(HIS_box))
                                 HIS_box = []
 
+                        elif temp_atomtype == "H5T" :
+                            atomtype_read.pop()
+                            atomtype_read.append("O5'T")
+                            atomtype_read.append("H5T")
+
+                        elif temp_atomtype == "H3T" :
+                            atomtype_read.pop()
+                            atomtype_read.append("O3'T")
+                            atomtype_read.append("H3T")
+
                         else:
                             atomtype_read.append(temp_atomtype)
 
