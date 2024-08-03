@@ -32,6 +32,8 @@ class AmberTrans(FroceFieldTrans):
             "ASPH","CYX","TYRA","HID","HIE",
             "HIP","PRT"]
         
+        self.DNAAndRNAList: list[str] = ["DA","DC","DG","DT","A","C","G","U"]
+        
         support_forcefield = []
 
         if self.ForceField == 1:
@@ -47,12 +49,13 @@ class AmberTrans(FroceFieldTrans):
             self.ForceFieldDict = AMOEBAPRO13ForceFieldDict._Amberpara
             support_forcefield=[WaterAndIonsForceField.ion_para,WaterAndIonsForceField.water_para]
         
-        DNAAndRNAForceField = JsonLoader.load_json(self.ForceField)
-        support_forcefield.append(DNAAndRNAForceField)
+        Loader = JsonLoader()
+        self.DNAAndRNAForceFieldDict = Loader.load_json(self.ForceField)
+    
 
         #Update the force field transformation dictionary
         for i in support_forcefield:self.FFParameter.update(i)
-            
+
 
     def __call__(self,atom_residue:str, atom_type: str) -> str:
         return self._transform_to_tinker(atom_type,atom_residue)        
@@ -63,14 +66,17 @@ class AmberTrans(FroceFieldTrans):
         #To check whether the residue is normal residue
         #Normal residue: LYS, ARG, GLU, etc.
         if atom_residue in self.ResidueList:
-            return self.get_atom_type(atom_residue, atom_type)
+            return self.get_atom_type(self.ForceFieldDict,atom_residue, atom_type)
+        
+        if atom_residue in self.DNAAndRNAList:
+            return self.get_atom_type(self.DNAAndRNAForceFieldDict,atom_residue, atom_type)
 
         #Abnormal residue: WAT, LIG, Na+, etc.
         else:
             return self.FFParameter.get(atom_type, 'None')
-
-    def get_atom_type(self,atom_residue, atom_type):
-        residue_dict = self.ForceFieldDict.get(atom_residue, "None")
+        
+    def get_atom_type(self,ffdict,atom_residue, atom_type):
+        residue_dict = ffdict.get(atom_residue, "None")
         if residue_dict == "None":
             return "None"
         else:

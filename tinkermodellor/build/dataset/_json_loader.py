@@ -50,11 +50,11 @@ class JsonLoader:
                 if atom == "H5":
                     temp_ForceField[group]["H5'1"] = ForceField[group]["H5"]
                     temp_ForceField[group]["H5'2"] = ForceField[group]["H5"]
-                    temp_ForceField[group].pop("H5")
+
                 elif atom == "OP":
                     temp_ForceField[group]["O1P"] = ForceField[group]["OP"]
                     temp_ForceField[group]["O2P"] = ForceField[group]["OP"]
-                    temp_ForceField[group].pop("OP")
+  
         
         #print(ForceField["RP"])    
         #print(temp_ForceField['RP'])        
