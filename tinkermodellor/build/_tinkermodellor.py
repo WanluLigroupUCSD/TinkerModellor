@@ -4,14 +4,18 @@ from typing import List, Union, Tuple
 import numpy as np
 
 from tinkermodellor.build import TinkerSystem
+from tinkermodellor.build import TinkerSystemCharge
+
 from tinkermodellor.build import GMXSystem
 from tinkermodellor.build import Transformer
+
 
 from tinkermodellor.build import MergeTinkerSystem
 from tinkermodellor.build import DeleteTinkerSystem
 from tinkermodellor.build import ReplaceTinkerSystem
 from tinkermodellor.build import ConnectTinkerSystem
 from tinkermodellor.build import Tinker2PDB
+from tinkermodellor.build import ElectricFieldCompute
 
 from tinkermodellor.build import TKMTrajectory
 
@@ -398,9 +402,29 @@ class TinkerModellor:
 
         return tkpdb
 
+    def electric_field(self) -> TinkerSystemCharge:
+        """
+        Calculate the electric field of a Tinker system.
+
+        Args:
+            charge_method (str): The charge method to be used.
+            tinker_xyz (str): Path to the Tinker system.
+
+        Returns:
+            TinkerSystemCharge: The Tinker system with charges.
+
+        Usage:
+            tkm= TinkerModellor()
+            charge = tkm.electric_field(charge_method='eem', tinker_xyz='/path/to/your/tinker.xyz')
+        """
+
+        charge = ElectricFieldCompute(charge_method='eem', tinker_xyz='./example/merge/ex1/ligand.xyz')
+        point= [-0.190548 , 0.023690  , -1.146862]
+        charge.compute_grid_ef(point,radius=5,density_level=1)
+
 
 if __name__ == '__main__':
-    control = 9
+    control = 10
     tkm= TinkerModellor()
 
     # Transform
@@ -460,4 +484,8 @@ if __name__ == '__main__':
     elif control == 9:
         tkm.tk2pdb(r'example/tk2pdb/ex1/tinker.xyz',\
                 r'example/tk2pdb/ex1/tk2pdb.pdb')
+    
+    # Electric Field
+    elif control == 10:
+        tkm.electric_field()
         
