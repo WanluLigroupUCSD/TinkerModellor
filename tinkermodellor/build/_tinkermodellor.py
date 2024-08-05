@@ -402,25 +402,140 @@ class TinkerModellor:
 
         return tkpdb
 
-    def electric_field(self) -> TinkerSystemCharge:
+    def electric_field_point(self, point: Union[List, np.ndarray], charge_method: str = 'eem', 
+                            tinker_xyz: str = None) -> List[float]:
         """
-        Calculate the electric field of a Tinker system.
+        Compute the electric field at the specified points.
 
         Args:
-            charge_method (str): The charge method to be used.
-            tinker_xyz (str): Path to the Tinker system.
+            point (Union[List,np.ndarray]): The points where the electric field is computed.
+            charge_method (str, optional): The charge method. Defaults to 'eem'. (eem, qeq, qtpie)
+            tinker_xyz (str): Path to the Tinker system. Defaults to None.
 
         Returns:
-            TinkerSystemCharge: The Tinker system with charges.
-
-        Usage:
-            tkm= TinkerModellor()
-            charge = tkm.electric_field(charge_method='eem', tinker_xyz='/path/to/your/tinker.xyz')
+            electric_field (list): Electric field at the point, including the magnitude.
+                            Format is [E_x, E_y, E_z, |E|].
         """
+        if tinker_xyz is None:
+            raise ValueError("The Tinker system file must be provided.")
+        else:
+            tinker_xyz = os.path.abspath(tinker_xyz)
+        
+        # Convert list to np.ndarray if necessary
+        print(point)
+        if isinstance(point, list):
+            point = np.array(point)
 
-        charge = ElectricFieldCompute(charge_method='eem', tinker_xyz='./example/merge/ex1/ligand.xyz')
-        point= [-0.190548 , 0.023690  , -1.146862]
-        charge.compute_grid_ef(point,radius=5,density_level=1)
+        # Check if point is a numpy array with the correct shape
+        if not isinstance(point, np.ndarray):
+            raise TypeError("Point must be a numpy array or a list.")
+        
+        if point.ndim != 1 or point.shape[0] != 3:
+            raise ValueError("Each point must be a one-dimension 3-element array.")
+        
+        # Create the ElectricFieldCompute instance and compute
+        compute = ElectricFieldCompute(charge_method=charge_method, tinker_xyz=tinker_xyz)
+        electric_field = compute.compute_point_ef(point)
+
+        print(f"The electric field at the each components is (MV/cm): ")
+        print(f"x: {electric_field[0]}, y: {electric_field[1]}, z: {electric_field[2]}, |E|: {electric_field[3]}")
+
+        return electric_field
+
+    def electric_field_bond(self, charge_method: str = 'eem', tinker_xyz: str = None, bond: List[int]= None) -> float:
+        """
+        Compute the electric field projected at the specified bonds.
+
+        Args:
+            charge_method (str, optional): The charge method. Defaults to 'eem'. (eem, qeq, qtpie)
+            tinker_xyz (str): Path to the Tinker system. Defaults to None.
+            bond (List[int]): The bonds where the electric field is projected.
+
+        Returns:
+            bond_electric_field: Electric field projected along the bond.
+        """
+        if tinker_xyz is None:
+            raise ValueError("The Tinker system file must be provided.")
+        else:
+            tinker_xyz = os.path.abspath(tinker_xyz)
+        
+        if bond is None:
+            raise ValueError("The bond must be provided.")
+        
+        # Check if bond length is 2
+        if len(bond) != 2:
+            raise ValueError("Bond must define exactly two atoms.")
+
+
+        # Create the ElectricFieldCompute instance and compute
+        compute = ElectricFieldCompute(charge_method=charge_method, tinker_xyz=tinker_xyz)
+        bond_electric_field = compute.compute_bond_ef(bond)
+
+        print("The electric field projected along the bond is (MV/cm): ")
+        print(bond_electric_field)
+
+        return bond_electric_field
+    
+    def electric_field_grid(self, charge_method: str = 'eem', tinker_xyz: str = None, point: Union[np.ndarray, List[float]] = None,
+                            center_atom:int=None , radius: float = 5.0, density_level: int = 3, if_output: bool = True, output_prefix: str = 'TKM')-> List[List[float]]:
+        """
+        Compute the electric field projected at the specified grid points.
+
+        Args:
+            charge_method (str, optional): The charge method. Defaults to 'eem'. (eem, qeq, qtpie)
+            tinker_xyz (str): Path to the Tinker system. Defaults to None.
+            point (Union[List,float]): The points where is the center of the grid.
+            radius (float): The radius of the grid. Defaults to 5.0 Angstrom.
+            density_level (int): The density level of the grid. Defaults to 3. (1:5, 2:10, 3:20, 4:50, 5:100, Grid Number Per Angstrom)
+            if_output (bool, optional): Whether to output the DX files for the electric field components and magnitude.
+            output_prefix (str, optional): The prefix for the Pymol output (.dx) files.
+
+        Returns:
+            grid_electric_field: List of electric field results at each grid point.
+                    Each element is [x, y, z, E_x, E_y, E_z, |E|].
+            Output the DX files for the electric field components and magnitude into the current directory.
+        """
+        if tinker_xyz is None:
+            raise ValueError("The Tinker system file must be provided.")
+        else:
+            tinker_xyz = os.path.abspath(tinker_xyz)
+        
+        try:
+            radius = float(radius)
+        except ValueError:
+            raise ValueError("The radius must be a float.")
+        
+        if center_atom is None and point is None:
+            raise ValueError("The center atom index or the center point coordinate must be provided.")
+        
+        if point is not None and center_atom is not None:
+            raise ValueError("You can only provide either the center atom index or the center point coordinate, not both of them.")
+        
+        if point is not None:
+            if isinstance(point, list):
+                point = np.array(point)
+            
+            if point.ndim != 1 or point.shape[0] != 3:
+                raise ValueError("The center point must be a 3-element array.")
+        
+        if center_atom is not None:
+            if not isinstance(center_atom, int):
+                try:
+                    center_atom = int(center_atom)
+                except:
+                    raise TypeError("The center atom index must be an integer.")
+        
+        # Create the ElectricFieldCompute instance and compute
+        compute = ElectricFieldCompute(charge_method=charge_method, tinker_xyz=tinker_xyz)
+        
+        # Get the center point
+        if center_atom is not None:
+            # The center atom index is 0-based
+            point = compute.tinker_system_charged.AtomCrds[center_atom-1]
+
+        grid_electric_field = compute.compute_grid_ef(point=point, radius=radius, density_level=density_level, if_output=if_output, output_prefix=output_prefix)
+
+        return grid_electric_field
 
 
 if __name__ == '__main__':

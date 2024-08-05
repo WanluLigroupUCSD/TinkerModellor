@@ -32,7 +32,7 @@ class ElectricFieldCompute():
         self.tinker_system_charged = TinkerSystemCharge(self.charge_method)
         self.tinker_system_charged(tinker_xyz)
 
-    def compute_point_ef(self,point: Union[np.array, List]):
+    def compute_point_ef(self,point: Union[np.array, List]) -> List[float]:
         """
         This function is used to compute the electric field at a point.
         
@@ -85,7 +85,7 @@ class ElectricFieldCompute():
 
         return result
         
-    def compute_bond_ef(self, bond: List[int]):
+    def compute_bond_ef(self, bond: List[int]) -> float:
         """
         This function computes the average electric field along a bond defined by two atoms.
 
@@ -112,8 +112,8 @@ class ElectricFieldCompute():
         bond_unit_vector = bond_vector / np.linalg.norm(bond_vector)
 
         # Calculate electric fields at the two atom positions
-        ef_atom1 = self.compute_point_ef(atom1_coord, self.tinker_system_charged)[:3]  # Extract E_x, E_y, E_z
-        ef_atom2 = self.compute_point_ef(atom2_coord, self.tinker_system_charged)[:3]  # Extract E_x, E_y, E_z
+        ef_atom1 = self.compute_point_ef(atom1_coord)[:3]  # Extract E_x, E_y, E_z
+        ef_atom2 = self.compute_point_ef(atom2_coord)[:3]  # Extract E_x, E_y, E_z
 
         # Calculate the average electric field
         avg_ef = (ef_atom1 + ef_atom2) / 2
@@ -125,7 +125,7 @@ class ElectricFieldCompute():
         return projection
 
     def compute_grid_ef(self,point: Union[np.array, List[float]], radius: float, 
-                        density_level: int, if_output: bool = False, output_prefix: str = None):
+                        density_level: int, if_output: bool = True, output_prefix: str = 'TKM') -> List[List[float]]:
         """
         Compute the electric field at grid points around a central point.
 
@@ -151,8 +151,8 @@ class ElectricFieldCompute():
         point = np.array(point, dtype=float).reshape(3)
 
         # Define a mapping from density level to the number of points per axis
-        density_map = {1: 5, 2: 11, 3: 21}
-        num_points_per_axis = density_map.get(density_level, 5)
+        density_map = {1: 5, 2: 10, 3: 20, 4:50, 5:100}
+        num_points_per_axis = density_map.get(density_level, 20) 
 
         # Calculate the step size
         step = 2 * radius / (num_points_per_axis - 1)
@@ -209,7 +209,6 @@ class ElectricFieldCompute():
             result = list(grid_point) + list(electric_field) + [e_magnitude]
             results.append(result)
         
-        print(results   )
         if if_output:
             self._generate_grid_output(results, point, radius, density_level, output_prefix)
 
@@ -227,9 +226,9 @@ class ElectricFieldCompute():
             density_level: Density level of the grid points (1 for 5 points, 2 for 11 points, 3 for 21 points).
             output_prefix: The prefix for the output DX files.
         """
-        # Define a mapping from density level to the number of points per axis
-        density_map = {1: 5, 2: 11, 3: 21}
-        num_points_per_axis = density_map.get(density_level, 5)
+        # Define a mapping from density level to the number of points per A
+        density_map = {1: 5, 2: 10, 3: 20, 4:50, 5:100}
+        num_points_per_axis = density_map.get(density_level, 20) 
 
         # Calculate the step size
         step = 2 * radius / (num_points_per_axis - 1)
