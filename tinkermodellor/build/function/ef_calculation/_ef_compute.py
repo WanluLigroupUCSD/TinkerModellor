@@ -209,13 +209,13 @@ class ElectricFieldCompute():
             result = list(grid_point) + list(electric_field) + [e_magnitude]
             results.append(result)
         
+        print(results   )
         if if_output:
             self._generate_grid_output(results, point, radius, density_level, output_prefix)
 
         return results
     
-    def _generate_grid_output(self, results: List[List[float]], origin: List[float], \
-                            radius: float, density_level: int, output_prefix: str):
+    def _generate_grid_output(self, results: List[List[float]], origin: List[float], radius: float, density_level: int, output_prefix: str):
         """
         Generate DX files for electric field components and magnitude from the grid results.
 
@@ -228,8 +228,8 @@ class ElectricFieldCompute():
             output_prefix: The prefix for the output DX files.
         """
         # Define a mapping from density level to the number of points per axis
-        density_map = {1: 10, 2: 20, 3: 50}
-        num_points_per_axis = density_map.get(density_level, 20)
+        density_map = {1: 5, 2: 11, 3: 21}
+        num_points_per_axis = density_map.get(density_level, 5)
 
         # Calculate the step size
         step = 2 * radius / (num_points_per_axis - 1)
@@ -277,6 +277,6 @@ class ElectricFieldCompute():
         print(f"DX files have been successfully saved with prefix {output_prefix}")
 
 if __name__ == '__main__':
-    charge = ElectricFieldCompute(charge_method='qeq', tinker_xyz='./example/merge/ex1/ligand.xyz')
+    charge = ElectricFieldCompute(charge_method='eem', tinker_xyz='./example/merge/ex1/ligand.xyz')
     point= [-0.190548,0.023690,-1.146862]
     charge.compute_grid_ef(point=point,radius=5,density_level=3,if_output=True,output_prefix='test')
