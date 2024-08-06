@@ -35,9 +35,9 @@ def parse_args():
         help='Select input file format (default: GROMACS)'
     )
     transform.add_argument(
-        '--ff', type=int, default=1,
+        '--ff', type=str, default='1',
         help='Select force field type (default: 1, 1: AMOEBABIO18, 2: AMOEBABIO09,\n\
-            3: AMOEBAPRO13)'
+            3: AMOEBAPRO13)-protein only,4:amoebanuc17)-nuclear acid only'
     )
 
     # merge
@@ -298,6 +298,9 @@ def main():
         if args.clean:
             os.remove(crd)
             os.remove(top)
+            transed_file = args.ff.replace('.prm', '.json')
+            if os.path.exists(transed_file):
+                os.remove(transed_file)
     
     elif args.module == "merge":
         

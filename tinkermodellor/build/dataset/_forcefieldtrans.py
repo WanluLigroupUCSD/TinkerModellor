@@ -6,7 +6,7 @@ from .amoebapro13 import AMOEBAPRO13ForceFieldDict
 
 class AmberTrans(FroceFieldTrans):
     
-    def __init__(self,ForceField:int = 1):
+    def __init__(self,ForceField:str = '1'):
         """
         Force Field Transformation Dictionary Initialization
 
@@ -16,7 +16,7 @@ class AmberTrans(FroceFieldTrans):
         """
         
         super().__init__()
-        self.ForceField = ForceField
+        self.ForceField = ForceField if ForceField not in ['1','2','3','4'] else int(ForceField)
         #Preparation for the abnormal(water/ions/ligand)force field transformation
         self.FFParameter: dict = {}
         #Preparation for the normal(amino acid)force field transformation
@@ -32,8 +32,8 @@ class AmberTrans(FroceFieldTrans):
             "ASPH","CYX","TYRA","HID","HIE",
             "HIP","PRT"]
         
-        self.DNAAndRNAList: list[str] = ["DA","DC","DG","DT","A","C","G","U"]
-        
+        self.NAandWATList: list[str] = ["DA","DC","DG","DT","A","C","G","U","SOL","WAT"]
+
         support_forcefield = []
 
         if self.ForceField == 1:
@@ -50,7 +50,7 @@ class AmberTrans(FroceFieldTrans):
             support_forcefield=[WaterAndIonsForceField.ion_para,WaterAndIonsForceField.water_para]
         
         Loader = JsonLoader()
-        self.DNAAndRNAForceFieldDict = Loader.load_json(self.ForceField)
+        self.NAandWATForceFieldDict = Loader.load_json(self.ForceField)
     
 
         #Update the force field transformation dictionary
@@ -68,8 +68,8 @@ class AmberTrans(FroceFieldTrans):
         if atom_residue in self.ResidueList:
             return self.get_atom_type(self.ForceFieldDict,atom_residue, atom_type)
         
-        if atom_residue in self.DNAAndRNAList:
-            return self.get_atom_type(self.DNAAndRNAForceFieldDict,atom_residue, atom_type)
+        if atom_residue in self.NAandWATList:
+            return self.get_atom_type(self.NAandWATForceFieldDict,atom_residue, atom_type)
 
         #Abnormal residue: WAT, LIG, Na+, etc.
         else:
