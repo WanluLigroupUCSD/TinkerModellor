@@ -43,13 +43,13 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         self.tinker_traj.read_from_tinker(tinker_xyz)
         self.tinker_traj.read_from_traj(tinker_arc)
 
-    def compute_point_ef_traj(self, point: Union[np.array, List], output_path: str = None) -> List[List[float]]:
+    def compute_point_ef_traj(self, point: Union[np.array, List], output: str = None) -> List[List[float]]:
         """
         This function is used to compute the electric field at a point.
         
         Args:
             point: Point at which the electric field is to be computed.
-            output_path: Path to save the output CSV file. If None, saves to the current directory.
+            output: Path to save the output CSV file. If None, saves to the current directory.
             
         Returns:
             results: Electric field at the point, including the magnitude.
@@ -72,15 +72,15 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         df.insert(0, 'frame', range(1, len(df) + 1))
         
         # Determine the output path
-        if output_path is None:
-            output_path = os.path.join(os.getcwd(), 'point_electric_field.csv')
+        if output is None:
+            output = os.path.join(os.getcwd(), 'point_ef.csv')
         else:
-            output_path = os.path.abspath(output_path)
+            output = os.path.abspath(output)
         
         # Save the DataFrame to a CSV file
-        df.to_csv(output_path, index=False)
+        df.to_csv(output, index=False)
         
-        print(f"Results have been saved to {output_path}")
+        print(f"Results have been saved to {output}")
         
         return results
 
@@ -129,7 +129,7 @@ class ElectricFieldComputeTraj(TKMTrajectory):
 
         return result
         
-    def compute_bond_ef_traj(self, bond: List[int], output_path: str = None, mask:bool = True) -> List[List[float]]:
+    def compute_bond_ef_traj(self, bond: List[int], output: str = None, mask:bool = True) -> List[List[float]]:
         """
         This function is used to compute the electric field at a point.
         
@@ -142,7 +142,6 @@ class ElectricFieldComputeTraj(TKMTrajectory):
                             Format is [E_x, E_y, E_z, |E|].
 
         """
-        mask = False
         # Check if bond length is 2
         if len(bond) != 2:
             raise ValueError("Bond must define exactly two atoms.")
@@ -171,15 +170,15 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         df.insert(0, 'frame', range(1, len(df) + 1))
         
         # Determine the output path
-        if output_path is None:
-            output_path = os.path.join(os.getcwd(), 'bond_electric_field.csv')
+        if output is None:
+            output = os.path.join(os.getcwd(), 'bond_ef.csv')
         else:
-            output_path = os.path.abspath(output_path)
+            output = os.path.abspath(output)
         
         # Save the DataFrame to a CSV file
-        df.to_csv(output_path, index=False)
+        df.to_csv(output, index=False)
         
-        print(f"Results have been saved to {output_path}")
+        print(f"Results have been saved to {output}")
         
         return results
 

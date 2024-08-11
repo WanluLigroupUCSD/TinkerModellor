@@ -299,7 +299,7 @@ def parse_args():
             (1:5, 2:10, 3:20, 4:50, 5:100, Grid Number Per Angstrom)'
     )
     ef.add_argument(
-        '--out', type=str, default='TKM',
+        '--dx', type=str, default='TKM',
         help='The prefix of Pymol (.dx) output file, required when type is grid. Default: TKM'
     )
     ef.add_argument(
@@ -308,6 +308,63 @@ def parse_args():
             use comma to separate the atom index, e.g. 1,2'
     )
 
+    # eftraj
+    eftraj = subparsers.add_parser(
+        'eftraj', help='Electric Field Calculation for Tinker Trajectory file')
+    eftraj.add_argument(
+        '--type', type=str, required=True,
+        help='Job type,\n \
+            point (calculate electric field at a point)\n \
+            grid (calculate electric field on a grid) \n \
+            bond (calculate electric field projected at a bond, the direction is from the first atom to the second atom)'
+    )
+    eftraj.add_argument(
+        '--tk', type=str, required=True,
+        help='Path to the input TXYZ file'
+    )
+    eftraj.add_argument(
+        '--arc', type=str, required=True,
+        help='Path to the input .ARC trajectory file'
+    )
+    eftraj.add_argument(
+        '--chg', type=str, default=None,
+        help='Charge method, could be eem ,qeq or qtpie, Default: eem'
+    )
+    eftraj.add_argument(
+        '--point', type=str, default=None,
+        help='The point to calculate electric field, required when type is point or gird.\n \
+            use comma to separate the coordinates, e.g. 0.0,0.0,0.0'
+    )
+    eftraj.add_argument(
+        '--ndx', type=str, default=None,
+        help='The atom index which is the center of grid, required when type is grid.'
+    )
+    eftraj.add_argument(
+        '--rad', type=float, default=5.0,
+        help='The radius of the grid, required when type is grid. (Default: 5.0 Angstrom)'
+    )
+    eftraj.add_argument(
+        '--den', type=int, default=3,
+        help='The density of the grid, required when type is grid. (Default: 3) \n \
+            (1:5, 2:10, 3:20, 4:50, 5:100, Grid Number Per Angstrom)'
+    )
+    eftraj.add_argument(
+        '--out', type=str, default='TKM',
+        help='The output file name, required when type is point and bond. Default: TKM'
+    )
+    eftraj.add_argument(
+        '--dx', type=str, default='TKM',
+        help='The prefix of Pymol (.dx) output file, required when type is grid. Default: TKM'
+    )
+    eftraj.add_argument(
+        '--bond', type=str, default=None,
+        help='The atom index of the bond, required when type is bond. \n \
+            use comma to separate the atom index, e.g. 1,2'
+    )
+    eftraj.add_argument(
+        '--mask', default=True, action='store_false',
+        help='Mask the electric field of the bond molecule. Default: True'
+    )
 
     return p.parse_args()
 
@@ -487,17 +544,94 @@ def main():
                 if args.point is not None:
                     point = [float(i) for i in args.point.split(',')]
                     tkm.electric_field_grid(tinker_xyz=tinker_xyz, charge_method=charge_method, \
-                                        point=point, radius=radius, density_level=density, output_prefix=args.out)
+                                        point=point, radius=radius, density_level=density, output_prefix=args.dx)
                     
                 # Specify the atom index to the center of the grid
                 if args.ndx is not None:
                     tkm.electric_field_grid(tinker_xyz=tinker_xyz, charge_method=charge_method, center_atom=args.ndx, \
-                                        radius=radius, density_level=density, output_prefix=args.out)
+                                        radius=radius, density_level=density, output_prefix=args.dx)
             
             elif args.type == 'bond':
                 if args.bond is None:
                     raise ValueError("The bond is required.")
                 else:
                     tkm.electric_field_bond(tinker_xyz=tinker_xyz, charge_method=charge_method, bond=parse_ndx(args.bond))
+            else:
+                raise ValueError("The type must be point, grid or bond.") 
+            
+    elif args.module == "eftraj":
+            
+            from tinkermodellor.build import parse_ndx
+
+            try:
+                tinker_xyz = os.path.abspath(args.tk)
+            except:
+                raise ValueError("The path to the input TXYZ file is required.")
+            
+            try:
+                tinker_arc = os.path.abspath(args.arc)
+            except:
+                raise ValueError("The path to the input ARC file is required.")
+            
+            if args.chg is None:
+                print("The charge method is not given, use EEM as default.")
+                charge_method = 'eem'
+            else:
+                if args.chg.lower() not in ['eem', 'qeq', 'qtpie']:
+                    raise ValueError("The charge method must be eem, qeq or qtpie.")
+                else:
+                    charge_method = args.chg.lower()
+    
+            tkm = TinkerModellor()
+            if args.type == 'point':
+                if args.point is None:
+                    raise ValueError("The point is required.")
+                point = [float(i) for i in args.point.split(',')]
+
+                tkm.electric_field_point_traj(tinker_xyz=tinker_xyz, charge_method=charge_method, point=point,tinker_arc=tinker_arc)
+
+            elif args.type == 'grid':
+
+                raise NotImplementedError("The grid calculation for trajectory is not implemented yet.")
+                if args.rad is None:
+                    print("The radius of the grid is not given, use 5.0 as default.")
+                    radius = 5.0
+                else:
+                    try:
+                        radius = float(args.rad)
+                    except:
+                        raise ValueError("The radius of the grid must be a float.")
+                if args.den is None:
+                    print("The density of the grid is not given, use 3 as default.")
+                    density = 3
+                else:
+                    try:
+                        density = int(args.den)
+                    except:
+                        raise ValueError("The density of the grid must be an integer.")
+                    
+                if args.point is None and args.ndx is None:
+                    raise ValueError("The center atom index or the center point coordinate must be provided.")
+        
+                if args.point is not None and args.ndx is not None:
+                    raise ValueError("You can only provide either the center atom index or the center point coordinate, not both of them.")
+                
+                # Use the coordinate to calculate the electric field
+                if args.point is not None:
+                    point = [float(i) for i in args.point.split(',')]
+                    tkm.electric_field_grid(tinker_xyz=tinker_xyz, charge_method=charge_method, \
+                                        point=point, radius=radius, density_level=density, output_prefix=args.dx)
+                    
+                # Specify the atom index to the center of the grid
+                if args.ndx is not None:
+                    tkm.electric_field_grid(tinker_xyz=tinker_xyz, charge_method=charge_method, center_atom=args.ndx, \
+                                        radius=radius, density_level=density, output_prefix=args.dx)
+            
+            elif args.type == 'bond':
+                if args.bond is None:
+                    raise ValueError("The bond is required.")
+                else:
+                    tkm.electric_field_bond_traj(tinker_xyz=tinker_xyz, charge_method=charge_method, \
+                                                bond=parse_ndx(args.bond),tinker_arc=tinker_arc, mask=args.mask)
             else:
                 raise ValueError("The type must be point, grid or bond.") 
