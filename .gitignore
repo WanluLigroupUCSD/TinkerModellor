@@ -1,3 +1,7 @@
+#Scripts
+Scripts_*.py
+TKM_*
+
 # Others
 .idea
 .vscode

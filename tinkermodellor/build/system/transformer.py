@@ -27,7 +27,7 @@ import numpy as np
 
 class Transformer():
 
-    def __init__(self, forcefield:int = 1) -> None:
+    def __init__(self, forcefield:str = '1') -> None:
         self.TransformerFunction: Callable = AmberTrans(ForceField=forcefield)
 
     @TransformerReminder

@@ -16,7 +16,8 @@ from ....messager import GMXSystemReminder
 #(protein)                34                  O                           248                 GLU                O                 34           -0.5819            16                               ; qtot 0
 #                      <----------------------------------grp 1----------------------> <----- grp 2 -----> <--- grp 3 ---><-------------------------------- grp 4 ----------------------------------->
 #
-SYSTEM_ATOMTYPE_PATTERN = r"(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\*?)(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\s*)([0-9]+\s*-?[0-9]+\.[0-9]+\s*[0-9]+\.*[0-9]*\n?)(\s*;\s*[a-z]*\s*-?[0-9]*.[0-9]*\s*\n)?"
+#SYSTEM_ATOMTYPE_PATTERN = r"(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\*?)(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\s*)([0-9]+\s*-?[0-9]+\.[0-9]+\s*[0-9]+\.*[0-9]*\n?)(\s*;\s*[a-z]*\s*-?[0-9]*.[0-9]*\s*\n)?"
+SYSTEM_ATOMTYPE_PATTERN = r"(\s*[0-9]+\s*)(-?[0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?\*?)(\s*[0-9]+\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*[-\+\']?\d*\s*)([0-9]?[a-zA-Z][0-9a-zA-Z]*[-\+\']?\d*\s*)([0-9]+\s*-?[0-9]+\.[0-9]+\s*[0-9]+\.*[0-9]*\n?)(\s*;\s*[a-z]*\s*-?[0-9]*.[0-9]*\s*\n)?"
 LIGAND_ATOMTYPE_PATTERN = r'(\s*[0-9]+\s*)([0-9a-z]*)(\s*[0-9]+)(\s*[a-zA-Z][0-9a-zA-Z]*)(\s*[0-9]?[a-zA-Z][0-9a-zA-Z]*-?\+?)(\s*[0-9]+\s*-?[0-9]+\.[0-9]+\s*[0-9]+\.*[0-9]*)(\s*;\s*[a-z]*\s*-?[0-9]*.[0-9]*\s*\n)?'
 
 #[ bonds ]
@@ -31,7 +32,8 @@ BOND_PATTERN = r"\s*([0-9]+)\s*([0-9]+)(\s*1)(\s*[0-9].[0-9]*\s*[0-9]*.[0-9]*\n?
 #                      Na+                    10
 #                      WAT                    9971
 #                 <-------- grp 1 ---------><grp 2 >
-MOLECULES_PATTERN = r"(Protein_chain_[A-Z]|[A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
+#MOLECULES_PATTERN = r"(Protein_chain_[A-Z]|[A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
+MOLECULES_PATTERN = r"((Protein_chain)?[R,D]?(NA_chain)?_[A-Z]|[A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
 
 @dataclass
 class GMXSystem():
@@ -119,7 +121,7 @@ class GMXSystem():
         HIS_box = []
         for line in lines:
             line_count += 1
-
+            line = line
             if '[ moleculetype ]' in line:
                 if molecule_type_count > 0:
                     self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}', atomtype_read, atomresidue_read, bond_read)
@@ -160,12 +162,27 @@ class GMXSystem():
                                     residue = "HISD"
                                 atomresidue_read.extend([residue] * len(HIS_box))
                                 HIS_box = []
+                        #although the is existing a Terminal check mechanism,
+                        #but it not work for the terminal of RNA&DNA
+                        #another check of the atomtype was applied to solve this problem
+                        #however the PO3' are not considered
+                        #since the relavant atoms are defined as -1 in tinker
+                        elif temp_atomtype == "H5T" :
+                            atomtype_read.pop()
+                            atomtype_read.append("O5'T")
+                            atomtype_read.append("H5T")
+
+                        elif temp_atomtype == "H3T" :
+                            atomtype_read.pop()
+                            atomtype_read.append("O3'T")
+                            atomtype_read.append("H3T")
 
                         else:
                             atomtype_read.append(temp_atomtype)
 
                         if temp_atomresidue != "HIS":
                             atomresidue_read.append(temp_atomresidue)
+
 
                 if '[ bonds ]' in line:
                     bond_flag = True
