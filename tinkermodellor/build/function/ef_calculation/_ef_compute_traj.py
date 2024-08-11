@@ -4,9 +4,12 @@ import sys
 import pandas as pd
 
 from typing import List, Union, Tuple
-#from ._tinkersystemcharge import TinkerSystemCharge
-from tinkermodellor.build.function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
+from ._tinkersystemcharge import TinkerSystemCharge
+#from tinkermodellor.build.function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
 from ...system.tinker._tkmtrajectory import TKMTrajectory
+
+from ....messager import TKMEFPointReminder, TKMEFBondReminder, TKMEFGridReminder
+
 
 class ElectricFieldComputeTraj(TKMTrajectory):
 
@@ -43,6 +46,7 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         self.tinker_traj.read_from_tinker(tinker_xyz)
         self.tinker_traj.read_from_traj(tinker_arc)
 
+    @TKMEFPointReminder
     def compute_point_ef_traj(self, point: Union[np.array, List], output: str = None) -> List[List[float]]:
         """
         This function is used to compute the electric field at a point.
@@ -128,7 +132,8 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         result = np.append(electric_field, e_magnitude)
 
         return result
-        
+    
+    @TKMEFBondReminder
     def compute_bond_ef_traj(self, bond: List[int], output: str = None, mask:bool = True) -> List[List[float]]:
         """
         This function is used to compute the electric field at a point.
@@ -216,6 +221,7 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         # Result is the projection of the average electric field onto the bond direction
         return projection
 
+    @TKMEFGridReminder
     def compute_grid_ef_traj(self,point: Union[np.array, List[float]], radius: float, 
                         density_level: int, if_output: bool = True, output_prefix: str = 'TKM') -> List[List[float]]:
         """

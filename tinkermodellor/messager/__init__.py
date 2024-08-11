@@ -5,3 +5,4 @@ from ._merge_reminder import TKMMergeReminder
 from ._delete_reminder import TKMDeleteReminder
 from ._trajctory_reminder import TinkerTrajectoryReminder
 from ._connect_reminder import TKMConnectReminder
+from ._ef_reminder import TKMEFPointReminder, TKMEFBondReminder, TKMEFGridReminder

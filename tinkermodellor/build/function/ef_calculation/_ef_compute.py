@@ -2,8 +2,10 @@ import numpy as np
 import os
 
 from typing import List, Union
-#from ._tinkersystemcharge import TinkerSystemCharge
-from tinkermodellor.build.function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
+from ._tinkersystemcharge import TinkerSystemCharge
+#from tinkermodellor.build.function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
+
+from ....messager import TKMEFGridReminder, TKMEFPointReminder, TKMEFBondReminder
 
 class ElectricFieldCompute():
 
@@ -31,8 +33,22 @@ class ElectricFieldCompute():
 
         self.tinker_system_charged = TinkerSystemCharge(self.charge_method)
         self.tinker_system_charged(tinker_xyz)
-
+    
+    @TKMEFPointReminder
     def compute_point_ef(self,point: Union[np.array, List]) -> List[float]:
+        """
+        This function is used to compute the electric field at a point.
+        
+        Args:
+            point: Point at which the electric field is to be computed.
+            
+        Returns:
+            electric_field: Electric field at the point, including the magnitude.
+                            Format is [E_x, E_y, E_z, |E|].
+        """
+        self._compute_point_ef(point)
+        
+    def _compute_point_ef(self,point: Union[np.array, List]) -> List[float]:
         """
         This function is used to compute the electric field at a point.
         
@@ -85,6 +101,7 @@ class ElectricFieldCompute():
 
         return result
         
+    @TKMEFBondReminder
     def compute_bond_ef(self, bond: List[int]) -> float:
         """
         This function computes the average electric field along a bond defined by two atoms.
@@ -112,8 +129,8 @@ class ElectricFieldCompute():
         bond_unit_vector = bond_vector / np.linalg.norm(bond_vector)
 
         # Calculate electric fields at the two atom positions
-        ef_atom1 = self.compute_point_ef(atom1_coord)[:3]  # Extract E_x, E_y, E_z
-        ef_atom2 = self.compute_point_ef(atom2_coord)[:3]  # Extract E_x, E_y, E_z
+        ef_atom1 = self._compute_point_ef(atom1_coord)[:3]  # Extract E_x, E_y, E_z
+        ef_atom2 = self._compute_point_ef(atom2_coord)[:3]  # Extract E_x, E_y, E_z
 
         # Calculate the average electric field
         avg_ef = (ef_atom1 + ef_atom2) / 2
@@ -124,6 +141,7 @@ class ElectricFieldCompute():
         # Result is the projection of the average electric field onto the bond direction
         return projection
 
+    @TKMEFGridReminder
     def compute_grid_ef(self,point: Union[np.array, List[float]], radius: float, 
                         density_level: int, if_output: bool = True, output_prefix: str = 'TKM') -> List[List[float]]:
         """
