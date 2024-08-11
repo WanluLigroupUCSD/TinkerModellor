@@ -10,6 +10,7 @@ from .function.connect._connect import ConnectTinkerSystem
 from .function.tk2pdb._tk2pdb import Tinker2PDB
 from .function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
 from .function.ef_calculation._ef_compute import ElectricFieldCompute
+from .function.ef_calculation._ef_compute_traj import ElectricFieldComputeTraj
 
 from .system.tinker._tkmtrajectory import TKMTrajectory
 

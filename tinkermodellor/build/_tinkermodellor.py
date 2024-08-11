@@ -16,6 +16,7 @@ from tinkermodellor.build import ReplaceTinkerSystem
 from tinkermodellor.build import ConnectTinkerSystem
 from tinkermodellor.build import Tinker2PDB
 from tinkermodellor.build import ElectricFieldCompute
+from tinkermodellor.build import ElectricFieldComputeTraj
 
 from tinkermodellor.build import TKMTrajectory
 
@@ -422,7 +423,6 @@ class TinkerModellor:
             tinker_xyz = os.path.abspath(tinker_xyz)
         
         # Convert list to np.ndarray if necessary
-        print(point)
         if isinstance(point, list):
             point = np.array(point)
 
@@ -536,10 +536,84 @@ class TinkerModellor:
         grid_electric_field = compute.compute_grid_ef(point=point, radius=radius, density_level=density_level, if_output=if_output, output_prefix=output_prefix)
 
         return grid_electric_field
+    
+    def electric_field_point_traj(self, point: Union[List, np.ndarray], charge_method: str = 'eem', 
+                            tinker_xyz: str = None, tinker_arc:str = None) -> List[List[float]]:
+        """
+        Compute the electric field at the specified points.
+
+        Args:
+            point (Union[List,np.ndarray]): The points where the electric field is computed.
+            charge_method (str, optional): The charge method. Defaults to 'eem'. (eem, qeq, qtpie)
+            tinker_xyz (str): Path to the Tinker system. Defaults to None.
+            tinker_arc (str): Path to the Tinker trajectory file. Defaults to None.
+
+        Returns:
+            electric_field (list): Electric field at the point, including the magnitude.
+                            Format is [E_x, E_y, E_z, |E|].
+        """
+        if tinker_xyz is None:
+            raise ValueError("The Tinker system file must be provided.")
+        else:
+            tinker_xyz = os.path.abspath(tinker_xyz)
+        
+        if tinker_arc is None:
+            raise ValueError("The Tinker trajectory file must be provided.")
+        else:
+            tinker_arc = os.path.abspath(tinker_arc)
+        
+        # Convert list to np.ndarray if necessary
+        if isinstance(point, list):
+            point = np.array(point)
+
+        # Check if point is a numpy array with the correct shape
+        if not isinstance(point, np.ndarray):
+            raise TypeError("Point must be a numpy array or a list.")
+        
+        if point.ndim != 1 or point.shape[0] != 3:
+            raise ValueError("Each point must be a one-dimension 3-element array.")
+        
+        # Create the ElectricFieldCompute instance and compute
+        compute = ElectricFieldComputeTraj(charge_method=charge_method, tinker_xyz=tinker_xyz,tinker_arc=tinker_arc)
+        electric_field = compute.compute_point_ef_traj(point)
+
+        return electric_field
+
+    def electric_field_bond_traj(self, bond: List[int]= None, charge_method: str = 'eem', 
+                        tinker_xyz: str = None, tinker_arc:str = None) -> List[float]:
+        """
+        Compute the electric field at the specified points.
+
+        Args:
+            bond (List[int]): The bonds where the electric field is projected.
+            charge_method (str, optional): The charge method. Defaults to 'eem'. (eem, qeq, qtpie)
+            tinker_xyz (str): Path to the Tinker system. Defaults to None.
+            tinker_arc (str): Path to the Tinker trajectory file. Defaults to None.
+
+        Returns:
+            electric_field (list):  Electric field projected along the bond.
+        """
+        if tinker_xyz is None:
+            raise ValueError("The Tinker system file must be provided.")
+        else:
+            tinker_xyz = os.path.abspath(tinker_xyz)
+        
+        if tinker_arc is None:
+            raise ValueError("The Tinker trajectory file must be provided.")
+        else:
+            tinker_arc = os.path.abspath(tinker_arc)
+        
+        # Create the ElectricFieldCompute instance and compute
+        compute = ElectricFieldComputeTraj(charge_method=charge_method, tinker_xyz=tinker_xyz,tinker_arc=tinker_arc)
+        electric_field = compute.compute_bond_ef_traj(bond)
+
+        return electric_field
+
+
 
 
 if __name__ == '__main__':
-    control = 10
+    control = 12
     tkm= TinkerModellor()
 
     # Transform
@@ -603,4 +677,12 @@ if __name__ == '__main__':
     # Electric Field
     elif control == 10:
         tkm.electric_field()
-        
+
+    # electric_field_point_traj
+    elif control == 11:
+        tkm.electric_field_point_traj(point=[0.0, 0.0, 0.0], charge_method='eem', tinker_xyz='example/ef/traj/ex1/ke15_1.xyz', tinker_arc='example/ef/traj/ex1/ke15_1.arc')
+    
+    # electric_field_bond_traj
+    elif control == 12:
+        tkm.electric_field_bond_traj(charge_method='eem', tinker_xyz='example/ef/traj/ex1/ke15_1.xyz', tinker_arc='example/ef/traj/ex1/ke15_1.arc', bond=[1, 2])
+
