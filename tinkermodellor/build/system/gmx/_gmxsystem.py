@@ -264,8 +264,7 @@ class GMXSystem():
             self.SystemAtomNums = int(lines[1])
 
         for line in lines[2:-1]:
-            line = line.strip().split('  ')#split into 5-6 items
-
+            line = line.strip().split()#split into 5-6 items
             #To record the entire system's coordinates
             self.Coordinates.append(np.array([float(i)*10 for i in line[-3:]]))
         self.AtomIndex = np.arange(1, len(self.Coordinates)+1)
