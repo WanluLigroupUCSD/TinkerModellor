@@ -7,18 +7,27 @@ class JsonLoader:
     def load_json(self,ForceField):
         
         self.ForceField = ForceField
-        if self.ForceField == 1:    self.path = 'tinkermodellor/build/dataset/amoebabio18/amoebabio18.json'
-        elif self.ForceField == 2:  self.path = 'tinkermodellor/build/dataset/amoebabio09/amoebabio09.json'
+        if self.ForceField == 1:    
+            from .amoebabio18 import NAandWATForceFieldDict
+            self.ForceFiledDict = NAandWATForceFieldDict
+
+        elif self.ForceField == 2:  
+            from .amoebabio09 import NAandWATForceFieldDict
+            self.ForceFiledDict = NAandWATForceFieldDict
+    
         elif self.ForceField == 3:  
-            self.path = 'tinkermodellor/build/dataset/amoebabio13/amoebapro13.json'
             raise IndexError("3 is refer to amoebapro13 which only has parameters for protein try to use 1-[amoebabio18],2-[amoebabio09] or 4-[amoebanuc17] to slove the problem")
-        elif self.ForceField == 4:  self.path = 'tinkermodellor/build/dataset/amoebanuc17/amoebanuc17.json'
+        
+        elif self.ForceField == 4:  
+            from .amoebanuc17 import NAandWATForceFieldDict
+            self.ForceFiledDict = NAandWATForceFieldDict
+            
         else: 
             print("Orinated ForceField File :"+str(ForceField))
             self.path = self.process_json_from_prm(ForceField)
-        with open(self.path,'rt') as f:
-            self.ForceFiledDict:dict[str:dict[str,int]] = self._check_ForceFiled(json.load(f))
-            self.ForceFiledDict = self._format_ForceFiled(self.ForceFiledDict)
+            with open(self.path,'rt') as f:
+                self.ForceFiledDict:dict[str:dict[str,int]] = self._check_ForceFiled(json.load(f))
+                self.ForceFiledDict = self._format_ForceFiled(self.ForceFiledDict)
         return self.ForceFiledDict
 
         

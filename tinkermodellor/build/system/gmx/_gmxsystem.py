@@ -33,7 +33,8 @@ BOND_PATTERN = r"\s*([0-9]+)\s*([0-9]+)(\s*1)(\s*[0-9].[0-9]*\s*[0-9]*.[0-9]*\n?
 #                      WAT                    9971
 #                 <-------- grp 1 ---------><grp 2 >
 #MOLECULES_PATTERN = r"(Protein_chain_[A-Z]|[A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
-MOLECULES_PATTERN = r"((Protein_chain)?[R,D]?(NA_chain)?_[A-Z]|[A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
+MOLECULES_PATTERN = r"([A-Za-z0-9_]*-?\+?)(\s*[0-9]+\n)?"
+NAME_PATTERN = r"([A-Za-z0-9]*-?\+?)(\s*[0-9]+\n)?"
 
 @dataclass
 class GMXSystem():
@@ -70,13 +71,13 @@ class GMXSystem():
         #These variables are used to record the coordination info
         #To record the entire system's coordinates
         self.Coordinates: np.array = [] # Nanometer
-        #These variables are used to record the topology info
-        #Used for store the different molecules，the first one is empty
-        self.MoleculeType: list[GMXMolecule] = [GMXMolecule()]        
-        #To record each moleculetype's number in entire system
-        self.MoleculeTypeNum: list[int] = []
+        #the self.MoleculeType: dict[str:GMXMolecule] is used to record the topology of molecule which will be used to build the system
+        #In other words, the molecule types used in system must be recorded in self.MoleculeType 
+        self.MoleculeTypes: dict[str:GMXMolecule] = {}        
         #Used for store the entire system's atom numbers
         self.SystemAtomNums:int = 0
+        #Used for store the number of each molecule type in the system
+        self.MoleculeOrder:list[tuple[str,int]] = []
 
         
 
@@ -93,46 +94,79 @@ class GMXSystem():
         top_file = os.path.abspath(top_file)
 
         self._read_top_file(top_file)
-        assert len(self.MoleculeType)-1 == len(self.MoleculeTypeNum), f'Number of Moleculetypes({len(self.MoleculeType)-1}) in [ molecules ] Must Be Equal To Number({len(self.MoleculeTypeNum)}) of [ moleculetype ]'
+        #assert len(self.MoleculeTypes)-1 == len(self.MoleculeTypeNum), f'Number of Moleculetypes({len(self.MoleculeTypes)-1}) in [ molecules ] Must Be Equal To Number({len(self.MoleculeTypeNum)}) of [ moleculetype ]'
         self._read_gro_file(gro_file)
 
 
     def _read_top_file(self, top_path: str):
         with open(top_path, 'r') as f:
-            lines = f.readlines()
+            total_lines_of_gro_file = f.readlines()
         molecules_flag = False
-        molecule_type_count = 0
+        #molecule_type_count = 0
         line_count = 0
         bond_flag = False
-        molecules_name_flag = True
-        molecule_name_list = [None]
-        j = -1
+        molecules_flag = True
+        single_molecule_name_flag = True
+        reverse_index = -1
 
-        while molecules_name_flag:
-            if '[ molecules ]' in lines[j]:
-                molecules_name_flag = False
-            elif re.fullmatch(MOLECULES_PATTERN, lines[j]):
-                molecule_name_list.insert(1, lines[j].strip().split(' ')[0])
-            j -= 1
+        #this loop is used to find the molecules name from bottom to top
+        #it will stop until find the title of [ molecules ]
+        while molecules_flag:
+            if '[ molecules ]' in total_lines_of_gro_file[reverse_index]:
+                molecules_flag = False
+                #the molecules_flag switch to False to end the loop
+            elif re.fullmatch(MOLECULES_PATTERN, total_lines_of_gro_file[reverse_index]):
+                #insert will add the molecules name to the first place
+                #the dict record the molecules name and the number to instruct building the system
+                element = list(filter(None,total_lines_of_gro_file[reverse_index].strip().split(' ')))
+                molecule_name = element[0]
+                molecule_num = int(element[1])
+                #this part fix the order
+                self.MoleculeOrder.insert(0,(molecule_name,molecule_num))
+            reverse_index -= 1
         
-        print(molecule_name_list)
+        #print(molecules_in_system)
 
-        molecules_count = 1
+        #molecules_count = 1
         HIS_box = []
-        for line in lines:
+        for line in total_lines_of_gro_file:
             line_count += 1
-            line = line
+            #line = line
             if '[ moleculetype ]' in line:
-                if molecule_type_count > 0:
-                    self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}', atomtype_read, atomresidue_read, bond_read)
-                molecule_type_count += 1
-                self.MoleculeType.append(GMXMolecule())
+                if len(self.MoleculeTypes) > 0:
+                    #IF the self.MoleculeType is not empty
+                    #then it will exert the GMXMolecule.__init__() to build the molecule
+                    #I should point that a molecule will be build when the next [ moleculetype ] title is read
+                    #print(self.MoleculeTypes)
+                    #print(molecule_name,len(atomtype_read))
+                    self.MoleculeTypes[molecule_name](molecule_name, atomtype_read, atomresidue_read, bond_read)
+                
+                #former_start
+                #A GMXMolecule() will be add to self.MoleculeType when read the [ moleculetype ] title 
+                #however the GMXMolecule() in self.MoleculeType can only be distinguished by the index
+                #former_end
+
+                #all attributes of GMXMolecule() will be init when read the [ moleculetype ] title 
+                #molecule_type_count += 1
                 atomtype_read = []
                 bond_read = []
                 atomresidue_read = []
+                single_molecule_name_flag = True
                 continue
+            
+            if single_molecule_name_flag:
+                #now
+                #I tried to record the molecule type name in self.MoleculeType to make it easier to distinguish
+                #And a new GMXMolecule() will be added to self.MoleculeType which is pair to the molecule name
+                match_name = re.fullmatch(NAME_PATTERN, line)
+                if match_name:
+                    molecule_name = match_name.group(1)
+                    self.MoleculeTypes[molecule_name] = GMXMolecule()
+            if '[ atoms ]' in line:
+                single_molecule_name_flag = False
 
-            if molecule_type_count > 0 and not molecules_flag:
+
+            if len(self.MoleculeTypes) > 0 and not molecules_flag:
                 match_atomtype = re.fullmatch(SYSTEM_ATOMTYPE_PATTERN, line)
                 if match_atomtype:
                     ligand_atomtype = re.fullmatch(LIGAND_ATOMTYPE_PATTERN, line)
@@ -192,18 +226,34 @@ class GMXSystem():
                 if bond_flag and ';' not in line and '[ bonds ]' not in line:
                     bond_line = line.strip().split()
                     bond_read.append([int(bond_line[0]), int(bond_line[1])])
-
+            
+            #
             if '[ molecules ]' in line:
-                self.MoleculeType[molecule_type_count](f'{molecule_name_list[molecule_type_count]}', atomtype_read, atomresidue_read, bond_read)
+                #when read the [ molecules ] for the second time
+                #it means that all the molecules have been read
+                #the last molecule will be bulit
+                self.MoleculeTypes[molecule_name](molecule_name, atomtype_read, atomresidue_read, bond_read)
                 molecules_flag = True
 
+            '''
             if molecules_flag and re.fullmatch(MOLECULES_PATTERN, line):
+                #finally sort and check
                 self.MoleculeTypeNum.append(line.strip().split(' ')[-1])
                 if molecules_count < len(self.MoleculeType):
                     print(f"Detect a new molecule, and it has {self.MoleculeTypeNum[-1]} molecules, its name is {self.MoleculeType[molecules_count].MoleculeName} and it consists of {self.MoleculeType[molecules_count].AtomNums} atoms.\n")
                 else:
                     print(f"Error: Molecule count {molecules_count} exceeds MoleculeType length {len(self.MoleculeType)}.")
                 molecules_count += 1
+            '''
+            if molecules_flag :
+                #finally sort and check
+                for molecule_name_num in self.MoleculeOrder:
+                    molecule_name = molecule_name_num[0]
+                    certain_molecule = self.MoleculeTypes.get(molecule_name,None)
+                    if certain_molecule is None:
+                        raise ValueError(f"Error: Molecule {molecule_name} not found in MoleculeTypes{self.MoleculeTypes}.")
+                    else:pass
+
 
 
     def _read_gro_file(self,gro_path):
@@ -214,8 +264,7 @@ class GMXSystem():
             self.SystemAtomNums = int(lines[1])
 
         for line in lines[2:-1]:
-            line = line.strip().split('  ')#split into 5-6 items
-
+            line = line.strip().split()#split into 5-6 items
             #To record the entire system's coordinates
             self.Coordinates.append(np.array([float(i)*10 for i in line[-3:]]))
         self.AtomIndex = np.arange(1, len(self.Coordinates)+1)

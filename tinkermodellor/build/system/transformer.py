@@ -59,13 +59,16 @@ class Transformer():
         #index = 0
         index = 1
 
-        for i in range(1,len(gmx.MoleculeType)):
-            molecule_type = gmx.MoleculeType[i]
-            molecule_nums = int(gmx.MoleculeTypeNum[i-1])
-            molecule_name = gmx.MoleculeType[i].MoleculeName
+        for name_num in gmx.MoleculeOrder:
+            #print(gmx.MoleculeOrder)
+            molecule_name = name_num[0]
+            molecule_nums = name_num[1]
+            molecule_type = gmx.MoleculeTypes[molecule_name]
+            #print(molecule_name,molecule_nums,molecule_type.AtomNums,gmx.MoleculeTypes.keys())
+            
 
             print('\n')
-            print(f"The atom index of {molecule_name} is from", index+1,'to',index+int(molecule_type.AtomNums)*int(molecule_nums))
+            print(f"The atom index of {molecule_name} is from", index,'to',index+int(molecule_type.AtomNums)*int(molecule_nums))
             # if we have a complex containing 50-atoms molecule-A, 10-water
             # the text should be 
             # (init_index=0)The atom index of molecule-A is from 1 to 50[0+50*1](currently_index=50)

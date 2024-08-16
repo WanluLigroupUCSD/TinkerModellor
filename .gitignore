@@ -1,5 +1,4 @@
 #Scripts
-Scripts_*.py
 TKM_*
 
 # Others
@@ -176,7 +175,7 @@ cython_debug/
 
 # python -m build # file for cpp compiling
 dist/
-/TinkerModellor/build/
+#/TinkerModellor/build/
 
 #test
 test_cache/*
