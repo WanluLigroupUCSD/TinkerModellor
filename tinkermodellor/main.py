@@ -588,7 +588,8 @@ def main():
                     raise ValueError("The point is required.")
                 point = [float(i) for i in args.point.split(',')]
 
-                tkm.electric_field_point_traj(tinker_xyz=tinker_xyz, charge_method=charge_method, point=point,tinker_arc=tinker_arc)
+                tkm.electric_field_point_traj(tinker_xyz=tinker_xyz, charge_method=charge_method, \
+                                            point=point,tinker_arc=tinker_arc,output=args.out)
 
             elif args.type == 'grid':
 
@@ -632,6 +633,7 @@ def main():
                     raise ValueError("The bond is required.")
                 else:
                     tkm.electric_field_bond_traj(tinker_xyz=tinker_xyz, charge_method=charge_method, \
-                                                bond=parse_ndx(args.bond),tinker_arc=tinker_arc, mask=args.mask)
+                                                bond=parse_ndx(args.bond),tinker_arc=tinker_arc, \
+                                                mask=args.mask,output=args.out)
             else:
                 raise ValueError("The type must be point, grid or bond.") 

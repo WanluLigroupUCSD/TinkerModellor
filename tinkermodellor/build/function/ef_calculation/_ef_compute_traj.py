@@ -11,7 +11,7 @@ from ...system.tinker._tkmtrajectory import TKMTrajectory
 from ....messager import TKMEFPointReminder, TKMEFBondReminder, TKMEFGridReminder
 
 
-class ElectricFieldComputeTraj(TKMTrajectory):
+class ElectricFieldComputeTraj():
 
     def __init__(self,charge_method: str = None, tinker_xyz: str = None, tinker_arc: str = None):
         """
@@ -153,6 +153,7 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         
         # Extract atom indices
         atom1_idx, atom2_idx = bond
+        zero_based_ndx = [atom1_idx-1, atom2_idx-1]
 
         results = []
 
@@ -182,7 +183,7 @@ class ElectricFieldComputeTraj(TKMTrajectory):
         
         # Save the DataFrame to a CSV file
         df.to_csv(output, index=False)
-        
+
         print(f"Results have been saved to {output}")
         
         return results
@@ -432,6 +433,8 @@ class ElectricFieldComputeTraj(TKMTrajectory):
 
                 for bonded_atom in bonds[atom_index - 1]:  # Adjust for 0-indexing
                     explore_bonded_atoms(bonded_atom)
+
+                
 
             explore_bonded_atoms(initial)
 
