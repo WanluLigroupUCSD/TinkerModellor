@@ -307,6 +307,10 @@ def parse_args():
         help='The atom index of the bond, required when type is bond. \n \
             use comma to separate the atom index, e.g. 1,2'
     )
+    eftraj.add_argument(
+        '--mask', default=True, action='store_false',
+        help='Mask the electric field of the bond molecule. Default: True'
+    )
 
     # eftraj
     eftraj = subparsers.add_parser(
@@ -555,7 +559,7 @@ def main():
                 if args.bond is None:
                     raise ValueError("The bond is required.")
                 else:
-                    tkm.electric_field_bond(tinker_xyz=tinker_xyz, charge_method=charge_method, bond=parse_ndx(args.bond))
+                    tkm.electric_field_bond(tinker_xyz=tinker_xyz, charge_method=charge_method, bond=parse_ndx(args.bond),mask=args.mask)
             else:
                 raise ValueError("The type must be point, grid or bond.") 
             

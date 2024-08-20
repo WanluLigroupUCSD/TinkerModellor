@@ -1,7 +1,8 @@
 import numpy as np
 import os
+import sys
 
-from typing import List, Union
+from typing import List, Union, Tuple
 from ._tinkersystemcharge import TinkerSystemCharge
 #from tinkermodellor.build.function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
 
@@ -16,7 +17,9 @@ class ElectricFieldCompute():
                 charge_method: Charge method to be used to compute charges
                 tinker_xyz: Tinker xyz file path
         """
-        self.units = 10e-6  # Conversion factor to MV/cm
+        self.units = 1.602 # Conversion factor to MV/cm
+        # Constant k = 1 / (4 * pi * epsilon_0)
+        self.k = 8.9875517873681764e2  # N m²/C² (Coulomb's constant)
 
         if charge_method is None:
             print("No charge method specified, using default charge method: eem")
@@ -46,14 +49,19 @@ class ElectricFieldCompute():
             electric_field: Electric field at the point, including the magnitude.
                             Format is [E_x, E_y, E_z, |E|].
         """
-        self._compute_point_ef(point)
+        # Extract charges and coordinates from the tinker_system_charged
+        charges = self.tinker_system_charged.Charges
+        coordinates = self.tinker_system_charged.AtomCrds
+        self._compute_point_ef(point,coordinates=coordinates,charges=charges)
         
-    def _compute_point_ef(self,point: Union[np.array, List]) -> List[float]:
+    def _compute_point_ef(self,point: Union[np.array, List], coordinates:np.array, charges:np.array) -> List[float]:
         """
         This function is used to compute the electric field at a point.
         
         Args:
             point: Point at which the electric field is to be computed.
+            coordinates: Coordinates of the atoms in the system.
+            charges: Charges of the atoms in the system.
             
         Returns:
             electric_field: Electric field at the point, including the magnitude.
@@ -62,13 +70,6 @@ class ElectricFieldCompute():
         # Convert point to a numpy 3D array if it's not already
         point = [float(i) for i in point]
         point = np.array(point, dtype=float).reshape(3)
-
-        # Extract charges and coordinates from the tinker_system_charged
-        charges = self.tinker_system_charged.Charges
-        coordinates = self.tinker_system_charged.AtomCrds
-
-        # Constant k = 1 / (4 * pi * epsilon_0)
-        k = 8.9875517873681764e9  # N m²/C² (Coulomb's constant)
 
         # Initialize electric field
         electric_field = np.zeros(3)
@@ -86,7 +87,7 @@ class ElectricFieldCompute():
                 continue
 
             # Calculate the electric field contribution from this charge
-            e_field_contribution = k * charge * r_vector / r_magnitude**3
+            e_field_contribution = self.k * charge * r_vector / r_magnitude**3
 
             # Add the contribution to the total electric field
             electric_field += e_field_contribution
@@ -102,13 +103,14 @@ class ElectricFieldCompute():
         return result
         
     @TKMEFBondReminder
-    def compute_bond_ef(self, bond: List[int]) -> float:
+    def compute_bond_ef(self, bond: List[int], mask:bool = True) -> float:
         """
         This function computes the average electric field along a bond defined by two atoms.
 
         Args:
             bond: List of two integers representing the indices of the bonded atoms.
-
+            mask: Whether to mask the electric field contribution of the molecules, which are not part of the bond.
+            
         Returns:
             bond_electric_field: Electric field projected along the bond.
         """
@@ -128,9 +130,18 @@ class ElectricFieldCompute():
         bond_vector = atom2_coord - atom1_coord
         bond_unit_vector = bond_vector / np.linalg.norm(bond_vector)
 
+        mask_atom = self._connectivity_search(bond, self.tinker_system_charged.Bonds)
+        for i in range(len(self.tinker_system_charged.AtomCrds)):
+            coordinates = self.tinker_system_charged.AtomCrds
+            
+            if mask:
+                coordinates, charges = self._mask(mask_atom, coordinates, self.tinker_system_charged.Charges)
+            else:
+                charges = self.tinker_system_charged.Charges
+
         # Calculate electric fields at the two atom positions
-        ef_atom1 = self._compute_point_ef(atom1_coord)[:3]  # Extract E_x, E_y, E_z
-        ef_atom2 = self._compute_point_ef(atom2_coord)[:3]  # Extract E_x, E_y, E_z
+        ef_atom1 = self._compute_point_ef(atom1_coord, coordinates, charges)[:3]  # Extract E_x, E_y, E_z
+        ef_atom2 = self._compute_point_ef(atom2_coord, coordinates, charges)[:3]  # Extract E_x, E_y, E_z
 
         # Calculate the average electric field
         avg_ef = (ef_atom1 + ef_atom2) / 2
@@ -190,9 +201,6 @@ class ElectricFieldCompute():
         charges = self.tinker_system_charged.Charges
         coordinates = self.tinker_system_charged.AtomCrds
 
-        # Constant k = 1 / (4 * pi * epsilon_0)
-        k = 8.9875517873681764e9  # N m²/C² (Coulomb's constant)
-
         # Store the electric field results for all grid points
         results = []
 
@@ -212,7 +220,7 @@ class ElectricFieldCompute():
                     continue
 
                 # Calculate the electric field contribution from this charge
-                e_field_contribution = k * charge * r_vector / r_magnitude**3
+                e_field_contribution = self.k * charge * r_vector / r_magnitude**3
 
                 # Add the contribution to the total electric field
                 electric_field += e_field_contribution
@@ -293,7 +301,72 @@ class ElectricFieldCompute():
 
         print(f"DX files have been successfully saved with prefix {output_prefix}")
 
-if __name__ == '__main__':
-    charge = ElectricFieldCompute(charge_method='eem', tinker_xyz='./example/merge/ex1/ligand.xyz')
-    point= [-0.190548,0.023690,-1.146862]
-    charge.compute_grid_ef(point=point,radius=5,density_level=3,if_output=True,output_prefix='test')
+    def _mask(self, mask_ndx: List[int], coordinates: np.array, charges: np.array) -> Tuple[np.array, np.array]:
+        """
+        This function is used to mask specific molecules in the system according to the atom indices, and 
+        then neglect the electric field contribution from the masked atoms.
+
+        Args:
+            mask_ndx: Atom indices to be masked.
+            coordinates: Coordinates of the atoms in the system.
+            charges: Charges of the atoms in the system.
+
+        Returns:
+            Tuple containing the new coordinates and charges after masking.
+        """
+        # Convert mask_ndx to a set for efficient lookup
+        mask_set = set(mask_ndx)
+        
+        # Filter out the coordinates and charges corresponding to the masked indices
+        # The index in the Tinker system is 1-based so we need to adjust for 0-based indexing (i+1)
+        new_coordinates = np.array([coord for i, coord in enumerate(coordinates) if i+1 not in mask_set])
+        new_charges = np.array([charge for i, charge in enumerate(charges) if i+1 not in mask_set])
+        
+        return new_coordinates, new_charges
+
+
+    def _connectivity_search(self,ndx: List, bonds) -> List[int]:
+        """
+        Finds all atoms connected to the initial atom index, ensuring entire molecules or connected components are marked.
+
+        Args:
+            initial (int): Initial atom index to start the search.
+
+        Returns:
+            List[int]: Complete list of connected atom indices, sorted.
+        """
+
+        atom_in_molecule = []
+        for initial in ndx:
+            # Ensure the initial atom index is valid
+            if initial < 1 or initial > len(bonds):
+                raise ValueError(f"Initial atom index {initial} is out of bounds.")
+
+            sys.setrecursionlimit(10000)
+            residue_list = []
+            visited = set()  # Track visited atoms to prevent infinite recursion
+
+            def explore_bonded_atoms(atom_index):
+                """Recursively adds bonded atoms to the list."""
+                if atom_index in visited:
+                    return
+                visited.add(atom_index)
+                residue_list.append(atom_index)
+
+                for bonded_atom in bonds[atom_index - 1]:  # Adjust for 0-indexing
+                    explore_bonded_atoms(bonded_atom)
+
+                
+
+            explore_bonded_atoms(initial)
+
+            # Sort residue_list with the largest number first
+            residue_list = sorted(residue_list, reverse=True)
+
+            # Add to atom_in_molecule if not already included
+            atom_in_molecule.extend(residue_list)
+
+        # Remove duplicates and sort atom_in_molecule with the largest number first
+        atom_in_molecule = sorted(set(atom_in_molecule), reverse=True)
+
+        return atom_in_molecule

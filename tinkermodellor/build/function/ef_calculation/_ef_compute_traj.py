@@ -141,6 +141,7 @@ class ElectricFieldComputeTraj():
         Args:
             point: Point at which the electric field is to be computed.
             output_path: Path to save the output CSV file. If None, saves to the current directory.
+            mask: Whether to mask the electric field contribution of the molecules, which are not part of the bond.
             
         Returns:
             results: Electric field at the point, including the magnitude.
@@ -206,7 +207,7 @@ class ElectricFieldComputeTraj():
         # The index in the Tinker system is 0-based
 
         # Calculate the bond vector and normalize it to get the unit vector
-        bond_vector = atomcrd1 - atomcrd2
+        bond_vector = atomcrd2 - atomcrd1
         bond_unit_vector = bond_vector / np.linalg.norm(bond_vector)
 
         # Calculate electric fields at the two atom positions
