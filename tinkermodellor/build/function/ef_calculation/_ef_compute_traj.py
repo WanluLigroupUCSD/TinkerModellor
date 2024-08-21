@@ -135,7 +135,7 @@ class ElectricFieldComputeTraj():
     
     @TKMEFBondReminder
     def compute_bond_ef_traj(self, bond: List[int], output: str = None, \
-                            mask:bool = True, on_the_fly: bool=True) -> List[List[float]]:
+                            mask:bool = True, on_the_fly: bool=False) -> List[List[float]]:
         """
         This function is used to compute the electric field at a point.
         
@@ -143,7 +143,7 @@ class ElectricFieldComputeTraj():
             point: Point at which the electric field is to be computed.
             output_path: Path to save the output CSV file. If None, saves to the current directory.
             mask: Whether to mask the electric field contribution of the molecules, which are not part of the bond.
-            on_the_fly: Whether to compute the charges on-the-fly.
+            on_the_fly: Whether to compute the charges on-the-fly. Default is False.
 
         Returns:
             results: Electric field at the point, including the magnitude.

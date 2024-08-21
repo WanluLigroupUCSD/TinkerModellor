@@ -369,6 +369,10 @@ def parse_args():
         '--mask', default=True, action='store_false',
         help='Mask the electric field of the bond molecule. Default: True'
     )
+    eftraj.add_argument(
+        '--otf', default=False, action='store_true',
+        help='Whether to compute charges on the fly. Default: False'
+    )
 
     return p.parse_args()
 
@@ -638,6 +642,6 @@ def main():
                 else:
                     tkm.electric_field_bond_traj(tinker_xyz=tinker_xyz, charge_method=charge_method, \
                                                 bond=parse_ndx(args.bond),tinker_arc=tinker_arc, \
-                                                mask=args.mask,output=args.out)
+                                                mask=args.mask,output=args.out,otf=args.otf)
             else:
                 raise ValueError("The type must be point, grid or bond.") 
