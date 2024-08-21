@@ -2,7 +2,7 @@ import numpy as np
 import os
 import sys
 import pandas as pd
-
+from tqdm import tqdm
 from typing import List, Union, Tuple
 from ._tinkersystemcharge import TinkerSystemCharge
 #from tinkermodellor.build.function.ef_calculation._tinkersystemcharge import TinkerSystemCharge
@@ -134,7 +134,8 @@ class ElectricFieldComputeTraj():
         return result
     
     @TKMEFBondReminder
-    def compute_bond_ef_traj(self, bond: List[int], output: str = None, mask:bool = True) -> List[List[float]]:
+    def compute_bond_ef_traj(self, bond: List[int], output: str = None, \
+                            mask:bool = True, on_the_fly: bool=True) -> List[List[float]]:
         """
         This function is used to compute the electric field at a point.
         
@@ -142,7 +143,8 @@ class ElectricFieldComputeTraj():
             point: Point at which the electric field is to be computed.
             output_path: Path to save the output CSV file. If None, saves to the current directory.
             mask: Whether to mask the electric field contribution of the molecules, which are not part of the bond.
-            
+            on_the_fly: Whether to compute the charges on-the-fly.
+
         Returns:
             results: Electric field at the point, including the magnitude.
                             Format is [E_x, E_y, E_z, |E|].
@@ -160,17 +162,22 @@ class ElectricFieldComputeTraj():
 
         mask_atom = self._connectivity_search(bond, self.tinker_traj.Bonds)
         
-        for i in range(len(self.tinker_traj.AtomCrds)):
+        for i in tqdm(range(len(self.tinker_traj.AtomCrds)), desc="Calculating Electric Field"):
             coordinates = self.tinker_traj.AtomCrds[i]
+            if on_the_fly:
+                self.tinker_system_charged.update_charge(coordinates)
+                self.charge = self.tinker_system_charged.Charges
+            
             atomcrd1 = self.tinker_traj.AtomCrds[i][atom1_idx-1]
             atomcrd2 = self.tinker_traj.AtomCrds[i][atom2_idx-1]
             if mask:
                 coordinates, charges = self._mask(mask_atom, coordinates, self.charge)
             else:
                 charges = self.charge
+            
             results.append(self._compute_bond_ef(atomcrd1, atomcrd2, coordinates, charges))
-        
-        print("Electric field projected onto the bond has been successfully computed")
+
+        print(f"Electric field projected onto the bond has been successfully computed across {len(self.tinker_traj.AtomCrds)} frames with {self.tinker_traj.AtomNums} atoms each.")
         
         # Create a DataFrame to store the results
         df = pd.DataFrame(results, columns=['ElectricField'])

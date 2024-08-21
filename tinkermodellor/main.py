@@ -307,7 +307,7 @@ def parse_args():
         help='The atom index of the bond, required when type is bond. \n \
             use comma to separate the atom index, e.g. 1,2'
     )
-    eftraj.add_argument(
+    ef.add_argument(
         '--mask', default=True, action='store_false',
         help='Mask the electric field of the bond molecule. Default: True'
     )
