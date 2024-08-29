@@ -210,9 +210,9 @@ class TinkerModellor:
             traj = input.AtomCrds[::skip]
 
         if ref is not None:
-            ref = TKMTrajectory()
-            ref.read_from_tinker(ref)
-            ref_traj = ref.AtomCrds[0]
+            ref_struct = TKMTrajectory()
+            ref_struct.read_from_tinker(ref)
+            ref_traj = ref_struct.AtomCrds[0]
         else:
             ref_traj = traj[0]
 
@@ -223,12 +223,17 @@ class TinkerModellor:
 
             traj = traj[:, ndx]
             ref_traj = ref_traj[ndx]
+
+            ref_copy = np.copy(ref_traj)
+            traj_copy = np.copy(traj[bfra:efra])
         else:
-            pass
 
             ref_copy = np.copy(ref_traj)
             traj_copy = np.copy(traj[bfra:efra])
 
+        
+        print(traj_copy)
+        print(ref_copy)
         output = ttk.rmsd(ref_copy, traj_copy)
         output = [round(float(i), 6) for i in output]
         return output
