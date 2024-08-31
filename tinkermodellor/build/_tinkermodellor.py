@@ -220,20 +220,21 @@ class TinkerModellor:
             # Convert the index to 0-based
             # The index in the trajectory file is 1-based
             ndx = [elemnt-1 for elemnt in ndx]
-
             traj = traj[:, ndx]
             ref_traj = ref_traj[ndx]
 
             ref_copy = np.copy(ref_traj)
-            traj_copy = np.copy(traj[bfra:efra])
+            if efra == -1:
+                traj_copy = np.copy(traj[bfra:])
+            else:
+                traj_copy = np.copy(traj[bfra:efra])
         else:
 
             ref_copy = np.copy(ref_traj)
             traj_copy = np.copy(traj[bfra:efra])
-
-        
-        print(traj_copy)
-        print(ref_copy)
+ 
+        ref_copy = np.ascontiguousarray(ref_copy)
+        traj_copy = np.ascontiguousarray(traj_copy)
         output = ttk.rmsd(ref_copy, traj_copy)
         output = [round(float(i), 6) for i in output]
         return output

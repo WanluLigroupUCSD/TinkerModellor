@@ -172,17 +172,17 @@ def parse_args():
     )
     distance.add_argument(
         '--ndx', type=str, required=True,
-        help='The index of atoms to be calculated RMSD (optional), could be a single integer 10,\n\
+        help='The index of atoms to be calculated distance (optional), could be a single integer 10,\n\
         or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
     )
     distance.add_argument(
         '--bfra', type=str, default='0',
-        help='The begin frame of the trajectory to be calculated RMSD (optional)\n\
+        help='The begin frame of the trajectory to be calculated distance (optional)\n\
         Default: 0'
     )
     distance.add_argument(
         '--efra', type=str, default='-1',
-        help='The end frame of the trajectory to be calculated RMSD (optional)\n\
+        help='The end frame of the trajectory to be calculated distance (optional)\n\
         Default: the last frame of the trajectory'
     )
     distance.add_argument(
@@ -207,17 +207,17 @@ def parse_args():
     )
     angle.add_argument(
         '--ndx', type=str, required=True,
-        help='The index of atoms to be calculated RMSD (optional), could be a single integer 10,\n\
+        help='The index of atoms to be calculated angle (optional), could be a single integer 10,\n\
         or a list seperated by comma 1,2,3, or a range 1-10, or a combination of them 1,2,3,5-10'
     )
     angle.add_argument(
         '--bfra', type=str, default='0',
-        help='The begin frame of the trajectory to be calculated RMSD (optional)\n\
+        help='The begin frame of the trajectory to be calculated angle (optional)\n\
         Default: 0'
     )
     angle.add_argument(
         '--efra', type=str, default='-1',
-        help='The end frame of the trajectory to be calculated RMSD (optional)\n\
+        help='The end frame of the trajectory to be calculated angle (optional)\n\
         Default: the last frame of the trajectory'
     )
     angle.add_argument(
