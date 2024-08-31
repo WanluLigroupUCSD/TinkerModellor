@@ -287,8 +287,15 @@ class TinkerModellor:
             atom1_traj = traj[:, ndx[0]]
             atom2_traj = traj[:, ndx[1]]
 
-            atom1_copy = np.copy(atom1_traj[bfra:efra])
-            atom2_copy = np.copy(atom2_traj[bfra:efra])
+            if efra == -1:
+                atom1_copy = np.copy(atom1_traj[bfra:])
+                atom2_copy = np.copy(atom2_traj[bfra:])
+            else:
+                atom1_copy = np.copy(atom1_traj[bfra:efra])
+                atom2_copy = np.copy(atom2_traj[bfra:efra])
+
+        atom1_copy = np.ascontiguousarray(atom1_copy)
+        atom2_copy = np.ascontiguousarray(atom2_copy)
 
         output = ttk.distance(atom1_copy, atom2_copy)
         output = [round(float(i), 6) for i in output]
@@ -345,9 +352,18 @@ class TinkerModellor:
             atom2_traj = traj[:, ndx[1],:]
             atom3_traj = traj[:, ndx[2],:]
 
-            atom1_copy = np.copy(atom1_traj[bfra:efra])
-            atom2_copy = np.copy(atom2_traj[bfra:efra])
-            atom3_copy = np.copy(atom3_traj[bfra:efra])
+            if efra == -1:
+                atom1_copy = np.copy(atom1_traj[bfra:])
+                atom2_copy = np.copy(atom2_traj[bfra:])
+                atom3_copy = np.copy(atom3_traj[bfra:])
+            else:
+                atom1_copy = np.copy(atom1_traj[bfra:efra])
+                atom2_copy = np.copy(atom2_traj[bfra:efra])
+                atom3_copy = np.copy(atom3_traj[bfra:efra])
+
+        atom1_copy = np.ascontiguousarray(atom1_copy)
+        atom2_copy = np.ascontiguousarray(atom2_copy)
+        atom3_copy = np.ascontiguousarray(atom3_copy)
 
         output = ttk.angle(atom1_copy, atom2_copy,atom3_copy)
         output = [round(float(i), 6) for i in output]
