@@ -279,6 +279,7 @@ class GMXSystem():
             else:
                 numbers = map(float, lines[j].split())
                 rounded_numbers = [round(num, 5) for num in numbers]
+                rounded_numbers = rounded_numbers[:3]
                 self.BoxSize = rounded_numbers
                 box_flag = False
 

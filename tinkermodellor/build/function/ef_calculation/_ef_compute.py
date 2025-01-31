@@ -24,7 +24,7 @@ class ElectricFieldCompute():
         if charge_method is None:
             print("No charge method specified, using default charge method: eem")
             self.charge_method = 'eem'
-        elif charge_method not in ['eem', 'qeq', 'qtpie']:
+        elif charge_method not in ['eem', 'qeq', 'qtpie', 'eqeq']:
             raise NotImplementedError(f"Charge method {charge_method} not implemented")
         else:
             self.charge_method = charge_method

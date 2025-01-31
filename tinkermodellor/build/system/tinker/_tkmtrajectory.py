@@ -79,76 +79,114 @@ class TKMTrajectory:
   
     @TinkerTrajectoryReminder
     def read_from_traj(self,file: str):
-        print(f"Reading Tinker trajectory from file: {file}. It may take a while...")
-        
-        all_atom_crds = []
-        all_box_sizes = []
-        all_box_angles = []
-        n_atoms = None
-        pbc = None
 
-        with open(file, "r") as f:
-            with tqdm(desc="Processing trajectory", unit="frame") as t:
+        # ARC format trajectory
+        if file.endswith(".arc") or '.arc' in file:
+            print(f"Reading Tinker trajectory from file: {file}. It may take a while...")
+            
+            all_atom_crds = []
+            all_box_sizes = []
+            all_box_angles = []
+            n_atoms = None
+            pbc = None
 
-                # Determine the number of atoms and whether the trajectory contains PBC information
-                for frame_index, line in enumerate(f):
-                    if frame_index == 0:
-                        n_atoms = int(line.strip().split()[0])
-                    elif frame_index == 1:
-                        pbc = len(line.split()) == 6
-                        line_loop = n_atoms + 2 if pbc else n_atoms + 1
-                    elif frame_index == 3:
-                        break
+            with open(file, "r") as f:
+                with tqdm(desc="Processing trajectory", unit="frame") as t:
 
-                f.seek(0)  # Reset the file pointer to the beginning of the file
-                
-                # PBC trajectory
-                if pbc:
+                    # Determine the number of atoms and whether the trajectory contains PBC information
                     for frame_index, line in enumerate(f):
-                        if frame_index % line_loop == 0:
-                            if frame_index != 0:  # Append data at the start of the new frame, after processing the previous frame
-                                all_atom_crds.append(np.array(atom_crds, dtype=float))
-                                all_box_sizes.append(box_size)
-                                all_box_angles.append(box_angle)
-                            t.update()  # Updating the progress bar after processing each frame
-                            atom_crds = []  # Reset for the new frame
+                        if frame_index == 0:
+                            n_atoms = int(line.strip().split()[0])
+                        elif frame_index == 1:
+                            pbc = len(line.split()) == 6
+                            line_loop = n_atoms + 2 if pbc else n_atoms + 1
+                        elif frame_index == 3:
+                            break
 
-                        elif frame_index % line_loop == 1:
-                            box_params = np.fromstring(line, sep=' ')
-                            box_size = box_params[:3]
-                            box_angle = box_params[3:]
+                    f.seek(0)  # Reset the file pointer to the beginning of the file
+                    
+                    # PBC trajectory
+                    if pbc:
+                        for frame_index, line in enumerate(f):
+                            if frame_index % line_loop == 0:
+                                if frame_index != 0:  # Append data at the start of the new frame, after processing the previous frame
+                                    all_atom_crds.append(np.array(atom_crds, dtype=float))
+                                    all_box_sizes.append(box_size)
+                                    all_box_angles.append(box_angle)
+                                t.update()  # Updating the progress bar after processing each frame
+                                atom_crds = []  # Reset for the new frame
 
-                        else:
-                            crd = line.split()[2:5]
-                            atom_crds.append(crd)
-                    # Append the last frame after finishing the loop
-                    all_atom_crds.append(np.array(atom_crds, dtype=float))
-                    all_box_sizes.append(box_size)
-                    all_box_angles.append(box_angle)
+                            elif frame_index % line_loop == 1:
+                                box_params = np.fromstring(line, sep=' ')
+                                box_size = box_params[:3]
+                                box_angle = box_params[3:]
 
-                # Non-PBC trajectory
-                else:
-                    for frame_index, line in enumerate(f):
-                        if frame_index % line_loop == 0:
-                            if frame_index != 0:  # Append data at the start of the new frame, after processing the previous frame
-                                all_atom_crds.append(np.array(atom_crds, dtype=float))
-                            t.update()
-                            atom_crds = []  # Reset for the new frame
+                            else:
+                                crd = line.split()[2:5]
+                                atom_crds.append(crd)
+                        # Append the last frame after finishing the loop
+                        all_atom_crds.append(np.array(atom_crds, dtype=float))
+                        all_box_sizes.append(box_size)
+                        all_box_angles.append(box_angle)
 
-                        else:
-                            crd = line.split()[2:5]
-                            atom_crds.append(crd)
+                    # Non-PBC trajectory
+                    else:
+                        for frame_index, line in enumerate(f):
+                            if frame_index % line_loop == 0:
+                                if frame_index != 0:  # Append data at the start of the new frame, after processing the previous frame
+                                    all_atom_crds.append(np.array(atom_crds, dtype=float))
+                                t.update()
+                                atom_crds = []  # Reset for the new frame
+
+                            else:
+                                crd = line.split()[2:5]
+                                atom_crds.append(crd)
 
 
-                    # Append the last frame after finishing the loop
-                    all_atom_crds.append(np.array(atom_crds, dtype=float))
+                        # Append the last frame after finishing the loop
+                        all_atom_crds.append(np.array(atom_crds, dtype=float))
 
-                self.AtomCrds = np.array(all_atom_crds)
-                self.BoxSize = np.array(all_box_sizes)
-                self.BoxAngle = np.array(all_box_angles)
+                    self.AtomCrds = np.array(all_atom_crds)
+                    self.BoxSize = np.array(all_box_sizes)
+                    self.BoxAngle = np.array(all_box_angles)
 
-                
-                print(f"Successfully loaded {len(self.AtomCrds)} frames with {n_atoms} atoms each.")
+            print(f"Successfully loaded {len(self.AtomCrds)} frames with {n_atoms} atoms each.")
+
+        # DCD format trajectory
+        elif file.endswith(".dcd") or '.dcd' in file:
+
+            from MDAnalysis.lib.formats.libdcd import DCDFile
+
+            # To store all frames' coordinates
+            frames_xyz = []
+            frames_box_size = []
+            frames_box_angle = []
+
+            # 读取 DCD 文件
+            with DCDFile(file) as f:
+                for frame in f:
+
+                    frames_xyz.append(frame.xyz.copy())
+                    uc = frame.unitcell
+                    
+                    # box_size
+                    box_size = np.array([uc[0], uc[2], uc[5]])
+                    frames_box_size.append(box_size)
+                    
+                    # box_angle：
+                    box_angle = np.array([90 - uc[1], 90 - uc[3], 90 - uc[4]])
+                    frames_box_angle.append(box_angle)
+
+            # Convert the list to numpy array
+            all_frames = np.array(frames_xyz)       # shape: (n_frame, n_atom, 3)
+            box_size = np.array(frames_box_size)      # shape: (n_frame, 3)
+            box_angle = np.array(frames_box_angle)    # shape: (n_frame, 3)
+
+            self.AtomCrds = np.array(all_frames)
+            self.BoxSize = np.array(box_size)
+            self.BoxAngle = np.array(box_angle)
+                    
+            print(f"Successfully loaded {len(self.AtomCrds)} frames with {self.AtomNums} atoms each.")
 
 
 
