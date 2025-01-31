@@ -66,7 +66,7 @@ class TinkerSystem() :
 
         # if with pbc info
         if isinstance(self.BoxSize, np.ndarray):
-            print(self.BoxSize)
+            ### debug print(self.BoxSize)
             if not np.allclose(self.BoxSize, np.zeros(3)):
                 contents.append(
                 " "
