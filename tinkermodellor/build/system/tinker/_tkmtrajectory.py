@@ -166,7 +166,7 @@ class TKMTrajectory:
             with DCDFile(file) as f:
                 for frame in f:
 
-                    frames_xyz.append(frame.xyz)
+                    frames_xyz.append(frame.xyz.copy())
                     uc = frame.unitcell
                     
                     # box_size
@@ -185,8 +185,6 @@ class TKMTrajectory:
             self.AtomCrds = np.array(all_frames)
             self.BoxSize = np.array(box_size)
             self.BoxAngle = np.array(box_angle)
-
-            print(self.AtomCrds)
                     
             print(f"Successfully loaded {len(self.AtomCrds)} frames with {self.AtomNums} atoms each.")
 
