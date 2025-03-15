@@ -114,7 +114,9 @@ see more information in the license file.
 ## Citation
 
 Please site the website if you use this software in your research:
-<https://github.com/WanluLigroupUCSD/TinkerModellor>
+<https://github.com/WanluLigroupUCSD/TinkerModellor>  
+Hi , see our paper for more details !  
+**J. Chem. Theory Comput. 2025, 21, 5, 2712–2722**
 
 
 ## Reference
