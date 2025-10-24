@@ -17,7 +17,7 @@ class TinkerSystemCharge(TinkerSystem):
         if charge_method is None:
             print("No charge method specified, using default charge method: eem")
             self.charge_method = 'eem'
-        elif charge_method not in ['eem', 'qeq', 'qtpie']:
+        elif charge_method not in ['eem', 'qeq', 'qtpie','eqeq']:
             raise NotImplementedError(f"Charge method {charge_method} not implemented")
         else:
             self.charge_method = charge_method
@@ -67,15 +67,22 @@ class TinkerSystemCharge(TinkerSystem):
                 mol.AddBond(i + 1, bond_num, 1)
 
         mol.PerceiveBondOrders()
-
         mol.SetTitle(self.SystemName)
-
+        mol.SetTotalCharge(-9)
         # Compute charges
         chargeModel = openbabel.OBChargeModel.FindType(self.charge_method)
         chargeModel.ComputeCharges(mol)
-
         # Assign charges to self.charges
         self.Charges = np.array([atom.GetPartialCharge() for atom in openbabel.OBMolAtomIter(mol)])
+
+        sum = 0
+        for q in self.Charges:
+            sum += q
+        print(f"Total charge: {sum}")
+
+        with open(r'/home/wayne/data/tkm_test/ef/charge/chg.txt', 'w') as f:
+            for index, charge in enumerate(self.Charges, start=1):
+                f.write(f"{index} {charge}\n")
 
         self.mol = mol
 
@@ -96,6 +103,7 @@ class TinkerSystemCharge(TinkerSystem):
 
         # Assign charges to self.charges
         self.Charges = np.array([atom.GetPartialCharge() for atom in openbabel.OBMolAtomIter(self.mol)])
+
 
     def _connectivity_search(self,ndx: List, bonds) -> List[int]:
         """

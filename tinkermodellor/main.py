@@ -585,7 +585,7 @@ def main():
                 print("The charge method is not given, use EEM as default.")
                 charge_method = 'eem'
             else:
-                if args.chg.lower() not in ['eem', 'qeq', 'qtpie']:
+                if args.chg.lower() not in ['eem', 'qeq', 'qtpie', 'eqeq']:
                     raise ValueError("The charge method must be eem, qeq or qtpie.")
                 else:
                     charge_method = args.chg.lower()
